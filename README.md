@@ -24,7 +24,6 @@ d2lootfilter is a plugin that can be used with [PlugY](http://plugy.free.fr/en/i
 Still todo:
 
 * Error handling. Filter just silently ignores errors right now.
-* All Skill/Skill Tab/Individual Skill stats.
 * UI for enabling/disabling debugging features (temporarily show hidden items and show what conditions caused them being hidden). Currently Ctrl + Shift + Z disabled the filter and shows debug information.
 * Tier system to change filter levels in game.
 
