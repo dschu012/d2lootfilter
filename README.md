@@ -83,9 +83,9 @@ The operators are as followed. If no operator is specified `=` is implied.
 
 | Name | Valid Values |
 |-|-|
-| Type `<Operator> <Value>` | Name of item in `strings.txt` lookup from `weapons.txt`, `armor.txt`, or `misc.txt` . i.e. `Swirling Crystal`. For 1.13c and 1.14d these can be found [here](doc/ENG/Types.txt). |
-| Code `<Operator> <Value>` | 3 character item code found in `weapons.txt`, `armor.txt`, or `misc.txt`. For 1.13c and 1.14d these can be found [here](doc/ENG/Types.txt). |
-| Class `<Operator> <Value>` | ItemType column from `itemtypes.txt`. For 1.13c and 1.14d these can be found [here](doc/ENG/Class.txt). |
+| Type `<Operator> <Value>` | Name of item in `strings.txt` lookup from `weapons.txt`, `armor.txt`, or `misc.txt` . i.e. `Swirling Crystal`. For 1.13c and 1.14d these can be found [here](doc/ENG/Types.md). |
+| Code `<Operator> <Value>` | 3 character item code found in `weapons.txt`, `armor.txt`, or `misc.txt`. For 1.13c and 1.14d these can be found [here](doc/ENG/Types.md). |
+| Class `<Operator> <Value>` | ItemType column from `itemtypes.txt`. For 1.13c and 1.14d these can be found [here](doc/ENG/Class.md). |
 | Ethereal `<Boolean>` | Boolean True or False |
 | Rarity `<Rarity>` | Inferior, Normal, Superior, Magic, Set, Rare, Unique, Crafted |
 | Runeword `<Boolean>` | Boolean True or False |
@@ -95,7 +95,7 @@ The operators are as followed. If no operator is specified `=` is implied.
 | Quality `<Operator> <Quality>` | Normal, Exceptional, Elite |
 | CharacterLevel `<Operator> <Value>` | Number |
 | Difficulty `<Operator> <Value>` | Normal, Nightmare, Hell |
-| Rune `<Operator> <Value>` | Rune Name or Number. For 1.13c and 1.14d these can be found [here](doc/ENG/Runes.txt). |
+| Rune `<Operator> <Value>` | Rune Name or Number. For 1.13c and 1.14d these can be found [here](doc/ENG/Runes.md). |
 | Id `<Operator> <Value>` | Unique or Set ID from `sets.txt` or `uniques.txt` |
 | Gold `<Operator> <Value>` | Gold value |
 | Defense `<Operator> <Value>` | Defense |
