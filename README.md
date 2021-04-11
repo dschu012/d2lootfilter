@@ -23,6 +23,7 @@ d2lootfilter is a plugin that can be used with [PlugY](http://plugy.free.fr/en/i
 
 Still todo:
 
+* Error handling. Filter just silently ignores errors right now.
 * All Skill/Skill Tab/Individual Skill stats.
 * UI for enabling/disabling debugging features (temporarily show hidden items and show what conditions caused them being hidden). Currently Ctrl + Shift + Z disabled the filter and shows debug information.
 * Tier system to change filter levels in game.
@@ -41,7 +42,7 @@ TODO
 
 ### Basic Syntax
 
-The basic syntax is a collection of `Show` and `Hide` condition blocks. If an item matches **all conditions** on the block, the item will respectively be hidden or shown. `Continue` may be added to the end of a condition block if you would like the item to continue trying to match other condition blocks, otherwise processing stops after the first block is matched. A sample filter can be found [here](item.filter).
+The basic syntax is a collection of `Show` and `Hide` condition blocks. If an item matches **all conditions** on the block, the item will respectively be hidden or shown. `Continue` may be added to the end of a condition block if you would like the item to continue trying to match other condition blocks, otherwise processing stops after the first block is matched. A sample filter can be found [here](doc/ENG/item.filter).
 
 ```
 # hides all inferior items
