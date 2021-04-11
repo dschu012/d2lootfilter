@@ -131,13 +131,13 @@ e.x. `Max(Stat(39), Stat(43), Stat(41), Stat(45)) > 0` can be used to filter the
 
 | Name | Valid Values |
 |-|-|
-| SetName `<Value>` | Special token `{NAME}` is the base name for the item. When using continue it will append from the previous condition block. |
-| SetDescription `<Value>` | Special token `{NAME}` is the base name for the item. When using continue it will append from the previous condition block. |
-| SetBackgroundColor `<Value>` | Pallette index color or White, Red, Green, Blue, Gold, Gray, Black, Tan, Orange, Yellow, Purple, Dark Green |
-| SetInventoryColor `<Value>` | Same as SetBackgroundColor |
-| SetBorderColor `<Value>` | Same as SetBackgroundColor |
-| ChatNotify `<Boolean>` | True or False |
-| MinimapIcon `<Value>` | Same as SetBackgroundColor |
+| SetName `<Value>` | Sets the name for an item. Special token `{Name}` is the base name for the item. When using continue it will append from the previous condition block. |
+| SetDescription `<Value>` | Sets the description for an item.  Special token `{Description}` is the base name for the item. When using continue it will append from the previous condition block. |
+| SetBackgroundColor `<Value>` | Sets the background color of the item when on the ground. Pallette index color or White, Red, Green, Blue, Gold, Gray, Black, Tan, Orange, Yellow, Purple, Dark Green |
+| SetInventoryColor `<Value>` | Sets the background color of the item when in your inventory. Value is a pallette index color. |
+| SetBorderColor `<Value>` | Sets the border color of the item when on the ground. Value is a pallette index color. |
+| ChatNotify `<Boolean>` | Notify when the item drops in chat. True or False |
+| MinimapIcon `<Value>` | Sets the color of the item on your minimap when on the ground. Value is a pallette index color. |
 
 ### Credits
 
