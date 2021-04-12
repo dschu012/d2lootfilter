@@ -9,9 +9,9 @@
 #include <fmt/format.h>
 #include <fmt/core.h>
 #ifdef _DEBUG
-#define DEBUG_LOG(fmt, ...) fmt::print(fmt, __VA_ARGS___); 
+#define DEBUG_LOG(f, ...) fmt::print(f, __VA_ARGS__); 
 #else
-#define DEBUG_LOG(fmt, ...) ;
+#define DEBUG_LOG(f, ...) ;
 #endif
 
 

@@ -31,8 +31,10 @@ bool ItemFilter::IS_DEBUG_MODE = false;
 Config* ItemFilter::Configuration = NULL;
 
 ItemFilter::ItemFilter() {
+	
 	LoadFilter();
 	
+
 	DEBUG_LOG(L"D2COMMON_UNITS_FreeUnit: {}\n", fmt::ptr(&D2COMMON_UNITS_FreeUnit));
 	//alot of 114d functions need diff stubs or they changed from __stdcall to __fastcall
 	if (GetGameVersion() == GameVersion::V114d) {
@@ -109,7 +111,9 @@ ItemFilter::ItemFilter() {
 
 void ItemFilter::LoadFilter() {
 	Configuration = new Config(L"./item.filter");
-	RULES = Configuration->ParseFilter();
+	RULES.empty();
+	STYLES.empty();
+	Configuration->ParseFilter(RULES, STYLES);
 	ITEM_ACTIONS.empty();
 
 	DEBUG_LOG(L"Filter loaded\n");

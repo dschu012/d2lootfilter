@@ -18,16 +18,26 @@ struct Line {
 	std::wstring sText;
 };
 
+enum class ConfigToken : uint8_t {
+	NONE,
+	STYLE,
+	SHOW,
+	HIDE
+};
 
 class Config {
 private:
 	std::wstring m_Path;
+	ConditionMap m_ValidConditions;
+	ActionMap m_ValidActions;
 
-	void SetupValidConditions(ConditionMap& validConditions);
-	void SetupValidActions(ActionMap& validActions);
-	void ParseRule(Rule* rule, std::vector<Rule*>& rules, ConditionMap validConditions, ActionMap validActions, std::vector<Line>& lines);
+	void SetupValidConditions();
+	void SetupValidActions();
+	void HandleToken(ConfigToken token, std::wstring* line, uint32_t lineNum, std::vector<Rule*>& rules, std::map<std::wstring, std::vector<Action*>>& styles, std::vector<Line>& lines);
+	void ParseStyle(std::wstring* line, std::map<std::wstring, std::vector<Action*>>& styles, std::vector<Line>& lines);
+	void ParseRule(Rule* rule, std::vector<Rule*>& rules, std::vector<Line>& lines);
 public:
 	Config(std::wstring path);
-	std::vector<Rule*> ParseFilter();
+	void ParseFilter(std::vector<Rule*>& rules, std::map<std::wstring, std::vector<Action*>>& styles);
 };
 

@@ -10,6 +10,7 @@ d2lootfilter is a plugin that can be used with [PlugY](http://plugy.free.fr/en/i
 * [Conditions](#Conditions)
     * [Stats](#Stats)
 * [Actions](#Actions)
+* [Styles](#Styles)
 * [Credits](#Credits)
 
 **This has not been heavily tested, crashes may happen, and items may be lost**
@@ -131,6 +132,7 @@ e.x. `Max(Stat(39), Stat(43), Stat(41), Stat(45)) > 0` can be used to filter the
 
 | Name | Valid Values |
 |-|-|
+| SetStyle `<Value>` | Sets the styling for an item. A style is a group of actions that will be applied. See [Styles](#Styles). |
 | SetName `<Value>` | Sets the name for an item. Special token `{Name}` is the base name for the item. When using continue it will append from the previous condition block. |
 | SetDescription `<Value>` | Sets the description for an item.  Special token `{Description}` is the base name for the item. When using continue it will append from the previous condition block. |
 | SetBackgroundColor `<Value>` | Sets the background color of the item when on the ground. Pallette index color or White, Red, Green, Blue, Gold, Gray, Black, Tan, Orange, Yellow, Purple, Dark Green |
@@ -138,6 +140,30 @@ e.x. `Max(Stat(39), Stat(43), Stat(41), Stat(45)) > 0` can be used to filter the
 | SetBorderColor `<Value>` | Sets the border color of the item when on the ground. Value is a pallette index color. |
 | ChatNotify `<Boolean>` | Notify when the item drops in chat. True or False |
 | MinimapIcon `<Value>` | Sets the color of the item on your minimap when on the ground. Value is a pallette index color. |
+
+### Styles
+
+Lets you apply a group of actions to an item. i.e.
+
+```
+Style Tier 1 Items
+    SetName {Purple}T1 {Name}
+    ChatNotify True
+    MinimapIcon Purple
+    SetInventoryColor Purple
+
+Show
+    Type Diadem
+    Rarity Unique
+    SetStyle Tier 1 Items
+
+Show
+    Type Unearthed Wand
+    Rarity Unique
+    SetStyle Tier 1 Items
+```
+
+will apply all of the `Tier 1 Items` styles to the items.
 
 ### Credits
 

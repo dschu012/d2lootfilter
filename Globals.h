@@ -3,11 +3,14 @@
 #include <Windows.h>
 #include <map>
 #include <string>
+#include "Action.h"
 #include "D2Constants.h"
 
 extern GameVersion GAME_VERSION;
 
 extern bool TXT_DATA_LOADED;
+extern std::map<std::wstring, std::vector<Action*>> STYLES;
+
 extern std::map<std::wstring, uint16_t> ITEM_TYPE_LOOKUP_TABLE;
 extern std::map<std::wstring, uint32_t> ITEM_NAME_LOOKUP_TABLE;
 extern std::map<std::wstring, uint32_t> ITEM_CODE_LOOKUP_TABLE;

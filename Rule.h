@@ -13,11 +13,10 @@ class Rule {
 private:
 	uint32_t m_LineNum;
 	bool m_IsContinue = false;
-	std::wstring m_Text;
 	std::vector<Condition*> m_Conditions;
 	std::vector<Action*> m_Actions;
 public:
-	Rule(uint32_t lineNum, std::wstring text);
+	Rule(uint32_t lineNum);
 	bool Evaluate(Unit* pItem);
 	void EvaluateActionResult(ItemActionResult* action, Unit* pItem);
 	void SetIsContinue(bool isContinue) { m_IsContinue = isContinue; };

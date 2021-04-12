@@ -1,8 +1,7 @@
 #include "Rule.h"
 
 
-Rule::Rule(uint32_t lineNum, std::wstring text) : m_LineNum(lineNum),
-	m_Text(text) {
+Rule::Rule(uint32_t lineNum) : m_LineNum(lineNum) {
 }
 
 bool Rule::Evaluate(Unit* pItem) {

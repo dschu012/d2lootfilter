@@ -120,6 +120,12 @@ public:
 	virtual void SetResult(ItemActionResult* action, Unit* pItem) = 0;
 };
 
+class SetStyleAction : public Action {
+public:
+	SetStyleAction(std::wstring value) : Action(value) { }
+	void SetResult(ItemActionResult* action, Unit* pItem);
+};
+
 class SetNameAction : public ColorTextAction {
 public:
 	SetNameAction(std::wstring value) : ColorTextAction(value) { }

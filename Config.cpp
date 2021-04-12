@@ -10,13 +10,15 @@
 
 namespace fs = std::filesystem;
 
-#define CONDITION(NAME) validConditions[L#NAME " "] = &newInstance<NAME##Condition>
-#define ACTION(NAME) validActions[L#NAME " "] = &newInstance<NAME##Action>
+#define CONDITION(NAME) m_ValidConditions[L#NAME " "] = &newInstance<NAME##Condition>
+#define ACTION(NAME) m_ValidActions[L#NAME " "] = &newInstance<NAME##Action>
 
 Config::Config(std::wstring path) : m_Path(path) {
+	SetupValidConditions();
+	SetupValidActions();
 }
 
-void Config::SetupValidConditions(ConditionMap& validConditions) {
+void Config::SetupValidConditions() {
 	CONDITION(Type);
 	CONDITION(Code);
 	CONDITION(Class); //Helm, Sword, etc... (ItemTypes.txt)
@@ -52,7 +54,8 @@ void Config::SetupValidConditions(ConditionMap& validConditions) {
 	CONDITION(Height);
 }
 
-void Config::SetupValidActions(ActionMap& validActions) {
+void Config::SetupValidActions() {
+	ACTION(SetStyle);
 	ACTION(SetName);
 	ACTION(SetDescription);
 	ACTION(SetBackgroundColor);
@@ -63,11 +66,59 @@ void Config::SetupValidActions(ActionMap& validActions) {
 	ACTION(MinimapIcon); //todo.
 }
 
-void Config::ParseRule(Rule* rule, std::vector<Rule*> &rules, ConditionMap validConditions, ActionMap validActions, std::vector<Line>& lines) {
-	if (!rule) {
-		return;
+void Config::HandleToken(ConfigToken token, std::wstring* line, uint32_t lineNum, std::vector<Rule*>& rules, std::map<std::wstring, std::vector<Action*>>& styles, std::vector<Line>& lines) {
+	switch (token) {
+	case ConfigToken::STYLE: {
+		ParseStyle(line, styles, lines);
+		break;
 	}
+	case ConfigToken::SHOW: {
+		Rule* rule = new Rule(lineNum);
+		rule->AddAction(new ShowAction());
+		ParseRule(rule, rules, lines);
+		break;
+	}
+	case ConfigToken::HIDE: {
+		Rule* rule = new Rule(lineNum);
+		rule->AddAction(new HideAction());
+		ParseRule(rule, rules, lines);
+		break;
+	}
+	default:
+		break;
+	}
+	lines.clear();
+}
 
+void Config::ParseStyle(std::wstring* line, std::map<std::wstring, std::vector<Action*>>& styles, std::vector<Line>& lines) {
+	std::wstring style = std::wstring(trim(line->substr(6)));
+	for (auto line : lines) {
+		std::wstring s = line.sText;
+		//ignore comments or blank lines
+		if (s.find(COMMENT) != std::string::npos) {
+			s = s.erase(s.find(COMMENT));
+		}
+		s = trim(s);
+		if (s.length() == 0) {
+			continue;
+		}
+		std::wstring conditionName = L"";
+		std::wstring value = L"";
+		for (auto validAction : m_ValidActions) {
+			int l = validAction.first.length();
+			if (s.compare(0, l, validAction.first) == 0) {
+				conditionName = s.substr(0, l);
+				value = s.substr(l);
+				break;
+			}
+		}
+		if (!conditionName.empty() && !value.empty()) {
+			styles[style].push_back(m_ValidActions[conditionName](value));
+		}
+	}
+}
+
+void Config::ParseRule(Rule* rule, std::vector<Rule*> &rules, std::vector<Line>& lines) {
 	AndCondition* andCondition = new AndCondition();
 	for (auto line : lines) {
 		std::wstring s = line.sText;
@@ -85,7 +136,7 @@ void Config::ParseRule(Rule* rule, std::vector<Rule*> &rules, ConditionMap valid
 		}
 		std::wstring conditionName = L"";
 		std::wstring value = L"";
-		for (auto validCondition : validConditions) {
+		for (auto validCondition : m_ValidConditions) {
 			int l = validCondition.first.length();
 			if (s.compare(0, l, validCondition.first) == 0) {
 				conditionName = s.substr(0, l);
@@ -94,10 +145,10 @@ void Config::ParseRule(Rule* rule, std::vector<Rule*> &rules, ConditionMap valid
 			}
 		}
 		if (!conditionName.empty() && !value.empty()) {
-			andCondition->AddCondition(validConditions[conditionName](value));
+			andCondition->AddCondition(m_ValidConditions[conditionName](value));
 		}
 		else {
-			for (auto validAction : validActions) {
+			for (auto validAction : m_ValidActions) {
 				int l = validAction.first.length();
 				if (s.compare(0, l, validAction.first) == 0) {
 					conditionName = s.substr(0, l);
@@ -106,7 +157,7 @@ void Config::ParseRule(Rule* rule, std::vector<Rule*> &rules, ConditionMap valid
 				}
 			}
 			if (!conditionName.empty() && !value.empty()) {
-				rule->AddAction(validActions[conditionName](value));
+				rule->AddAction(m_ValidActions[conditionName](value));
 			}
 		}
 	}
@@ -115,22 +166,19 @@ void Config::ParseRule(Rule* rule, std::vector<Rule*> &rules, ConditionMap valid
 	lines.clear();
 }
 
-std::vector<Rule*> Config::ParseFilter() {
+void Config::ParseFilter(std::vector<Rule*>& rules, std::map<std::wstring, std::vector<Action*>>& styles) {
 	if (!fs::exists(m_Path)) {
 		MessageBoxA(nullptr, "No item.filter found.", "Error", MB_OK | MB_ICONSTOP);
 		exit(0);
 	}
 
-	ConditionMap conditionMap;
-	ActionMap actionMap;
-	SetupValidConditions(conditionMap);
-	SetupValidActions(actionMap);
-
-	std::vector<Rule*> rules;
 	std::wifstream f(m_Path);
 	std::wstring s;
+	uint32_t tokenLineNum = 0;
 	uint32_t lineNum = 0;
+	ConfigToken token = ConfigToken::NONE;
 	Rule* r = NULL;
+	std::wstring* line = NULL;
 	std::vector<Line> lines;
 
 	while (std::getline(f, s)) {
@@ -143,23 +191,25 @@ std::vector<Rule*> Config::ParseFilter() {
 		if (s.length() == 0) {
 			continue;
 		}
-		if (s.compare(0, 4, L"Show") == 0) {
-			ParseRule(r, rules, conditionMap, actionMap, lines);
-			r = new Rule(lineNum, s);
-			r->AddAction(new ShowAction());
+		if (s.compare(0, 5, L"Style") == 0) {
+			tokenLineNum = lineNum;
+			HandleToken(token, line, tokenLineNum, rules, styles, lines);
+			token = ConfigToken::STYLE;
+			line = new std::wstring(s);
+		}
+		else if (s.compare(0, 4, L"Show") == 0) {
+			tokenLineNum = lineNum;
+			HandleToken(token, line, tokenLineNum, rules, styles, lines);
+			token = ConfigToken::SHOW;
 		}
 		else if (s.compare(0, 4, L"Hide") == 0) {
-			ParseRule(r, rules, conditionMap, actionMap, lines);
-			r = new Rule(lineNum, s);
-			r->AddAction(new HideAction());
-		}
-		else if (r) {
-			lines.push_back({ lineNum, s });
+			tokenLineNum = lineNum;
+			HandleToken(token, line, tokenLineNum, rules, styles, lines);
+			token = ConfigToken::HIDE;
 		}
 		else {
-			DEBUG_LOG(L"Invalid Line: {}, expected...\n", lineNum);
+			lines.push_back({ lineNum, s });
 		}
 	}
-	ParseRule(r, rules, conditionMap, actionMap, lines);
-	return rules;
+	HandleToken(token, line, tokenLineNum, rules, styles, lines);
 }

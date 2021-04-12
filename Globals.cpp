@@ -1,11 +1,13 @@
 #include "Globals.h"
 #include <fmt/format.h>
 #include <fmt/core.h>
+#include "Action.h"
 
 GameVersion GAME_VERSION = GameVersion::NONE;
 
 bool TXT_DATA_LOADED = false;
 
+std::map<std::wstring, std::vector<Action*>> STYLES;
 std::map<std::wstring, uint32_t> ITEM_NAME_LOOKUP_TABLE;
 std::map<std::wstring, uint32_t> ITEM_CODE_LOOKUP_TABLE;
 std::map<std::wstring, uint32_t> RUNE_NAME_LOOKUP_TABLE;

@@ -57,6 +57,14 @@ void ShowAction::SetResult(ItemActionResult* action, Unit* pItem) {
 	action->bHide = false;
 }
 
+void SetStyleAction::SetResult(ItemActionResult* action, Unit* pItem) {
+	if (STYLES.contains(m_Value)) {
+		for (auto act : STYLES[m_Value]) {
+			act->SetResult(action, pItem);
+		}
+	}
+}
+
 void SetNameAction::SetResult(ItemActionResult* action, Unit* pItem) {
 	std::map<std::wstring, TokenReplaceFunction> TOKEN_REPLACEMENT_FUNCTIONS = {
 		{ L"{Name}", &GetItemName },
