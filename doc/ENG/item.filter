@@ -1,0 +1,1520 @@
+######
+# Begin Metadata
+######
+######
+# Styles
+######
+
+Style T1 Rune
+    SetName {Purple}<<< {Orange}T1 {Name} {Purple}>>>
+    ChatNotify True
+    SetBackgroundColor Purple
+    SetBorderColor Purple
+    SetInventoryColor Purple
+    MinimapIcon Purple
+
+Style T2 Rune
+    SetName {Purple}<<< {Orange}T2 {Name} {Purple}>>>
+    ChatNotify True
+    SetBackgroundColor Purple
+    SetBorderColor Purple
+    SetInventoryColor Purple
+    MinimapIcon Purple
+
+Style T3 Rune
+    SetName {Orange}T3 {Name}
+    ChatNotify True
+    SetBackgroundColor Red
+    SetBorderColor Red
+    MinimapIcon Red
+
+Style T4 Rune
+    SetName {Orange}T4 {Name}
+    ChatNotify True
+    SetBorderColor Gold
+    MinimapIcon Gold
+
+Style T1
+    SetName {Orange}T1 {Name}
+    ChatNotify True
+    SetBorderColor Orange
+    MinimapIcon Orange
+
+Style T2
+    SetName {Purple}T2 {Name}
+    ChatNotify True
+    SetBorderColor Purple
+    MinimapIcon Purple
+
+Style T3
+    SetName {Red}T3 {Name}
+    ChatNotify True
+    SetBorderColor Red
+    MinimapIcon Red
+
+Style T4
+    SetName {Gold}T4 {Name}
+    ChatNotify True
+    SetBorderColor Gold
+    MinimapIcon Gold
+
+Style T5
+    SetName {Dark Green}T5 {Name}
+    ChatNotify True
+    SetBorderColor Dark Green
+    MinimapIcon Dark Green
+
+Style T6
+    SetName {Gray}T6 {Name}
+    ChatNotify True
+    SetBorderColor Gray
+    MinimapIcon Gray
+
+######
+# Gems Metadata/Styling
+######
+
+Show
+    Class Gem
+    Class Amethyst
+    SetName {Purple}0 {White}{Name}
+Continue
+
+Show
+    Class Gem
+    Class Diamond
+    SetName {White}0 {White}{Name}
+Continue
+
+Show
+    Class Gem
+    Class Emerald
+    SetName {Dark Green}0 {White}{Name}
+Continue
+
+Show
+    Class Gem
+    Class Ruby
+    SetName {Red}0 {White}{Name}
+Continue
+
+Show
+    Class Gem
+    Class Sapphire
+    SetName {Blue}0 {White}{Name}
+Continue
+
+Show
+    Class Gem
+    Class Topaz
+    SetName {Yellow}0 {White}{Name}
+Continue
+
+Show
+    Class Gem
+    Class Skull
+    SetName {Grey}0 {White}{Name}
+Continue
+
+######
+# Rune Upgrade Metadata
+######
+
+Show
+    Rune Cham
+    SetDescription {Description}{White}2x {Orange}Cham {Green}0{White}Flawless -> {Orange}Zod{Newline}
+Continue
+
+Show
+    Rune Sur
+    SetDescription {Description}{White}2x {Orange}Sur {Purple}0{White}Flawless -> {Orange}Ber{Newline}
+Continue
+
+Show
+    Rune Lo
+    SetDescription {Description}{White}2x {Orange}Lo {Yellow}0{White}Flawless -> {Orange}Sur{Newline}
+Continue
+
+Show
+    Rune Ohm
+    SetDescription {Description}{White}2x {Orange}Ohm {White}0{White}Normal -> {Orange}Lo{Newline}
+Continue
+
+Show
+    Rune Vex
+    SetDescription {Description}{White}2x {Orange}Vex {Green}0{White}Normal -> {Orange}Ohm{Newline}
+Continue
+
+Show
+    Rune Gul
+    SetDescription {Description}{White}2x {Orange}Gul {Red}0{White}Normal -> {Orange}Vex{Newline}
+Continue
+
+Show
+    Rune Ist
+    SetDescription {Description}{White}2x {Orange}Gul {Blue}0{White}Normal -> {Orange}Gul{Newline}
+Continue
+
+Show
+    Rune Mal
+    SetDescription {Description}{White}2x {Orange}Mal {Purple}0{White}Normal -> {Orange}Ist{Newline}
+Continue
+
+Show
+    Rune Um
+    SetDescription {Description}{White}2x {Orange}Um {Yellow}0{White}Normal -> {Orange}Mal{Newline}
+Continue
+
+Show
+    Rune Pul
+    SetDescription {Description}{White}2x {Orange}Pul {White}0{White}Flawed -> {Orange}Um{Newline}
+Continue
+
+Show
+    Rune Lem
+    SetDescription {Description}{White}3x {Orange}Lem {Green}0{White}Flawed -> {Orange}Pul{Newline}
+Continue
+
+Show
+    Rune Fal
+    SetDescription {Description}{White}3x {Orange}Fal {Red}0{White}Flawed -> {Orange}Lem{Newline}
+Continue
+
+Show
+    Rune Ko
+    SetDescription {Description}{White}3x {Orange}Ko {Blue}0{White}Flawed -> {Orange}Fal{Newline}
+Continue
+
+Show
+    Rune Lum
+    SetDescription {Description}{White}3x {Orange}Lum {Purple}0{White}Flawed -> {Orange}Ko{Newline}
+Continue
+
+Show
+    Rune Io
+    SetDescription {Description}{White}3x {Orange}Io {Yellow}0{White}Flawed -> {Orange}Lum{Newline}
+Continue
+
+Show
+    Rune Hel
+    SetDescription {Description}{White}2x {Orange}Hel {White}0{White}Chipped -> {Orange}Io{Newline}
+Continue
+
+Show
+    Rune Dol
+    SetDescription {Description}{White}3x {Orange}Dol {Green}0{White}Chipped -> {Orange}Hel{Newline}
+Continue
+
+Show
+    Rune Shael
+    SetDescription {Description}{White}3x {Orange}Shael {Red}0{White}Chipped -> {Orange}Dol{Newline}
+Continue
+
+Show
+    Rune Sol
+    SetDescription {Description}{White}3x {Orange}Sol {Blue}0{White}Chipped -> {Orange}Shael{Newline}
+Continue
+
+Show
+    Rune Amn
+    SetDescription {Description}{White}3x {Orange}Amn {Purple}0{White}Chipped -> {Orange}Sol{Newline}
+Continue
+
+Show
+    Rune Thul
+    SetDescription {Description}{White}3x {Orange}Thul {Yellow}0{White}Chipped -> {Orange}Amn{Newline}
+Continue
+
+Show
+    Rune Ort
+    SetDescription {Description}{White}3x {Orange}Ort -> {Orange}Thul{Newline}
+Continue
+
+Show
+    Rune Ral
+    SetDescription {Description}{White}3x {Orange}Ral -> {Orange}Ort{Newline}
+Continue
+
+Show
+    Rune Tal
+    SetDescription {Description}{White}3x {Orange}Tal -> {Orange}Ral{Newline}
+Continue
+
+Show
+    Rune Ith
+    SetDescription {Description}{White}3x {Orange}Ith -> {Orange}Tal{Newline}
+Continue
+
+Show
+    Rune Eth
+    SetDescription {Description}{White}3x {Orange}Eth -> {Orange}Ith{Newline}
+Continue
+
+Show
+    Rune Nef
+    SetDescription {Description}{White}3x {Orange}Nef -> {Orange}Eth{Newline}
+Continue
+
+Show
+    Rune Tir
+    SetDescription {Description}{White}3x {Orange}Tir -> {Orange}Nef{Newline}
+Continue
+
+Show
+    Rune Eld
+    SetDescription {Description}{White}3x {Orange}Eld -> {Orange}Tir{Newline}
+Continue
+
+Show
+    Rune El
+    SetDescription {Description}{White}3x {Orange}El -> {Orange}Eld{Newline}
+Continue
+
+######
+# Upgrade Uniques Metadata
+######
+
+Show
+    Weapon True
+    Rarity Unique
+    Quality Normal
+    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Ral Sol {Green}0{White}Perfect{Newline}
+Continue
+
+Show
+    Armor True
+    Rarity Unique
+    Quality Normal
+    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Tal Sheal {White}0{White}Perfect{Newline}
+Continue
+
+Show
+    Weapon True
+    Rarity Unique
+    Quality Exceptional
+    SetDescription {Description}{White}Upgrade to elite with {Orange}Lum Pul {Green}0{White}Perfect{Newline}
+Continue
+
+Show
+    Armor True
+    Rarity Unique
+    Quality Exceptional
+    SetDescription {Description}{White}Upgrade to elite with {Orange}Ko Lem {White}0{White}Perfect{Newline}
+Continue
+
+######
+# Upgrade Rares Metadata
+######
+
+Show
+    Weapon True
+    Rarity Rare
+    Quality Normal
+    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Ort Amn {Blue}0{White}Perfect{Newline}
+Continue
+
+Show
+    Armor True
+    Rarity Rare
+    Quality Normal
+    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Ral Thul {White}0{White}Perfect{Newline}
+Continue
+
+Show
+    Weapon True
+    Rarity Rare
+    Quality Exceptional
+    SetDescription {Description}{White}Upgrade to elite with {Orange}Fal Um {Green}0{White}Perfect{Newline}
+Continue
+
+Show
+    Armor True
+    Rarity Rare
+    Quality Exceptional
+    SetDescription {Description}{White}Upgrade to elite with {Orange}Ko Pul {White}0{White}Perfect{Newline}
+Continue
+
+
+######
+# Runewords Metadata
+######
+
+Show
+    Class Armor
+    Rarity < Magic
+    Ethereal False
+    Runeword False
+    Sockets 2
+    SetDescription {Description}{White}Stealth: {Orange}TalEth {Gray}| {White}Smoke: {Orange}NefLum{Newline}
+Continue
+
+Show
+    Class Armor
+    Rarity < Magic
+    Ethereal False
+    Runeword False
+    Sockets 3
+    SetDescription {Description}{White}Treachery: {Orange}ShaelThulLem {Gray}| {White}Enigma: {Orange}JahIthBer{Newline}
+Continue
+
+Show
+    Class Armor
+    Rarity < Magic
+    Ethereal False
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Fortitude: {Orange}ElSolDolLo  {Gray}| {White}Chains of Honor: {Orange}DolUmBerIst{Newline}
+Continue
+
+Show
+    Class Armor
+    Rarity < Magic
+    Ethereal True
+    Sockets 4
+    SetDescription {Description}{White}Chains of Honor: {Orange}DolUmBerIst{Newline}
+Continue
+
+Show
+    Class Shield
+    Rarity < Magic
+    Ethereal False
+    Runeword False
+    Sockets 2
+    SetDescription {Description}{White}Rhyme: {Orange}ShaelEth{Newline}
+Continue
+
+Show
+    Class Shield
+    Rarity < Magic
+    Ethereal False
+    Runeword False
+    Sockets 3
+    SetDescription {Description}{White}Sanctuary: {Orange}KoKoMal {Gray}| {White}Ancient's Pledge: {Orange}RalOrtTal{Newline}{White}Dream: {Orange}IoJahPul{Newline}
+Continue
+
+Show
+    Class Shield
+    Rarity < Magic
+    Ethereal False
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Spirit: {Orange}TalThulOrtAmn {Gray}| {White}Phoenix: {Orange}VexVexLoJah{Newline}
+Continue
+
+Show
+    Class Shield
+    Rarity < Magic
+    Ethereal True
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Exile: {Orange}VexOhmIstDol{Newline}
+Continue
+
+Show
+    Class Helm
+    Rarity < Magic
+    Ethereal False
+    Runeword False
+    Sockets 2
+    SetDescription {Description}{White}Lore: {Orange}OrtSol{Newline}
+Continue
+
+Show
+    Class Helm
+    Rarity < Magic
+    Ethereal False
+    Runeword False
+    Sockets 3
+    SetDescription {Description}{White}Delirium: {Orange}LemIstIo {Gray}| {White}Dream: {Orange}IoJahPul{Newline}
+Continue
+
+Show
+    Class Polearm
+    Rarity < Magic
+    Ethereal False
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Insight: {Orange}RalTirTalSol{Newline}
+Continue
+
+Show
+    Class Polearm
+    Rarity < Magic
+    Ethereal True
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Infinity: {Orange}BerMalBerIst {Gray}| {White}Insight: {Orange}RalTirTalSol{Newline}
+Continue
+
+Show
+    Class Polearm
+    Rarity < Magic
+    Ethereal True
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Obedience: {Orange}HelKoThulEthFal{Newline}
+Continue
+
+Show
+    Class Bow
+    Rarity < Magic
+    Runeword False
+    Sockets 3
+    SetDescription {Description}{White}Edge: {Orange}TirTalAmn{Newline}
+Continue
+
+Show
+    Class Bow
+    Rarity < Magic
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Faith: {Orange}OhmJahLemEld {Gray}| {White}Harmony: {Orange}TirIthSolKo{Newline}
+Continue
+
+Show
+    Class Sword
+    Rarity < Magic
+    Ethereal True
+    Runeword False
+    Sockets 3
+    SetDescription {Description}{White}Lawbringer: {Orange}AmnLemKo {Gray}| {White}Crescent Moon: {Orange}ShaelUmTir{Newline}
+Continue
+
+Show
+    Class Sword
+    Rarity < Magic
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Spirit: {Orange}TalThulOrtAmn {Gray}| {White}Passion: {Orange}DolOrtEldLem{Newline}{White}Oath: {Orange}ShaelPulMalLum{Newline}
+Continue
+
+Show
+    Class Sword
+    Rarity < Magic
+    Runeword False
+    Sockets 5
+    SetDescription {Description}{White}Grief: {Orange}EthTirLoMalRal {Gray}| {White}Death: {Orange}HelElVexOrtGul{Newline}
+Continue
+
+Show
+    Class Axe
+    Rarity < Magic
+    Runeword False
+    Sockets 3
+    SetDescription {Description}{White}Crescent Moon: {Orange}ShaelUmTir{Newline}
+Continue
+
+Show
+    Class Axe
+    Rarity < Magic
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Oath: {Orange}ShaelPulMalLum{Newline}
+Continue
+
+Show
+    Class Axe
+    Rarity < Magic
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Grief: {Orange}EthTirLoMalRal| {White}Beast: {Orange}BerTirUmMalLum{Newline}{White}Death: {Orange}HelElVexOrtGul{Newline}
+Continue
+
+Show
+    Class Mace
+    Rarity < Magic
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Heart of the Oak: {Orange}KoVexPulThul{Newline}
+Continue
+
+Show
+    Class Staff
+    Rarity < Magic
+    Runeword False
+    Sockets 2
+    SetDescription {Description}{White}Leaf: {Orange}TirRal{Newline}
+Continue
+
+Show
+    Class Staff
+    Rarity < Magic
+    Runeword False
+    Sockets 4
+    SetDescription {Description}{White}Memory: {Orange}LumIoSolEth{Newline}
+Continue
+
+#claws
+Show
+    Class Hand to Hand, Hand to Hand 2
+    Rarity < Magic
+    Runeword False
+    Sockets 3
+    SetDescription {Description}{White}Plague: {Orange}ChamFalUm| {White}Chaos: {Orange}FalOhmUm{Newline}
+Continue
+
+Show
+    Class Wand
+    Rarity < Magic
+    Runeword False
+    Sockets 3
+    SetDescription {Description}{White}White: {Orange}DolIo{Newline}
+Continue
+
+Show
+    Class Orb
+    Rarity < Magic
+    Runeword False
+    Sockets 3
+    SetDescription {Description}{White}Plague: {Orange}ChamFalUm{Newline}
+Continue
+
+Show
+    Class Weapon
+    Rarity < Magic
+    Runeword False
+    Sockets 5
+    SetDescription {Description}{White}Call To Arms: {Orange}AmnRalMalIstOhm{Newline}
+Continue
+
+Show
+    Class Weapon
+    Rarity < Magic
+    Runeword False
+    Sockets 6
+    SetDescription {Description}{White}Breath of the Dying: {Orange}VexHelElEldZodEth{Newline}
+Continue
+
+######
+# General Metadata
+######
+
+Show
+    Rarity < Magic
+    SetName {White}{Name}
+Continue
+
+Show
+    Class Any Armor, Weapon, Ring, Amulet
+    Rarity <= Magic
+    Price 35000
+    SetName {Name} {Gray}+35k
+Continue
+
+Show
+    Rarity Crafted
+    SetName {Orange}{Name}
+    SetBorderColor Orange
+Continue
+
+Show
+    Rarity Set
+    SetName {Green}{Name}
+    SetBorderColor Green
+Continue
+
+Show
+    Rarity Rare
+    SetName {Yellow}{Name}
+    SetBorderColor Yellow
+Continue
+
+Show
+    Rarity Magic
+    SetName {Blue}{Name}
+    SetBorderColor Blue
+Continue
+
+Show
+    Rarity Unique
+    SetName {Gold}{Name}
+    SetBorderColor Gold
+Continue
+
+Show
+    Ethereal True
+    SetName {Dark Green}Eth {Name}
+Continue
+
+Show
+    Sockets > 0
+    SetName {Name} {Red}({Sockets})
+Continue
+
+######
+# Socket Recipes
+######
+
+Show
+    Class Armor
+    Rarity < Magic
+    Runeword False
+    Sockets 0
+    SetDescription {Description}{White}Add sockets with {Orange}Tal Thul {Yellow}0{White}Perfect{Newline}
+Continue
+
+Show
+    Class Melee Weapon
+    Rarity < Magic
+    Runeword False
+    Sockets 0
+    SetDescription {Description}{White}Add sockets with {Orange}Ral Amn {Purple}0{White}Perfect{Newline}
+Continue
+
+Show
+    Class Any Shield
+    Rarity < Magic
+    Runeword False
+    Sockets 0
+    SetDescription {Description}{White}Add sockets with {Orange}Tal Amn {Red}0{White}Perfect{Newline}
+Continue
+
+Show
+    Class Helm
+    Rarity < Magic
+    Runeword False
+    Sockets 0
+    SetDescription {Description}{White}Add sockets with {Orange}Ral Thul {Blue}0{White}Perfect{Newline}
+Continue
+
+######
+# End Metadata
+######
+
+######
+# Gems
+######
+
+#show chipped/flawed/normal gems if current char level is below 51
+Show
+    Class Gem
+    Class Chipped Gem, Flawed Gem, Standard Gem
+    CharacterLevel <= 50
+
+#always show flawless/perf gems
+Show
+    Class Gem
+    Class Flawless Gem, Perfect Gem
+
+######
+# Runes
+######
+
+Show
+    Rune in Sur-Jah
+    SetStyle T1 Rune
+
+Show
+    Rune in Cham-Zod, in Vex-Lo
+    SetStyle T2 Rune
+
+Show
+    Rune in Mal-Gul
+    SetStyle T3 Rune
+
+Show
+    Rune in Lem-Um
+    SetStyle T4 Rune
+    
+
+Show
+    Rune in El-Fal
+    SetName {Orange}{Name}
+
+######
+# Uniques and Sets Tier 1
+######
+
+#Griffon's Eye, Death's Fathom, Unearthed Wand, Death's Web, Crown of Age's
+Show
+    Type Diadem, Dimensional Shard, Unearthed Wand, Corona
+    Rarity Unique
+    SetStyle T1
+
+#Tyreal's Might
+Show
+    Type Sacred Armor
+    Rarity Unique
+    ItemLevel > 86
+    SetStyle T1
+
+#Eth Tomb Reaver, Eth Death Cleaver
+Show
+    Type Cryptic Axe, Berserker Axe
+    Rarity Unique
+    Ethereal True
+    SetStyle T1
+
+######
+# Uniques and Sets Tier 2
+######
+
+# Arachnid Mesh, Nightwing Veil/Veil of Steel, Unq Ring/Amulet, Darkforce/Bloodlord
+Show
+    Type Spiderweb Sash, Spired Helm, Bloodlord Skull
+    Rarity Unique
+    SetStyle T2
+
+# Eth Reaper's Toll, Eth Andariel's Visage
+Show
+    Type Thresher, Demonhead
+    Rarity Unique
+    Ethereal True
+    SetStyle T2
+
+######
+# Uniques and Sets Tier 3
+######
+
+# Shako, Andariel's Visage, War Travelers, Steelrend, Stormlash, 
+# Head Hunter's Glory, Giant Skull, Windforce, Shadow Dancer, 
+# Astreon's Iron Ward, Mang Song's Lesson, Annihilus, Hellfire Torch
+Show
+    Type Shako, Demonhead, Battle Boots, Ogre Gauntlets, Scourge, Troll Nest, Bone Visage, Hydra Bow, Myrmidon Greaves, Caduceus, Cryptic Axe, Archon Staff, Small Charm, Large Charm
+    Rarity Unique
+    SetStyle T3
+
+# Rainbow Facet (Unid)
+Show
+    Type Jewel
+    Rarity Unique
+    Identified False
+    SetStyle T3
+
+#Eth Sandstorm Trek, Eth Vampire Gaze, Eth Titan's Revenge
+Show
+    Type Scarabshell Boots, Grim Helm, Ceremonial Javelin
+    Rarity Unique
+    Ethereal True
+    SetStyle T3
+
+#Tal's Armor
+Show
+    Type Lacquered Plate
+    Rarity Set
+    SetStyle T3
+
+# Set Amulet (Unid)
+Show
+    Type Amulet
+    Rarity Set
+    Identified False
+    SetStyle T3
+
+# Unique Ring (Unid), Unique Amulet (Unid), Ormus (Unid)
+Show
+    Type Ring, Amulet, Dusk Shroud
+    Rarity Unique
+    Identified False
+    SetStyle T3
+
+######
+# Uniques and Sets Tier 4
+######
+
+# The Oculus, Ondal's Wisdom, Herald of Zakarum, Titan's Revenge,
+# Vipermagi, Gore Rider, String of Ears, Dracul's Grasp, Arreat's Face
+# Thundergod's Vigor, Nosferatu's Coil, Stormshield, Wizardspike,
+# Gheed's Fortune, Thunderstroke, Reaper's Toll, Arkaine's Valor,
+# Eschuta's Temper, Sandstorm Trek, Azurewrath, Magefist, Silkweave
+# Valkyrie Wing, Razortail, Skullder's Ire
+Show
+    Type Swirling Crystal, Elder Staff, Gilded Shield, Cermonial Javelin, Serpentskin Armor, War Boots, Demonhide Sash, Vampirebone Gloves, Slayer Guard, War Belt, Mithril Coil, Vampirefang Belt, Monarch, Bone Knife, Grand Charm, Matriarchal Javelin, Thresher, Balrog Skin, Eldritch Orb, Scarabshell Boots, Phase Blade, Light Gauntlets, Silkweave, Winged Helm, Sharkskin Belt, Russet Armor
+    Rarity Unique
+    SetStyle T4
+
+# Eth Stealskull, Eth Crown of Thieves, Eth Ribcracker, Eth Windhammer
+# Eth Kelpie Snare, Eth Hone Sundan, Eth Skullder's Ire, Eth Gladiator's Bane,
+# Eth Duriel's Shell, Eth Lacerator, Eth Warshrike, Eth Arioc's Needle, 
+# Eth Guardian Angel, Eth Shaftstop, Eth Runemaster, Eth Bonehew
+Show
+    Type Casque, Grand Crown, Quarterstaff, Ogre Maul, Fuscina, Yari, Russet Armor, Wire Fleece, Cuirass, Winged Axe, Winged Knife, Hyperion Spear, Templar Coat, Mesh Armor, Ettin Axe, Ogre Axe
+    Rarity Unique
+    Ethereal True
+    SetStyle T4
+
+# Aldur's Advance, Trang Oul's Girth, Trang Oul's Wing, Griswold's Redemption,
+# Immortal King's Soul Cage, Guillame's Face, Trang Oul's Claws, Tal Rasha's Horadric Crest
+# Tal Rasha's Lidless Eye, Tal Rasha's Fine Spun Cloth
+Show
+    Type Battle Boots, Troll Belt, Cantor Trophy, Caduceus, Sacred Armor, Winged Helm, Heavy Bracers, Death Mask, Swirling Crystal, Mesh Belt
+    Rarity Set
+    SetStyle T4
+
+
+######
+# Uniques and Sets Tier 5
+######
+
+# Goblin Toe, Ribcracker, Jalal's Mane, Waterwalk, Vampire Gaze
+# Stealskull, Crown of Thieves, Ravenclaw, Bloodfist, Hotspur,
+# Kelpie Snare, Fleshripper, Heaven's Light, Goldwrap, Homunculus,
+# Suicide Branch, Bartuc's Cut Throat, Blade of Ali Baba,
+# Moser's Blessed Circle, Arm of King Leoric, Chance Guards,
+# Kira's Guardian, Gull Dagger, Rockstopper, Bonehew, Gladiator's Bane,
+# Duriel's Shell, Lidless Wall, Snowclash, Guardian Angel, Frostburn
+Show
+    Type Light Plated Boots, Bramble Mitts, Quarterstaff, Totemic Mask, Sharkskin Boots, Grim Helm, Casque, Grand Crown, Long Bow, Heavy Gloves, Boots, Fuscina, Fanged Knife, Mighty Scepter, Heavy Belt, Hierophant Trophy, Burnt Wand, Greater Talons, Tulwar, Round Shield, Tomb Wand, Chain Gloves, Tiara, Dagger, Sallet, Ogre Axe, Wire Fleece, Cuirass, Grim Shield, Battle Belt, Templar Coat, Gauntlets
+    Rarity Unique
+    SetStyle T5
+
+# Eth Headstriker
+Show
+    Type Battle Sword
+    Rarity Unique
+    Ethereal True
+    SetStyle T5
+
+# Laying of Hands, Immortal King's Detail, Immortal King's Will, Naj's Puzzler
+# Griswold's Valor, Griswold's Honor
+Show
+    Type Bramble Mitts, War Belt, Avenger Guard, Elder Staff, Corona, Vortex Shield
+    Rarity Set
+    SetStyle T5
+
+######
+# Uniques and Sets Tier 6
+######
+
+# Widowmaker, Sazabi's Mental Sheath, Tarnhelm, Peasant Crown
+# Que-Hegan's Wisdom
+Show
+    Type Ward Bow, Basinet, Skull Cap, War Hat, Mage Plate
+    Rarity Unique
+    SetStyle T6
+
+######
+# Identified Uniques and Sets
+######
+
+# todo
+# different styling for soj/maras/etc...
+
+######
+# Whitelist All Uniques and Sets
+######
+
+Show
+    Rarity Set, Unique
+
+######
+# Socketables Tier 1
+######
+
+# +3 Holy shield CTA base
+Show
+    Type War Scepter, Divine Scepter, Caduceus
+    Rarity < Magic
+    Sockets 0, 5
+    Runeword False
+    Stats "Holy Shield" = 3
+    SetStyle T1
+
+######
+# Socketables Tier 2
+######
+
+# ebugged base to roll (merc fort)
+Show
+    Class Armor
+    Rarity < Superior
+    Sockets 0
+    Ethereal True
+    Runeword False
+    Defense >= 800
+    SetStyle T2
+
+# successful ebugged base to roll (merc fort)
+Show
+    Class Armor
+    Rarity < Superior
+    Sockets 4
+    Ethereal True
+    Runeword False
+    Defense >= 1200
+    SetStyle T2
+
+# ebugged sacred targe and base to roll (exile)
+Show
+    Type Sacred Targe
+    Rarity < Superior
+    Sockets 0
+    Ethereal True
+    Runeword False
+    Stats "All Resist" >= 35
+    SetStyle T2
+
+# successful ebugged sacred targe and base to roll (exile)
+Show
+    Type Sacred Targe
+    Rarity < Superior
+    Sockets 4
+    Ethereal True
+    Runeword False
+    Defense >= 280
+    Stats "All Resist" >= 35
+    SetStyle T2
+
+# 0/3os Runic talons or Suwayyah with 3 LS +3 WB/Fade/MB/DF/SM (chaos)
+Show
+    Type Runic Talons, Suwayyah
+    Rarity < Magic
+    Sockets 0, 3
+    Ethereal False
+    Runeword False
+    Stats "Lightning Sentry" = 3 and ("Weapon Block" = 3 or "Fade" = 3 or  "Mind Blast" = 3 or "Dragon Flight" = 3 or "Shadow Master" = 3)
+    SetStyle T2
+
+# 0/3os Runic talons or Suwayyah with 3 venom +3 WB/Fade/MB/DF/SM (chaos)
+Show
+    Type Runic Talons, Suwayyah
+    Rarity < Magic
+    Sockets 0, 3
+    Ethereal False
+    Runeword False
+    Stats "Venom" = 3 and ("Weapon Block" = 3 or "Fade" = 3 or  "Mind Blast" = 3 or "Dragon Flight" = 3 or "Shadow Master" = 3)
+    SetStyle T2
+
+# 0/5os scepter with conviction and fist of heavens
+Show
+    Type War Scepter, Divine Scepter, Caduceus
+    Rarity < Magic
+    Sockets 0, 5
+    Runeword False
+    Stats "Fist of the Heavens" = 3 and "Conviction" = 3
+    SetStyle T2
+
+# White wand base with 3 spirit and 3 spear
+Show
+    Class Wand
+    Rarity < Magic
+    Sockets 0, 2
+    Runeword False
+    Stats "Bone Spear" = 3 and "Bone Spirit" = 3
+    SetStyle T2
+
+######
+# Socketables Tier 3
+######
+
+# Holy shield CTA base
+Show
+    Type War Scepter, Divine Scepter, Caduceus
+    Rarity < Magic
+    Sockets 0, 5
+    Runeword False
+    Stats "Holy Shield" = 3
+    SetStyle T3
+
+# 4os Eth Cryptic Axe or Great Poleaxe with ED
+Show
+    Type Cryptic Axe, Great Poleaxe
+    Rarity < Magic
+    Sockets 4
+    Ethereal True
+    Runeword False
+    Stats "Enhanced Damage" > 0
+    SetStyle T3
+
+# 0/4os Eth Colossus Voulge with ED
+Show
+    Type Colossus Voulge
+    Rarity < Magic
+    Sockets 4
+    Ethereal True
+    Runeword False
+    Stats "Enhanced Damage" > 0
+    SetStyle T3
+
+# 4os Eth Thresher or Giant Thresher
+Show
+    Type Thresher, Giant Thresher
+    Rarity < Magic
+    Sockets 4
+    Ethereal True
+    Runeword False
+    SetStyle T3
+
+# Eth Berserker Axe 0/6os with ED (botd), 5os eth berserker axe with ED (death)
+Show
+    Type Berserker Axe
+    Rarity < Magic
+    Sockets 0, 5, 6
+    Ethereal True
+    Runeword False
+    Stats "Enhanced Damage" > 0
+    SetStyle T3
+
+# Eth War Pike 0/6os with ED (botd)
+Show
+    Type War Pike
+    Rarity < Magic
+    Sockets 0, 6
+    Ethereal True
+    Runeword False
+    Stats "Enhanced Damage" > 0
+    SetStyle T3
+
+# 4os, +3 Grand Matron Bow with ED (faith)
+Show
+    Type Grand Matron Bow
+    Rarity < Magic
+    Sockets 4
+    Runeword False
+    Stats "+%d to Bow and Crossbow Skills" = 3
+    SetStyle T3
+
+# Eth Colossus Sword 0/5os with ED (death)
+Show
+    Type Colossus Sword
+    Rarity < Magic
+    Sockets 0, 5
+    Ethereal True
+    Runeword False
+    Stats "Enhanced Damage" > 0
+    SetStyle T3
+
+# Eth Colossus Blade 5os with ED (death)
+Show
+    Type Colossus Blade
+    Rarity < Magic
+    Sockets 5
+    Ethereal True
+    Runeword False
+    Stats "Enhanced Damage" > 0
+    SetStyle T3
+
+# Eth 0/6os Ghost Spear or Great Poleaxe with ED (botd)
+Show
+    Type Ghost Spear, Great Poleaxe
+    Rarity < Magic
+    Sockets 0, 6
+    Ethereal True
+    Runeword False
+    Stats "Enhanced Damage" > 0
+    SetStyle T3
+
+# 3os superior, elite light armor with ED (enigma)
+# dusk shroud, wyrmhide, scarab husk, wire fleece, great hauberk, archon plate
+Show
+    Type Dusk Shroud, Wyrmhide, Scarab Husk, Wire Fleece, Great Hauberk, Archon Plate
+    Rarity < Magic
+    Sockets 3
+    Ethereal False
+    Runeword False
+    Stats "Enhanced Defense" > 0
+    SetStyle T3
+
+# 40@+ (all resist), 0/4os Sacred Targe
+Show
+    Type Sacred Targe
+    Rarity < Magic
+    Sockets 0, 4
+    Ethereal False
+    Runeword False
+    Stats "All Resist" > 0
+    SetStyle T3
+
+# Ebugged eth elite 4os paladin shield with good all resist roll and bases to roll
+Show
+    Type Sacred Targe, Sacred Rondache, Kurast Shield, Zakarum Shield, Vortex Shield
+    Rarity < Superior
+    Sockets 0
+    Ethereal True
+    Runeword False
+    Stats "All Resist" >= 40
+    SetStyle T3
+
+# Ebugged eth elite 4os paladin shield with good all resist roll and bases to roll
+Show
+    Class Auric Shields
+    Quality Elite
+    Rarity < Superior
+    Sockets 0
+    Ethereal True
+    Runeword False
+    Stats "All Resist" >= 40
+    SetStyle T3
+
+# 5os Berserker Axe with ED (grief, beast)
+Show
+    Type Berserker Axe
+    Rarity < Magic
+    Sockets 5
+    Ethereal True
+    Runeword False
+    Stats "Enhanced Damage" > 0
+    SetStyle T3
+
+# 3os, 1200+ ebugged Lacquered Plate and base to roll (treach)
+Show
+    Class Armor
+    Rarity < Magic
+    Sockets 0
+    Ethereal True
+    Runeword False
+    Defense >= 750
+    SetStyle T3
+
+# succussful roll 3os, 1150+ ebugged Lacquered Plate and base to roll (treach)
+Show
+    Class Armor
+    Rarity < Magic
+    Sockets 3
+    Ethereal True
+    Runeword False
+    Defense >= 1150
+    SetStyle T3
+
+# succussful roll 4os, 1150+ ebugged Lacquered Plate and base to roll (treach)
+Show
+    Class Armor
+    Rarity < Magic
+    Sockets 4
+    Ethereal True
+    Runeword False
+    Defense >= 11150
+    SetStyle T3
+
+# Runic talons or Suwayyah base with 3 LS/Venon + WB/Fade/MB/DF/SM (chaos)
+Show
+    Type Runic Talons, Suwayyah
+    Rarity < Magic
+    Sockets 0, 3
+    Ethereal False
+    Runeword False
+    Stats ("Lightning Sentry" = 3 or "Venom" = 3) and ("Weapon Block" > 0 or "Fade" > 0 or  "Mind Blast" > 0 or "Dragon Flight" > 0 or "Shadow Master" > 0)
+    SetStyle T3
+
+Show
+    Class Orb
+    Rarity < Magic
+    Sockets 0, 3
+    Ethereal False
+    Runeword False
+    Stats "Enchant" = 3 and "Fire Mastery" = 3
+    SetStyle T3
+
+######
+# Socketables Tier 4
+######
+
+# 4os Eth Cryptic Axe or Great Poleaxe
+Show
+    Type Cryptic Axe, Great Poleaxe
+    Rarity < Magic
+    Sockets 4
+    Ethereal True
+    Runeword False
+    SetStyle T4
+
+# 0/4os Eth Colossus Voulge
+Show
+    Type Colossus Voulge
+    Rarity < Magic
+    Sockets 0, 4
+    Ethereal True
+    Runeword False
+    SetStyle T4
+
+# Eth Berserker Axe 0/5/6os (botd/death)
+Show
+    Type Berserker Axe
+    Rarity < Magic
+    Sockets 0, 5, 6
+    Ethereal True
+    Runeword False
+    SetStyle T4
+
+# Eth War Pike 0/6os (botd)
+Show
+    Type War Pike
+    Rarity < Magic
+    Sockets 0, 6
+    Ethereal True
+    Runeword False
+    SetStyle T4
+
+# 4os, +3 Grand Matron Bow (faith)
+Show
+    Type Grand Matron Bow
+    Rarity < Magic
+    Sockets 4
+    Runeword False
+    Stats "+%d to Bow and Crossbow Skills" = 3
+    SetStyle T4
+
+# Eth 0/6os Ghost Spear or Great Poleaxe (botd)
+Show
+    Type Ghost Spear, Great Poleaxe
+    Rarity < Magic
+    Sockets 0, 6
+    Ethereal True
+    Runeword False
+    SetStyle T4
+
+# 5os Berserker Axe (grief, beast)
+Show
+    Type Berserker Axe
+    Rarity < Magic
+    Sockets 5
+    Ethereal False
+    Runeword False
+    SetStyle T4
+
+# 15ED, 0/4os superior, elite light armor (fort, CoH)
+Show
+    Type Dusk Shroud, Wyrmhide, Scarab Husk, Wire Fleece, Great Hauberk, Archon Plate
+    Rarity < Magic
+    Sockets 0, 4
+    Ethereal False
+    Runeword False
+    Stats "Enhanced Defense" = 15
+    SetStyle T4
+
+# 35@+, 0/4os sacred targe, sacred rondache or royal shield
+Show
+    Type Sacred Targe, Sacred Rondache, Royal Shield
+    Rarity < Magic
+    Sockets 0, 4
+    Ethereal False
+    Runeword False
+    Stats "All Resist" >= 35
+    SetStyle T4
+
+# 5os phase blade with ED (grief)
+Show
+    Type Phase Blade
+    Rarity < Magic
+    Sockets 5
+    Runeword False
+    Stats "Enhanced Damage" >= 5
+    SetStyle T4
+
+# 3os/4os, 1000+ ebugged armor with <200 str req and bases to roll
+Show
+    Class Armor
+    Rarity < Superior
+    Sockets 0
+    Ethereal True
+    Runeword False
+    Defense >= 650
+    SetStyle T4
+
+# successful 3os/4os, 1000+ ebugged armor with <200 str req and bases to roll
+Show
+    Class Armor
+    Rarity < Superior
+    Sockets 3, 4
+    Ethereal True
+    Runeword False
+    Defense >= 1000
+    SetStyle T4
+
+# 0os/3os 3 LS greater talons (Plague)
+Show
+    Class Hand to Hand, Hand to Hand 2
+#    Type Greater Talons
+    Rarity < Superior
+    Sockets 0, 3
+    Runeword False
+    Stats "Lightning Sentry" = 3
+    SetStyle T4
+
+# 0/5os Eth Cryptic Axe, Thresher
+Show
+    Type Cryptic Axe, Thresher
+    Rarity < Magic
+    Sockets 0, 5
+    Runeword False
+    Ethereal True
+    SetStyle T4
+
+# 5os eth Great Poleaxe, giant thresher
+Show
+    Type Great Poleaxe, Giant Thresher
+    Rarity < Magic
+    Sockets 5
+    Runeword False
+    Ethereal True
+    SetStyle T4
+
+# 3os 40@+ sacred targe (dream)
+Show
+    Type Sacred Targe
+    Rarity < Magic
+    Sockets 3
+    Runeword False
+    Ethereal False
+    Stats "All Resist" >= 40
+    SetStyle T4
+
+# 15 ED, 0/3os mage plate, cuirass (enigma)
+Show
+    Type Mage Plate, Cuirass
+    Rarity < Magic
+    Sockets 0, 3
+    Runeword False
+    Ethereal False
+    Stats "Enhanced Defense" = 15
+    SetStyle T4
+
+# 15 ED, 3os gothic and ancient armor (enigma)
+Show
+    Type Gothic Plate, Ancient Armor
+    Rarity < Magic
+    Sockets 3
+    Runeword False
+    Ethereal False
+    Stats "Enhanced Defense" = 15
+    SetStyle T4
+
+# 15 ED, 0/4os sacred armor (barb fort)
+Show
+    Type Sacred Armor
+    Rarity < Magic
+    Sockets 0, 4
+    Runeword False
+    Ethereal False
+    Stats "Enhanced Defense" = 15
+    SetStyle T4
+
+# 3 BO, >0 shout, 0/3os barb hat (delirium)
+Show
+    Class Primal Helm
+    Rarity < Magic
+    Sockets 0, 3
+    Runeword False
+    Ethereal False
+    Stats "Battle Orders" = 3 and "Shout" > 0
+    SetStyle T4
+
+# 0os eth elite polearms for cubing
+Show
+    Class Polearm
+    Quality Elite
+    Rarity < Magic
+    Sockets 0
+    Runeword False
+    Ethereal True
+    SetStyle T4
+
+# Runic talons or Suwayyah base with 3 LS/venom (chaos)
+Show
+    Type Runic Talons, Suwayyah
+    Rarity < Superior
+    Sockets 0, 3
+    Runeword False
+    Ethereal False
+    Stats "Lightning Sentry" = 3 or "Venom" = 3
+    SetStyle T4
+
+# 3 chant, 1+ FM orb capable of 3os (plague)
+Show
+    Class Orb
+    Rarity < Magic
+    Sockets 0, 3
+    Ethereal False
+    Runeword False
+    Stats "Enchant" = 3 and "Fire Mastery" > 0
+    SetStyle T4
+
+# 3os Dusk shroud (top 10%)
+Show
+    Type Dusk Shroud
+    Rarity < Magic
+    Sockets 3
+    Ethereal False
+    Runeword False
+    Defense > 456
+    SetStyle T4
+
+# 3os Wyrmhide (top 10%)
+Show
+    Type Wyrmhide
+    Rarity < Magic
+    Sockets 3
+    Ethereal False
+    Runeword False
+    Defense > 459
+    SetStyle T4
+
+# 3os Scarab Husk (top 10%)
+Show
+    Type Scarab Husk
+    Rarity < Magic
+    Sockets 3
+    Ethereal False
+    Runeword False
+    Defense > 463
+    SetStyle T4
+
+# 3os Wire Fleece (top 10%)
+Show
+    Type Wire Fleece
+    Rarity < Magic
+    Sockets 3
+    Ethereal False
+    Runeword False
+    Defense > 470
+    SetStyle T4
+
+# 3os Great Hauberk (top 10%)
+Show
+    Type Great Hauberk
+    Rarity < Magic
+    Sockets 3
+    Ethereal False
+    Runeword False
+    Defense > 490
+    SetStyle T4
+
+# 3os Archon Plate (top 20%)
+Show
+    Type Archon Plate
+    Rarity < Magic
+    Sockets 3
+    Ethereal False
+    Runeword False
+    Defense > 499
+    SetStyle T4
+
+# White wand base with 3 spear and >0 spirit
+Show
+    Class Wand
+    Rarity < Magic
+    Sockets 0, 2
+    Runeword False
+    Stats "Bone Spear" = 3 and "Bone Spirit" > 0
+    SetStyle T4
+
+######
+# Magic/Rares/Misc...
+######
+
+
+Show
+    Type Small Charm
+    Rarity Magic
+    Stats "Life" > 15 and "Any Resist"
+    SetInventoryColor Green
+Continue
+
+#Comment to hide large charms
+Show
+    Type Large Charm
+
+#Show charms/rings
+Show
+    Type Small Charm, Large Charm, Amulet, Ring
+
+#Show any Set, Rare, Unique, Crafted, Tempered
+Show
+    Rarity Set, Rare, Unique, Crafted, Tempered
+
+#Show all runeword
+Show
+    Runeword True
+
+#Hide anything not specifically included
+Hide
