@@ -1,6 +1,6 @@
 ### d2lootfilter
 
-d2lootfilter is a plugin that can be used with [PlugY](http://plugy.free.fr/en/index.html) or other mod systems to filter loot on 1.13c and 1.14d. The syntax for filtering loot was made to be similar to Path of Exile.
+d2lootfilter is a plugin that can be used with [PlugY](http://plugy.free.fr/en/index.html) or other mod systems to filter loot on 1.13c and 1.14d. The syntax for filtering loot was made to be similar to [Path of Exile](https://pathofexile.fandom.com/wiki/Item_filter).
 
 * [Sample Filter](doc/ENG/item.filter)
 * [Features](#Features)
