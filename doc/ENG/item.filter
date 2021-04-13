@@ -1,8 +1,5 @@
 ######
-# Begin Metadata
-######
-######
-# Styles
+# START Styles
 ######
 
 Style T1 Rune
@@ -60,16 +57,22 @@ Style T4
 
 Style T5
     SetName {Dark Green}T5 {Name}
-    ChatNotify True
+#    ChatNotify True
     SetBorderColor Dark Green
-    MinimapIcon Dark Green
+#    MinimapIcon Dark Green
 
 Style T6
     SetName {Gray}T6 {Name}
-    ChatNotify True
+#    ChatNotify True
     SetBorderColor Gray
-    MinimapIcon Gray
+#    MinimapIcon Gray
 
+######
+# END Styles
+######
+######
+# START Metadata
+######
 ######
 # Gems Metadata/Styling
 ######
@@ -678,26 +681,10 @@ Show
 Continue
 
 ######
-# End Metadata
+# END Metadata
 ######
-
 ######
-# Gems
-######
-
-#show chipped/flawed/normal gems if current char level is below 51
-Show
-    Class Gem
-    Class Chipped Gem, Flawed Gem, Standard Gem
-    CharacterLevel <= 50
-
-#always show flawless/perf gems
-Show
-    Class Gem
-    Class Flawless Gem, Perfect Gem
-
-######
-# Runes
+# START Runes
 ######
 
 Show
@@ -721,6 +708,30 @@ Show
     Rune in El-Fal
     SetName {Orange}{Name}
 
+######
+# END Runes
+######
+######
+# START Gems
+######
+
+#show chipped/flawed/normal gems if current char level is below 51
+Show
+    Class Gem
+    Class Chipped Gem, Flawed Gem, Standard Gem
+    CharacterLevel <= 50
+
+#always show flawless/perf gems
+Show
+    Class Gem
+    Class Flawless Gem, Perfect Gem
+
+######
+# END Gems
+######
+######
+# START Uniques and Sets
+######
 ######
 # Uniques and Sets Tier 1
 ######
@@ -897,6 +908,13 @@ Show
 Show
     Rarity Set, Unique
 
+
+######
+# END Uniques and Sets
+######
+######
+# START Socketables
+######
 ######
 # Socketables Tier 1
 ######
@@ -1489,6 +1507,549 @@ Show
     SetStyle T4
 
 ######
+# Socketables Tier 5
+######
+
+# 4os monarch (spirit)
+Show
+    Type Monarch
+	Rarity < Magic
+	Runeword False
+	Ethereal False
+	Sockets 4
+	SetStyle T5
+
+# 4os +3 matriarchal bow (ice)
+Show
+    Type Matriarchal Bow
+	Rarity < Magic
+	Runeword False
+	Sockets 4
+    Stats "+%d to Bow and Crossbow Skills" = 3
+	SetStyle T5
+
+# 3 BO, 0/3os barb hat (delirium)
+Show
+    Class Primal Helm
+	Rarity < Magic
+	Runeword False
+	Sockets 0, 3
+    Stats "Battle Orders" = 3
+	SetStyle T5
+
+# 3 nado, >0 hurricane, 0/3os druid pelt
+Show
+    Class Pelt
+	Rarity < Magic
+	Runeword False
+	Sockets 0, 3
+    Stats "Tornado" = 3 and "Hurricane" > 0
+	SetStyle T5
+
+# 3 CE white wand base
+Show
+    Class Wand
+	Rarity < Magic
+	Runeword False
+    Sockets 0, 2
+    Stats "Corpse Explosion" = 3
+	SetStyle T5
+
+# 5os phase blade (grief)
+Show
+    Type Phase Blade
+	Rarity < Magic
+	Runeword False
+	Sockets 5
+	SetStyle T5
+
+# 3os eth, reasonable req 1h sword/axe (cmoon)
+Show
+    Type Crystal Sword, Broad Sword, Long Sword, War Sword, Axe, Double Axe, Military Pick, War Axe, Cleaver, Twin Axe, Naga
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 3
+	SetStyle T5
+
+# 4os flail (hoto)
+Show
+    Type Flail
+	Rarity < Magic
+	Runeword False
+	Sockets 4
+	SetStyle T5
+
+# Eth 5os low req 1h weapon (CTA)
+Show
+    Type Flail, War Scepter, Crystal Sword, Double Axe, Military Pick, War Axe
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 5
+	SetStyle T5
+
+# 0/3os/4os Dusk shroud (top 10%)
+Show
+    Type Dusk Shroud
+    Rarity < Magic
+    Sockets 0, 3, 4
+    Ethereal False
+    Runeword False
+    Defense > 456
+    SetStyle T5
+
+# 0/3os/4os Wyrmhide (top 10%)
+Show
+    Type Wyrmhide
+    Rarity < Magic
+    Sockets 0, 3, 4
+    Ethereal False
+    Runeword False
+    Defense > 459
+    SetStyle T5
+
+# 0/3os/4os Scarab Husk (top 10%)
+Show
+    Type Scarab Husk
+    Rarity < Magic
+    Sockets 0, 3, 4
+    Ethereal False
+    Runeword False
+    Defense > 463
+    SetStyle T5
+
+# 0/3os/4os Wire Fleece (top 10%)
+Show
+    Type Wire Fleece
+    Rarity < Magic
+    Sockets 0, 3, 4
+    Ethereal False
+    Runeword False
+    Defense > 470
+    SetStyle T5
+
+# 0/3os/4os Great Hauberk (top 10%)
+Show
+    Type Great Hauberk
+    Rarity < Magic
+    Sockets 0, 3, 4
+    Ethereal False
+    Runeword False
+    Defense > 490
+    SetStyle T5
+
+# 0/3os/4os Archon Plate (top 20%)
+Show
+    Type Archon Plate
+    Rarity < Magic
+    Sockets 0, 3, 4
+    Ethereal False
+    Runeword False
+    Defense > 499
+    SetStyle T5
+
+# 3os gothic and ancient armor with ED (enigma)
+Show
+    Type Gothic Plate, Ancient Armor
+	Rarity < Magic
+	Runeword False
+	Ethereal False
+	Sockets 3
+    Stats "Enhanced Defense" >= 5
+	SetStyle T5
+
+# 0/6os eth archon staff (wolf botd)
+Show
+    Type Archon Staff
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 0, 6
+	SetStyle T5
+
+# 0/6os eth glorious axe (wolf botd)
+Show
+    Type Glorious Axe
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 0, 6
+	SetStyle T5
+
+# 0/6os eth thunder maul (wolf botd)
+Show
+    Type Thunder Maul
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 0, 6
+	SetStyle T5
+
+# Eth Ettin Axe 0/5os with ED (death)
+Show
+    Type Ettin Axe
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 0, 5
+    Stats "Enhanced Damage" >= 5
+	SetStyle T5
+
+# 4os phase blade (Passion)
+Show
+    Typwe Phase Blade
+	Rarity < Magic
+	Runeword False
+	Sockets 4
+	SetStyle T5
+
+# 35@+, 0/4os elite paladin shields
+Show
+    Class Auric Shields
+    Quality Elite
+	Rarity < Magic
+	Runeword False
+	Ethereal False
+	Sockets 0, 4
+    Stats "All Resist" >= 35
+	SetStyle T5
+
+# 35@+, 3os sacred targe, sacred rondache or royal shield (dream)
+Show
+    Type Sacred Targe, Sacred Rondache, Royal Shield
+	Rarity < Magic
+	Runeword False
+	Ethereal False
+	Sockets 3
+    Stats "All Resist" >= 35
+	SetStyle T5
+
+# elite claws capable of 3os + greater talons with 3LS/venom (chaos/Plague)
+Show
+    Class Hand to Hand, Hand to Hand 2
+	Rarity < Magic
+	Runeword False
+	Ethereal False
+	Sockets 0, 3
+    Stats "Lightning Sentry" = 3 or "Venom" = 3
+	SetStyle T5
+
+# 3os phase blade (lawbringer)
+Show
+    Type Phase Blade
+	Rarity < Magic
+	Runeword False
+	Sockets 3
+	SetStyle T5
+
+# 3os/4os, 900+ ebugged elite light armor and bases to roll
+Show
+    Type Dusk Shroud, Wyrmhide, Scarab Husk, Wire Fleece, Great Hauberk, Archon Plate
+	Rarity < Superior
+	Runeword False
+	Ethereal True
+    Defense >= 900
+	Sockets 3, 4
+	SetStyle T5
+
+Show
+    Type Dusk Shroud, Wyrmhide, Scarab Husk, Wire Fleece, Great Hauberk, Archon Plate
+	Rarity < Superior
+	Runeword False
+	Ethereal True
+    Defense >= 600
+	Sockets 0
+	SetStyle T5
+
+# 3 chant orb capable of 3os (plague)
+Show
+    Class Orb
+	Rarity < Magic
+	Runeword False
+	Sockets 0, 3
+    Stats "Enchant" = 3
+	SetStyle T5
+
+# 3 enchant, 0os staff that gets 2 from Larzuk (leaf)
+Show
+    Type Short Staff, Jo Staff, Walking Stick
+	Rarity < Magic
+	Runeword False
+	Sockets 0, 2
+    Stats "Enchant" = 3
+	SetStyle T5
+
+# 3 enchant, 2os staff (leaf)
+Show
+    Class Staff
+	Rarity < Magic
+	Runeword False
+	Sockets 2
+    Stats "Enchant" = 3
+	SetStyle T5
+
+# 15ED, 0/4os blade and great bows (merc faith)
+Show
+    Type Blade Bow, Great Bow
+	Rarity < Magic
+	Runeword False
+	Sockets 0, 4
+    Stats "Enhanced Damage" >= 15
+	SetStyle T5
+
+# 4os elite bow with ED (merc faith)
+Show
+    Class Bow
+    Quality Elite
+	Rarity < Magic
+	Runeword False
+	Sockets 4
+    Stats "Enhanced Damage" >= 5
+	SetStyle T5
+
+# 3 energy shield 4os staff (memory)
+Show
+    Class Staff
+	Rarity < Magic
+	Runeword False
+	Sockets 4
+    Stats "Energy Shield" = 3
+	SetStyle T5
+
+# 3 energy shield 0os staff with max 4 sockets (memory)
+Show
+    Type Gnarled Staff, Battle Staff, Cedar Staff, Gothic Staff, Elder Staff, Shillelagh
+	Rarity < Magic
+	Runeword False
+	Sockets 0
+    Stats "Energy Shield" = 3
+	SetStyle T5
+
+# Staff CTA Base: +3 Energy Shield
+Show
+    Class Staff
+	Rarity < Magic
+	Runeword False
+	Sockets 5
+    Stats "Energy Shield" = 3
+	SetStyle T5
+
+# 15ED, 0/3os troll nest (dream)
+Show
+    Type Troll Nest
+	Rarity < Magic
+	Runeword False
+	Ethereal False
+	Sockets 0, 3
+    Stats "Enhanced Defense" >= 15
+	SetStyle T5
+
+# 15ED, 0/3os bone visage/diadem (dream)
+Show
+    Type Bone Visage, Diadem
+	Rarity < Magic
+	Runeword False
+	Ethereal False
+	Sockets 0, 3
+    Stats "Enhanced Defense" >= 15
+	SetStyle T5
+
+# Eth Colossus Sword 0/5os (death)
+Show
+    Type Colossus Sword
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 0, 5
+	SetStyle T5
+
+# Eth Colossus Blade 5os (death)
+Show
+    Type Colossus Blade
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 5
+	SetStyle T5
+
+# White wand base with 3 spear
+Show
+    Class Wand
+	Rarity < Magic
+	Runeword False
+    Sockets 0, 2
+    Stats "Bone Spear" = 3
+	SetStyle T5
+
+######
+# Socketables Tier 6 (LADDER RESET STUFF)
+######
+
+# 0os monarch (spirit)
+Show
+    Type Monarch
+	Rarity < Magic
+	Runeword False
+	Ethereal False
+	Sockets 0
+	SetStyle T6
+
+# 0/4os Eth Oath Bases (Oath)
+Show
+    Type Balrog Blade, Cryptic Sword, Feral Axe, Small Crescent, Conquest Sword, Highland Blade, Champion Sword
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 0, 4
+	SetStyle T6
+
+# 4os Eth Oath Bases (Oath)
+Show
+    Type Berserker Axe, Colossus Sword, Colossus Blade, Scourge, Ettin Axe, War Spike, Silver-edged Axe, Decapitator, Champion Axe, Glorious Axe
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 4
+	SetStyle T6
+
+# Low req 4os bow (harmony)
+Show
+    Type Hunter's Bow, Long Bow, Composite Bow
+	Rarity < Magic
+	Runeword False
+	Sockets 4
+	SetStyle T6
+
+# Elite 4os bow (merc harmony)
+Show
+    Class Bow
+    Quality Elite
+	Rarity < Magic
+	Runeword False
+	Sockets 4
+	SetStyle T6
+
+# Paladin shields with all res (for beginning or smiters)
+Show
+    Class Auric Shields
+	Rarity < Magic
+	Runeword False
+	Ethereal False
+	Sockets 0, 4
+    Stats "All Resist" >= 35
+	SetStyle T6
+
+# 4os polearms (merc insight, golem insight)
+Show
+    Class Polearm
+	Rarity < Magic
+	Runeword False
+	Sockets 4
+	SetStyle T6
+
+# 0os polearms that get 4 sockets from Larzuk
+Show
+    Class Polearm
+    Type != Bardiche
+    Type != Lochaber Axe
+	Rarity < Magic
+	Runeword False
+    ItemLevel > 25
+    ItemLevel < 41
+	Sockets 0
+	SetStyle T6
+
+Show
+    Type Voulge, Bill, Colossus Voulge
+	Rarity < Magic
+	Runeword False
+    ItemLevel > 25
+	Sockets 0
+	SetStyle T6
+
+# swords with exactly 4 sockets (spirit)
+Show
+    Type Crystal Sword, Broad Sword, Long Sword
+	Rarity < Magic
+	Runeword False
+	Sockets 4
+	SetStyle T6
+
+# swords that get 4 sockets from Larzuk (spirit)
+Show
+    Type Broad Sword, Long Sword
+	Rarity < Magic
+	Runeword False
+	Sockets 0
+    ItemLevel > 25
+	SetStyle T6
+
+Show
+    Type Crystal Sword
+	Rarity < Magic
+	Runeword False
+	Sockets 0
+    ItemLevel > 25
+    ItemLevel < 41
+	SetStyle T6
+
+# 3os eth elite swords (merc lawbringer)
+Show
+    Class Sword
+    Quality Elite
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 3
+	SetStyle T6
+
+# eth elite swords that Larzuk for 3os (merc lawbringer)
+Show
+    Type Mythical Sword, Legend Sword
+	Rarity < Magic
+	Runeword False
+	Ethereal True
+	Sockets 0
+	SetStyle T6
+
+# 2os staff with at least 2 fireball (leaf)
+Show
+    Class Staff
+	Rarity < Magic
+	Runeword False
+	Sockets 2
+    Stats "Fire Ball" >= 2
+	SetStyle T6
+
+# 3 nado, 0/3os druid pelt
+Show
+    Class Pelt
+	Rarity < Magic
+	Runeword False
+	Sockets 0, 3
+    ItemLevel > 25
+    Stats "Tornado" = 3
+	SetStyle T6
+
+######
+# END Socketables
+######
+######
+# START Misc
+######
+Show
+    Type Key of Terror, Key of Hate, Key of Destruction
+	SetStyle T4
+
+Show
+    Type Wirt's Leg
+    SetStyle T4
+
+######
+# END Misc
+######
+######
 # Magic/Rares/Misc...
 ######
 
@@ -1506,7 +2067,7 @@ Show
 
 #Show charms/rings
 Show
-    Type Small Charm, Large Charm, Amulet, Ring
+    Type Small Charm, Grand Charm, Amulet, Ring
 
 #Show any Set, Rare, Unique, Crafted, Tempered
 Show
