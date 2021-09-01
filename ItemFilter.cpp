@@ -435,7 +435,12 @@ Handles the following.
 1) Item rect on ground when holding alt
 2) Item rect on ground when you hover over
 */
-void __stdcall ItemFilter::DrawGroundItemRect(BOOL isHovered, Unit* pItem, uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode) {
+void __stdcall ItemFilter::DrawGroundItemRect(DWORD retAddress, BOOL isHovered, Unit* pItem, uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode) {
+	if (!(retAddress == 0x0 || retAddress == reinterpret_cast<DWORD>(&D2CLIENT_callDrawAltDownItemRectRet))) {
+		//drawing a rect that isnt for an item. this is kinda a hack checking ret address of caller.
+		D2GFX_DrawSolidRectEx(nXStart, nYStart, nXEnd, nYEnd, nPaletteIndex, eDrawMode);
+		return;
+	}
 	if (pItem == nullptr) {
 		pItem = *D2CLIENT_GetHoverItem;
 	}
@@ -598,6 +603,7 @@ void __declspec(naked) __stdcall ItemFilter::DrawAltDownItemRect_STUB() {
 		push[esp + 0x18];
 		push[esi - 0x4];
 		push 0;
+		push[esp + 0x58];
 		call ItemFilter::DrawGroundItemRect;
 		ret 0x18;
 	}
@@ -615,6 +621,7 @@ void __declspec(naked) __stdcall ItemFilter::DrawAltDownItemRect_STUB_114d() {
 		mov eax, [esp + 0x40];
 		push[eax - 0x4];
 		push 0;
+		push[esp + 0x60];
 		call ItemFilter::DrawGroundItemRect;
 		ret 0x18;
 	}
@@ -633,6 +640,7 @@ void __declspec(naked) __stdcall ItemFilter::DrawHoverItemRect_STUB() {
 		call D2CLIENT_fpGroundHoverUnit;
 		push eax;
 		push 1;
+		push 0;
 		call ItemFilter::DrawGroundItemRect;
 		ret 0x18;
 	}

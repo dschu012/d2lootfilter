@@ -32,6 +32,10 @@ static const uint32_t DLLBASE_STORM = (uint32_t)LoadLibraryA("Storm.dll");
 //Hooks for item filter
 P2(D2CLIENT, fpGetItemDescPatch, void, 0x5612C, 0xE64CE);
 P2(D2WIN, callDrawAltDownItemRectPatch, void, 0x12F12, 0x102436);		//Call to D2GFX_DrawSolidRectEx(uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode)
+P2(D2CLIENT, callDrawAltDownItemRectRet, void, 0x59473, 0xA72F4);
+//1.13c $+59473   |.  A1 0078BC6F   |MOV EAX,DWORD PTR DS:[6FBC7800]
+//1.14d $ + A72F4 | > \5F            POP EDI
+
 P2(D2CLIENT, fpGroundHoverUnit, void, 0x51A80, 0x67A10); //check 1.14d???
 P2(D2WIN, callDrawHoverItemRectPatch, void, 0x1357B, 0x1031C1);			//Call to D2GFX_DrawSolidRectEx(uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode)
 P2(D2CLIENT, callDrawInventoryItemRectPatch, void, 0x8C678, 0x83A3F);	//Call to D2GFX_DrawSolidRectEx(uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode)

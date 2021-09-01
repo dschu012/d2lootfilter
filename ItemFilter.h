@@ -35,7 +35,7 @@ public:
 	static void __fastcall ItemActionWorld(uint8_t* pBitstream);
 	static void HandlePacket(uint8_t* pBitstream, D2GSServerToClientPacketHandlerFn pHandler);
 	static void __stdcall DrawDebugInfo(Unit* pItem, uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd);
-	static void __stdcall DrawGroundItemRect(BOOL isHovered, Unit* pItem, uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode);
+	static void __stdcall DrawGroundItemRect(DWORD retAddress, BOOL isHovered, Unit* pItem, uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode);
 	static void __stdcall DrawInventoryItemRect(Unit* pItem, uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode);
 
 	static BOOL __fastcall GetItemName_114d(Unit* pItem, wchar_t* pBuffer, uint32_t dwSize);
