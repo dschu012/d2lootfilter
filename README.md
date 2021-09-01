@@ -41,7 +41,7 @@ See what rules in your config caused the item to be shown. Set background colors
 
 Steps to install on PlugY:
 
-* Download the [latest dll](https://github.com/dschu012/d2lootfilter/releases/latest/download/d2lootfilter.dll) and [item.filter](https://github.com/dschu012/d2lootfilter/releases/latest/download/item.filter)
+* Download the [latest dll](https://github.com/dschu012/d2lootfilter/releases/latest/download/d2lootfilter.dll) and [item.filter](https://github.com/dschu012/d2lootfilter/blob/master/doc/ENG/item.filter)
 * Copy both files to your PlugY directory.
 * Change `DllToLoad=` to `DllToLoad=d2lootfilter.dll` in PlugY.ini
 
