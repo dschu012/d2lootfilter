@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include <map>
+#include <unordered_map>
 #include "Action.h"
 #include "D2Structs.h"
 #include "D2Ptrs.h"

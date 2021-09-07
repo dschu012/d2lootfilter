@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <map>
 #include <unordered_map>
+#include <map>
 #include "Rule.h"
 
 extern std::unordered_map<std::wstring, std::vector<Action*>> GlobalStyles;
-extern std::unordered_map<uint32_t, Rule*> GlobalRules;
+extern std::map<uint32_t, Rule*> GlobalRules;
 
 class Configuration {
 private:
