@@ -122,6 +122,9 @@ Stats are expressions that evaluate to true or false. i.e `"All Resists > 0 and 
 | Functions | Description |
 |-|-|
 | `Stat` | Use other stats that are not in [Stats](doc/ENG/Stats.md). 2 arg function. The first arg is the stat id from `itemcoststats.txt`. The second arg is optional layer (used for skill stats). Returns the unsigned value of the stat. |
+| `ChargedSkill` | Check the skill level of a charged skill. i.e. `ChargedSkill(54) > 0` will check if an item has charges of teleport |
+| `ClassSkill` | Check if an item has a certain class skill. i.e. `ClassSkill(1) > 0` will check if an item has +To All Sorc skills. |
+| `TabSkill` | Check if an item has a certain tab skill. i.e. `TabSkill(34) > 0` will check if an item has +To to Warcries skills. |
 | `Class` | Check if an item is a certain type/class. 1 arg function of the class from `itemtypes.txt`. |
 | `Min` | varargs. returns the minimum (non-zero, exclude stats that don't exist) value from a list |
 | `MinIn` | varargs. returns the minimum (including zeros, i.e. stats that don't exist on the item) value from a list |
