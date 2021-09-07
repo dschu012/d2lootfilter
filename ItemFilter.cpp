@@ -1,13 +1,10 @@
 #include <Windows.h>
-#include <MinHook.h>
-#include <fmt/format.h>
-#include <fmt/core.h>
 #include "D2Ptrs.h"
 #include "D2Tables.h"
 #include "D2Structs.h"
 #include "ItemFilter.h"
 #include "Rule.h"
-#include "Config.h"
+#include "Configuration.h"
 #include "Utils.h"
 #include "Hooking.h"
 #include "Globals.h"
@@ -23,21 +20,18 @@ static D2COMMON_UNITS_FreeUnit_t fpUNITS_FreeUnit;
 static D2COMMON_DATATBLS_LoadAllTxts_t fpDATATBLS_LoadAllTxts;
 static D2WIN_WndProc_t fpWndProc;
 
-static std::vector<Rule*> RULES;
 static std::queue<uint32_t> AUTOMAP_ITEMS;
-static std::map<uint32_t, ItemActionResult> ITEM_ACTIONS;
+static std::map<uint32_t, ActionResult*> ITEM_ACTIONS;
 
-bool ItemFilter::IS_DEBUG_MODE = false;
-Config* ItemFilter::Configuration = NULL;
+
+Configuration* ItemFilter::Config = NULL;
 
 ItemFilter::ItemFilter() {
 	
-	LoadFilter();
+	Config = new Configuration(L"./item.filter");
 	
-
-	DEBUG_LOG(L"D2COMMON_UNITS_FreeUnit: {}\n", fmt::ptr(&D2COMMON_UNITS_FreeUnit));
 	//alot of 114d functions need diff stubs or they changed from __stdcall to __fastcall
-	if (GetGameVersion() == GameVersion::V114d) {
+	if (GetGameVersion() == D2Version::V114d) {
 		//Item Action Own/World Packet Hooks
 		Hooking::TrampolineHook(D2CLIENT_ItemActionWorld, &ItemActionWorld, reinterpret_cast<void**>(&fpItemActionWorld), 9);
 		Hooking::TrampolineHook(D2CLIENT_ItemActionOwned, &ItemActionOwned, reinterpret_cast<void**>(&fpItemActionOwned), 9);
@@ -109,34 +103,36 @@ ItemFilter::ItemFilter() {
 	Hooking::TrampolineHook(D2WIN_WndProc, &WndProc, reinterpret_cast<void**>(&fpWndProc), 5);
 }
 
-void ItemFilter::LoadFilter() {
-	Configuration = new Config(L"./item.filter");
-	RULES.empty();
-	STYLES.empty();
-	Configuration->ParseFilter(RULES, STYLES);
-	ITEM_ACTIONS.empty();
+void ItemFilter::ReloadFilter() {
+	PrintGameString(std::format(L"Filter Reloaded"), TextColor::ORANGE);
+	Config->Load();
+	
+	for (uint8_t i = 0; i < 128; i++) {
+		Unit* pUnit = FindUnit(i, UnitType::ITEM);
+		while (pUnit) {
+			RunRules(pUnit);
+			DoChatAlert(pUnit);
+			pUnit = pUnit->pListNext;
+		}
+	}
 
-	DEBUG_LOG(L"Filter loaded\n");
-}
-
-void ItemFilter::InitializeRuleConditions() {
-	//populate filters w/ data from txts.
-	for (Rule* rule : RULES) {
-		rule->InitializeConditions();
+	for (auto entry : ITEM_ACTIONS) {
+		Unit* pUnit = FindUnit(entry.first, UnitType::ITEM);
+		RunRules(pUnit);
+		DoChatAlert(pUnit);
 	}
 }
 
 void ItemFilter::RunRules(Unit* pItem) {
-	ITEM_ACTIONS.erase(pItem->dwUnitId);
-	for (Rule* rule : RULES) {
+	ITEM_ACTIONS[pItem->dwUnitId] = new ActionResult{};
+	ActionResult* result = ITEM_ACTIONS[pItem->dwUnitId];
+
+	for (auto entry : GlobalRules) {
+		Rule* rule = entry.second;
 		if (rule->Evaluate(pItem)) {
-			ItemActionResult action = ITEM_ACTIONS[pItem->dwUnitId];
-			if (!ITEM_ACTIONS.contains(pItem->dwUnitId)) {
-				ITEM_ACTIONS[pItem->dwUnitId] = {};
-			}
-			ITEM_ACTIONS[pItem->dwUnitId].vMatchedRules.push_back(rule->GetLine());
-			rule->EvaluateActionResult(&ITEM_ACTIONS[pItem->dwUnitId], pItem);
-			if (!rule->IsContinue()) {
+			result->vMatchedRules.push_back(rule->GetLineNumber());
+			rule->EvaluateActionResult(result, pItem);
+			if (!result->bContinue) {
 				return;
 			}
 		}
@@ -164,114 +160,10 @@ POINT ItemFilter::ScreenToAutomap(int nX, int nY) {
 
 void ItemFilter::DATATBLS_LoadAllTxts(void* pMemPool, int a2, int a3) {
 	fpDATATBLS_LoadAllTxts(pMemPool, a2, a3);
-	if(!TXT_DATA_LOADED) {
-		PopulateLookupTables();
-		InitializeRuleConditions();
-		EmptyLookupTables();
-		TXT_DATA_LOADED = true;
+	IsTxtDataLoaded = true;
+	if (!Config->IsLoaded()) {
+		Config->Load();
 	}
-}
-
-/*
-Create item name lookup tables for more human friendly rules. i.e.
-Rune >= Vex
-or
-ItemName Swirling Crystal
-*/
-void ItemFilter::PopulateLookupTables() {
-	DataTables* sgptDataTables = *D2COMMON_gpDataTables;
-	DEBUG_LOG(L"nItemsTxtRecordCount : {}\n", D2COMMON_ItemDataTbl->nItemsTxtRecordCount);
-	DEBUG_LOG(L"\n|Type|Code|\n");
-	DEBUG_LOG(L"|-|-|\n");
-	for (int i = 0; i < D2COMMON_ItemDataTbl->nItemsTxtRecordCount; i++) {
-		auto pItemTxt = D2COMMON_ItemDataTbl->pItemsTxt[i];
-		std::wstring wNameStr = D2LANG_GetStringFromTblIndex(pItemTxt.wNameStr);
-		ITEM_NAME_LOOKUP_TABLE[wNameStr] = pItemTxt.dwCode;
-		std::wstring wCode = std::wstring(4, L' ');
-		mbstowcs(&wCode[0], pItemTxt.szCode, 4);
-		DEBUG_LOG(L"|{}|{}|\n", wNameStr, wCode);
-		ITEM_CODE_LOOKUP_TABLE[wCode] = pItemTxt.dwCode;
-		if (pItemTxt.wType[0] == ItemType::RUNE) {
-			int nRuneNumber = std::stoi(std::string(&pItemTxt.szCode[1], 3));
-			RUNE_NAME_LOOKUP_TABLE[wNameStr] = nRuneNumber;
-			size_t nFound = wNameStr.find(L" ");
-			if (nFound != std::wstring::npos) {
-				RUNE_NAME_LOOKUP_TABLE[wNameStr.substr(0, nFound)] = nRuneNumber;
-			}
-		}
-	}
-
-	DEBUG_LOG(L"\n|Skill|Stat|\n");
-	DEBUG_LOG(L"|-|-|\n");
-	for (int i = 0; i < sgptDataTables->nCharStatsTxtRecordCount; i++) {
-		CharStatsTxt pCharStatsTxt = sgptDataTables->pCharStatsTxt[i];
-		std::wstring k = fmt::format(L"\"{} Skills\"", pCharStatsTxt.wszClassName);
-		std::wstring v = fmt::format(L"Stat({},{})", Stat::ITEM_ADDCLASSSKILLS, i);
-		SKILL_LOOKUP_TABLE[k] = v;
-		for (int j = 0; j < 3; j++) {
-			std::wstring wStrSkillTab = D2LANG_GetStringFromTblIndex(pCharStatsTxt.wStrSkillTab[j]);
-			auto idx = (i * 8) + j;
-			k = fmt::format(L"\"{}\"", wStrSkillTab);
-			v = fmt::format(L"Stat({}, {})", Stat::ITEM_ADDSKILL_TAB, idx);
-			SKILL_LOOKUP_TABLE[k] = v;
-		}
-	}
-
-	for (int i = 0; i < sgptDataTables->nSkillsTxtRecordCount; i++) {
-		SkillsTxt pSkillsTxt = sgptDataTables->pSkillsTxt[i];
-		if (pSkillsTxt.wSkillDesc == UINT16_MAX) {
-			continue;
-		}
-		SkillDescTxt pSkillDescTxt = sgptDataTables->pSkillDescTxt[pSkillsTxt.wSkillDesc];
-		std::wstring wSkillStr = D2LANG_GetStringFromTblIndex(pSkillDescTxt.wStrName);
-		std::wstring k = fmt::format(L"\"{}\"", wSkillStr);
-		std::wstring v = fmt::format(L"Stat({},{})", Stat::ITEM_SINGLESKILL, pSkillsTxt.nSkillId);
-		SKILL_LOOKUP_TABLE[k] = v;
-	}
-
-	DEBUG_LOG(L"\n|Skill|Stat|\n");
-	DEBUG_LOG(L"|-|-|\n");
-	for (auto& e : SKILL_LOOKUP_TABLE) {
-		DEBUG_LOG(L"|{}|{}|\n", e.first, e.second);
-	}
-
-	DEBUG_LOG(L"\n|Rune|Stat|\n");
-	DEBUG_LOG(L"|-|-|\n");
-	for (auto& e : RUNE_NAME_LOOKUP_TABLE) {
-		DEBUG_LOG(L"|{}|{}|\n", e.first, e.second);
-	}
-
-	DEBUG_LOG(L"\n|Stat|Stat|\n");
-	DEBUG_LOG(L"|-|-|\n");
-	for (auto& e : STAT_LOOKUP_TABLE) {
-		DEBUG_LOG(L"|{}|{}|\n", e.first, e.second);
-	}
-
-	DEBUG_LOG(L"\n|Class|Id|\n");
-	DEBUG_LOG(L"|-|-|\n");
-	for (auto& e : ITEM_TYPE_LOOKUP_TABLE) {
-		DEBUG_LOG(L"|{}|{}|\n", e.first, e.second);
-	}
-
-	/*
-	DEBUG_LOG(L"\n|Prefix|Stat|\n");
-	DEBUG_LOG(L"|-|-|\n");
-	for (auto& e : STAT_LOOKUP_TABLE) {
-		DEBUG_LOG(L"|{}|{}|\n", e.first, e.second);
-	}
-
-	DEBUG_LOG(L"\n|Suffix|Stat|\n");
-	DEBUG_LOG(L"|-|-|\n");
-	for (auto& e : STAT_LOOKUP_TABLE) {
-		DEBUG_LOG(L"|{}|{}|\n", e.first, e.second);
-	}
-	*/
-}
-
-void ItemFilter::EmptyLookupTables() {
-	ITEM_NAME_LOOKUP_TABLE.empty();
-	ITEM_CODE_LOOKUP_TABLE.empty();
-	RUNE_NAME_LOOKUP_TABLE.empty();
 }
 
 void ItemFilter::HandlePacket(uint8_t* pBitStream, D2GSServerToClientPacketHandlerFn pHandler) {
@@ -290,8 +182,9 @@ void ItemFilter::HandlePacket(uint8_t* pBitStream, D2GSServerToClientPacketHandl
 		return;
 	}
 
-	RunRules(pItem);
+	//TODO: exclude NPC items?
 
+	RunRules(pItem);
 	DoChatAlert(pItem);
 }
 
@@ -318,8 +211,8 @@ BOOL __stdcall ItemFilter::GetItemName(Unit* pItem, wchar_t* pBuffer, uint32_t d
 
 void __stdcall ItemFilter::HandleItemName(Unit* pItem, wchar_t* pBuffer, uint32_t dwSize) {
 	if (HasActions(pItem)
-		&& ITEM_ACTIONS[pItem->dwUnitId].bItemNameSet) {
-		std::wstring copy = ITEM_ACTIONS[pItem->dwUnitId].wsItemName;
+		&& ITEM_ACTIONS[pItem->dwUnitId]->bItemNameSet) {
+		std::wstring copy = ITEM_ACTIONS[pItem->dwUnitId]->wsItemName;
 		replace(copy, L"{Name}", pBuffer);
 		wcsncpy(pBuffer, copy.c_str(), 0x7d);
 	}
@@ -327,8 +220,8 @@ void __stdcall ItemFilter::HandleItemName(Unit* pItem, wchar_t* pBuffer, uint32_
 
 void __stdcall ItemFilter::GetItemDesc(Unit* pItem, wchar_t* pBuffer) {
 	if (HasActions(pItem)
-		&& ITEM_ACTIONS[pItem->dwUnitId].bItemDescSet) {
-		std::wstring copy = ITEM_ACTIONS[pItem->dwUnitId].wsItemDesc;
+		&& ITEM_ACTIONS[pItem->dwUnitId]->bItemDescSet) {
+		std::wstring copy = ITEM_ACTIONS[pItem->dwUnitId]->wsItemDesc;
 		replace(copy, L"{Description}", pBuffer);
 		wcsncpy(pBuffer, copy.c_str(), 0x800);
 	}
@@ -343,9 +236,9 @@ void __stdcall ItemFilter::AUTOMAP_Draw() {
 			continue;
 		}
 		if (HasActions(pItem)
-			&& ITEM_ACTIONS[pItem->dwUnitId].bMinimapIcon) {
+			&& ITEM_ACTIONS[pItem->dwUnitId]->bMinimapIcon) {
 			POINT p = ScreenToAutomap(pItem->pStaticPath->nXPos, pItem->pStaticPath->nYPos);
-			D2GFX_DrawSolidRectEx(p.x - 5, p.y - 5, p.x + 5, p.y + 5, ITEM_ACTIONS[pItem->dwUnitId].nMinimapIconPaletteIndex, DrawMode::NORMAL);
+			D2GFX_DrawSolidRectEx(p.x - 5, p.y - 5, p.x + 5, p.y + 5, ITEM_ACTIONS[pItem->dwUnitId]->nMinimapIconPaletteIndex, DrawMode::NORMAL);
 		}
 	}
 }
@@ -353,7 +246,7 @@ void __stdcall ItemFilter::AUTOMAP_Draw() {
 //nXpos and nYpos don't appear to be right...
 BOOL __fastcall ItemFilter::UNITDRAW_DrawUnit(Unit* pUnit, uint32_t dwColorTint, int nXpos, int nYpos, BOOL bFade, BOOL bDrawOverlays) {
 	if (HasActions(pUnit)
-		&& ITEM_ACTIONS[pUnit->dwUnitId].bMinimapIcon) {
+		&& ITEM_ACTIONS[pUnit->dwUnitId]->bMinimapIcon) {
 		//this seems janky, but is used to queue up items to be drawn on automap
 		AUTOMAP_ITEMS.push(pUnit->dwUnitId);
 	}
@@ -372,39 +265,45 @@ void __stdcall ItemFilter::DrawDebugInfo(Unit* pItem, uint32_t nXStart, uint32_t
 	if (!HasActions(pItem)) {
 		return;
 	}
-	ItemActionResult actions = ITEM_ACTIONS[pItem->dwUnitId];
+	ActionResult* actions = ITEM_ACTIONS[pItem->dwUnitId];
 	std::vector<std::wstring> lines;
 	std::wostringstream os;
 	os << L"Matched Lines #: " << TEXT_GREEN;
-	for (auto& match : actions.vMatchedRules) {
-		if (&match != &actions.vMatchedRules.front()) {
+	for (auto& match : actions->vMatchedRules) {
+		if (&match != &actions->vMatchedRules.front()) {
 			os << L", ";
 		}
 		os << match;
 	}
+	lines.push_back(std::format(L"ID: {}{}", TEXT_WHITE, pItem->dwUnitId));
 	lines.push_back(os.str());
-	lines.push_back(fmt::format(L"Shown: {}{}", TEXT_WHITE, actions.bHide ? L"False" : L"True"));
-	if (actions.bItemNameSet) {
-		lines.push_back(fmt::format(L"Name: {}{}", TEXT_WHITE, actions.wsItemName));
+	lines.push_back(std::format(L"Shown: {}{}", TEXT_WHITE, actions->bHide ? L"False" : L"True"));
+	if (actions->bItemNameSet) {
+		lines.push_back(std::format(L"Name: {}{}", TEXT_WHITE, actions->wsItemName));
 	}
-	if (actions.bItemDescSet) {
-		lines.push_back(fmt::format(L"Description: {}{}", TEXT_WHITE, actions.wsItemDesc));
+	if (actions->bItemDescSet) {
+		lines.push_back(std::format(L"Description: {}{}", TEXT_WHITE, actions->wsItemDesc));
 	}
-	if (actions.bChatAlert) {
-		lines.push_back(fmt::format(L"Chat Alert: {}{}", TEXT_WHITE, actions.bChatAlert ? L"True" : L"False"));
+	if (actions->bChatAlert) {
+		lines.push_back(std::format(L"Chat Alert: {}{}", TEXT_WHITE, actions->bChatAlert ? L"True" : L"False"));
 	}
-	if (actions.bMinimapIcon) {
-		lines.push_back(fmt::format(L"Minimap Icon: {}{:#04x}", TEXT_WHITE, actions.nMinimapIconPaletteIndex));
+	if (actions->bMinimapIcon) {
+		lines.push_back(std::format(L"Minimap Icon: {}{:#04x}", TEXT_WHITE, actions->nMinimapIconPaletteIndex));
 	}
-	if (actions.bBorderPaletteIndexSet) {
-		lines.push_back(fmt::format(L"Border Color: {}{:#04x}", TEXT_WHITE, actions.nBorderPaletteIndex));
+	if (actions->bBorderPaletteIndexSet) {
+		lines.push_back(std::format(L"Border Color: {}{:#04x}", TEXT_WHITE, actions->nBorderPaletteIndex));
 	}
-	if (actions.bInvBackgroundPaletteIndexSet) {
-		lines.push_back(fmt::format(L"Inventory Color: {}{:#04x}", TEXT_WHITE, actions.nInvBackgroundPaletteIndex));
+	if (actions->bInvBackgroundPaletteIndexSet) {
+		lines.push_back(std::format(L"Inventory Color: {}{:#04x}", TEXT_WHITE, actions->nInvBackgroundPaletteIndex));
 	}
 	auto width = 0;
 	for (auto& line : lines) {
-		auto w = D2WIN_GetTextPixelWidth(line.c_str());
+		uint32_t w, fileNo;
+		if (GetGameVersion() == D2Version::V114d) {
+			w = D2WIN_GetTextPixelWidth(line.c_str());
+		} else {
+			D2WIN_GetTextPixelWidthFileNo(line.c_str(), &w, &fileNo);
+		}
 		if (w > width) {
 			width = w;
 		}
@@ -444,22 +343,22 @@ void __stdcall ItemFilter::DrawGroundItemRect(DWORD retAddress, BOOL isHovered, 
 	if (pItem == nullptr) {
 		pItem = *D2CLIENT_GetHoverItem;
 	}
-	if ((isHovered || eDrawMode == DrawMode::NORMAL) && IS_DEBUG_MODE) {
+	if ((isHovered || eDrawMode == DrawMode::NORMAL) && IsFilterDebug) {
 		DrawDebugInfo(pItem, nXStart, nYStart, nXEnd, nYEnd);
 	}
 	if (HasActions(pItem)
 		&& (pItem->eItemAnimMode == ItemAnimationMode::DROPPING
 			|| pItem->eItemAnimMode == ItemAnimationMode::GROUND)) {
-		nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId].bBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId].nBackgroundPaletteIndex : nPaletteIndex;
-		if (ITEM_ACTIONS[pItem->dwUnitId].bBorderPaletteIndexSet) {
+		nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId]->bBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId]->nBackgroundPaletteIndex : nPaletteIndex;
+		if (ITEM_ACTIONS[pItem->dwUnitId]->bBorderPaletteIndexSet) {
 			auto pad = 1;
 			RECT rect = { nXStart + pad, nYStart + pad, nXEnd - pad, nYEnd - pad };
-			D2GFX_DrawRect(&rect, ITEM_ACTIONS[pItem->dwUnitId].nBorderPaletteIndex);
+			D2GFX_DrawRect(&rect, ITEM_ACTIONS[pItem->dwUnitId]->nBorderPaletteIndex);
 		}
 		if (eDrawMode == DrawMode::TRANS_50) {
-			eDrawMode = ITEM_ACTIONS[pItem->dwUnitId].eDrawModeAlt;
+			eDrawMode = ITEM_ACTIONS[pItem->dwUnitId]->eDrawModeAlt;
 		} else {
-			eDrawMode = ITEM_ACTIONS[pItem->dwUnitId].eDrawModeHover;
+			eDrawMode = ITEM_ACTIONS[pItem->dwUnitId]->eDrawModeHover;
 		}
 	}
 	//call original
@@ -469,7 +368,7 @@ void __stdcall ItemFilter::DrawGroundItemRect(DWORD retAddress, BOOL isHovered, 
 void __stdcall ItemFilter::DrawInventoryItemRect(Unit* pItem, uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode) {
 	//0x08: red, 0xea: blue, 0x76: green.
 	if (HasActions(pItem)) {
-		nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId].bInvBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId].nInvBackgroundPaletteIndex : nPaletteIndex;
+		nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId]->bInvBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId]->nInvBackgroundPaletteIndex : nPaletteIndex;
 	}
 	//call original
 	D2GFX_DrawSolidRectEx(nXStart, nYStart, nXEnd, nYEnd, nPaletteIndex, eDrawMode);
@@ -478,8 +377,8 @@ void __stdcall ItemFilter::DrawInventoryItemRect(Unit* pItem, uint32_t nXStart, 
 //returns result of nodraw flag shift
 BOOL __fastcall ItemFilter::IsUnitNoDraw(Unit* pUnit) {
 	if (HasActions(pUnit)) {
-		if (ITEM_ACTIONS[pUnit->dwUnitId].bHide
-				&& !IS_DEBUG_MODE) {
+		if (ITEM_ACTIONS[pUnit->dwUnitId]->bHide
+				&& !IsFilterDebug) {
 			pUnit->dwFlagEx |= static_cast<std::underlying_type_t<UnitFlagEx>>(UnitFlagEx::NODRAW);
 		} else {
 			pUnit->dwFlagEx &= ~(static_cast<std::underlying_type_t<UnitFlagEx>>(UnitFlagEx::NODRAW));
@@ -490,11 +389,11 @@ BOOL __fastcall ItemFilter::IsUnitNoDraw(Unit* pUnit) {
 
 void ItemFilter::DoChatAlert(Unit* pUnit) {
 	if (HasActions(pUnit)
-		&& ITEM_ACTIONS[pUnit->dwUnitId].bChatAlert
+		&& ITEM_ACTIONS[pUnit->dwUnitId]->bChatAlert
 		&& (pUnit->eItemAnimMode == ItemAnimationMode::DROPPING
 			|| pUnit->eItemAnimMode == ItemAnimationMode::GROUND)) {
 		wchar_t buffer[0x100] = L"";
-		if (GetGameVersion() == GameVersion::V114d) {
+		if (GetGameVersion() == D2Version::V114d) {
 			D2CLIENT_GetItemName_114d(pUnit, buffer, 0x100);
 		} else {
 			D2CLIENT_GetItemName(pUnit, buffer, 0x100);
@@ -506,10 +405,10 @@ void ItemFilter::DoChatAlert(Unit* pUnit) {
 }
 
 void ItemFilter::ToggleDebug() {
-	ItemFilter::IS_DEBUG_MODE = !ItemFilter::IS_DEBUG_MODE;
-	DEBUG_LOG(L"Debug {}", ItemFilter::IS_DEBUG_MODE ? L"On" : L"Off");
+	IsFilterDebug = !IsFilterDebug;
+	DEBUG_LOG(L"Debug {}", IsFilterDebug ? L"On" : L"Off");
 	if (D2CLIENT_GetPlayerUnit()) {
-		PrintGameString(fmt::format(L"Debug {}", ItemFilter::IS_DEBUG_MODE ? L"On" : L"Off"), TextColor::ORANGE);
+		PrintGameString(std::format(L"Debug {}", IsFilterDebug ? L"On" : L"Off"), TextColor::ORANGE);
 	}
 }
 
@@ -517,10 +416,18 @@ LRESULT ItemFilter::WndProc(HWND hWnd, int msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg) {
 		case WM_SYSKEYUP:
 		case WM_KEYUP: {
+			//Z debug
 			if (wParam == 0x5A
 				&& (GetKeyState(VK_LSHIFT) & 0x80) || (GetKeyState(VK_RSHIFT) & 0x80)
 				&& (GetKeyState(VK_LCONTROL) & 0x80) || (GetKeyState(VK_RCONTROL) & 0x80)) {
 				ItemFilter::ToggleDebug();
+			}
+			//R reload
+			if (wParam == 0x52
+				&& (GetKeyState(VK_LCONTROL) & 0x80) || (GetKeyState(VK_RCONTROL) & 0x80)) {
+				if (IsTxtDataLoaded) {
+					ItemFilter::ReloadFilter();
+				}
 			}
 			break;
 		}
@@ -603,7 +510,7 @@ void __declspec(naked) __stdcall ItemFilter::DrawAltDownItemRect_STUB() {
 		push[esp + 0x18];
 		push[esi - 0x4];
 		push 0;
-		push[esp + 0x58];
+		push 0;
 		call ItemFilter::DrawGroundItemRect;
 		ret 0x18;
 	}
@@ -621,7 +528,7 @@ void __declspec(naked) __stdcall ItemFilter::DrawAltDownItemRect_STUB_114d() {
 		mov eax, [esp + 0x40];
 		push[eax - 0x4];
 		push 0;
-		push[esp + 0x60];
+		push [esp + 0x60];
 		call ItemFilter::DrawGroundItemRect;
 		ret 0x18;
 	}

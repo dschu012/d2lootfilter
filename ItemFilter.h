@@ -3,26 +3,21 @@
 #include <cstdint>
 #include "D2Structs.h"
 #include "Rule.h"
-#include "Config.h"
+#include "Configuration.h"
 
 typedef void(__fastcall* D2GSServerToClientPacketHandlerFn)(uint8_t* pBitstream);
 
 class ItemFilter
 {
 private:
-	static Config* Configuration;
-	static bool IS_DEBUG_MODE;
+	static Configuration* Config;
 public:
 	ItemFilter();
 
-	static void PopulateLookupTables();
-	static void EmptyLookupTables();
-	static void LoadFilter();
-	static void InitializeRuleConditions();
+	static void ReloadFilter();
 	static void RunRules(Unit* pItem);
 	
 	static void ToggleDebug();
-	static bool IsDebug() { return IS_DEBUG_MODE; }
 
 	static void DoChatAlert(Unit* pUnit);
 
@@ -30,7 +25,10 @@ public:
 	static bool HasActions(Unit* pUnit);
 	static POINT ScreenToAutomap(int nX, int nY);
 	
+#pragma region Hooks
 	//Hooked Methods
+	static LRESULT WndProc(HWND hWnd, int msg, WPARAM wParam, LPARAM lParam);
+
 	static void __fastcall ItemActionOwned(uint8_t* pBitstream);
 	static void __fastcall ItemActionWorld(uint8_t* pBitstream);
 	static void HandlePacket(uint8_t* pBitstream, D2GSServerToClientPacketHandlerFn pHandler);
@@ -49,7 +47,9 @@ public:
 	static void __stdcall AUTOMAP_Draw();
 	static BOOL __fastcall UNITDRAW_DrawUnit(Unit* pUnit, uint32_t dwColorTint, int nXpos, int nYpos, BOOL bFade, BOOL bDrawOverlays);
 	static BOOL __fastcall IsUnitNoDraw(Unit* pUnit);
+#pragma endregion
 
+#pragma region Stubs
 	//Stubs
 	static void __stdcall DrawAltDownItemRect_STUB();
 	static void __stdcall DrawAltDownItemRect_STUB_114d();
@@ -65,8 +65,7 @@ public:
 
 	static void __stdcall GetItemDesc_STUB();
 	static void __stdcall GetItemDesc_STUB_114d();
-
-	static LRESULT WndProc(HWND hWnd, int msg, WPARAM wParam, LPARAM lParam);
+#pragma endregion
 
 };
 

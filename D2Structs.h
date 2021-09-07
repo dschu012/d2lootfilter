@@ -448,3 +448,83 @@ struct Unit
 	void* pMsgFirst;					//0xEC
 	void* pMsgLast;						//0xF0
 };
+
+struct LayerUnitStatId
+{
+	// We can not use a struct as function parameters here as it has a different effect when using the __fastcall calling convetion.
+	// Instead we just use D2SLayerStatIdStrc::PackedType so that we may easily change it later
+	using PackedType = int32_t;
+
+	union
+	{
+		struct
+		{
+			uint16_t nLayer;				//0x00
+			uint16_t nStat;					//0x02
+		};
+		PackedType nPackedValue;			//0x00
+	};
+
+	static LayerUnitStatId Make(uint16_t wLayer, uint16_t wStatId) { return { wLayer, wStatId }; }
+	static LayerUnitStatId MakeFromStatId(uint16_t wStatId) { return { 0, wStatId }; }
+	static LayerUnitStatId FromPackedType(PackedType nPackedValue) {
+		LayerUnitStatId ls;
+		ls.nPackedValue = nPackedValue;
+		return ls;
+	}
+};
+
+struct UnitStat : LayerUnitStatId
+{
+	int32_t nValue;							//0x04
+};
+
+struct StatsArray
+{
+	UnitStat* pStat;						//0x00 An Array[wStatCount]
+	uint16_t nStatCount;					//0x04
+	uint16_t nCapacity;						//0x06
+	static const int nGrowthAmount = 4;
+	static const int nShrinkThreshold = 8;
+};
+
+struct D2ModStatsArrayStrc
+{
+	LayerUnitStatId* pStat;				//0x00 An Array[wStatCount]
+	uint16_t nStatCount;					//0x04
+	uint16_t nCapacity;						//0x06
+	static const int nGrowthAmount = 4;
+	static const int nShrinkThreshold = 8;
+};
+
+struct StatList
+{
+	void* pMemPool;							//0x00
+	Unit* pUnit;						//0x04
+	uint32_t dwOwnerType;					//0x08
+	uint32_t dwOwnerId;						//0x0C
+	uint32_t dwFlags;						//0x10 D2C_StatlistFlags
+	uint32_t dwStateNo;						//0x14
+	int32_t dwExpireFrame;					//0x18
+	uint32_t dwSkillNo;						//0x1C
+	uint32_t dwSLvl;						//0x20
+	StatsArray Stats;					//0x24
+	StatList* pPrevLink;				//0x2C
+	StatList* pNextLink;				//0x30
+	StatList* pParent;				//0x34
+	void* fpStatRemove;						//0x38
+};
+
+struct StatListEx : public StatList
+{
+	StatList* pMyLastList;			//0x3C
+	StatList* pMyStats;				//0x40
+	Unit* pOwner;						//0x44
+	StatsArray FullStats;				//0x48
+	D2ModStatsArrayStrc ModStats;			//0x50
+	uint32_t* StatFlags;					//0x58 8bytes per states
+	void* fpCallBack;						//0x5C
+	Game* pGame;						//0x60
+};
+
+#pragma pack(pop)

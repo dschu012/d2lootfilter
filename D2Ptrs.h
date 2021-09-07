@@ -23,11 +23,11 @@ static const uint32_t DLLBASE_D2WIN = (uint32_t)LoadLibraryA("D2Win.dll");
 static const uint32_t DLLBASE_FOG = (uint32_t)LoadLibraryA("Fog.dll");
 static const uint32_t DLLBASE_STORM = (uint32_t)LoadLibraryA("Storm.dll");
 
-#define D2FUNC(DLL, N, R, C, A, O) typedef R (C* DLL##_##N##_t) A; __declspec(selectany) extern DLL##_##N##_t DLL##_##N = (DLL##_##N##_t)GetDllOffset((GetGameVersion() > GameVersion::V113c ? GAME_EXE : DLLBASE_##DLL), O);   ///
-#define D2PTR(DLL, N, T, O) __declspec(selectany) extern T* DLL##_##N = (T*)GetDllOffset((GetGameVersion() > GameVersion::V113c ? GAME_EXE : DLLBASE_##DLL), O);
+#define D2FUNC(DLL, N, R, C, A, O) typedef R (C* DLL##_##N##_t) A; __declspec(selectany) extern DLL##_##N##_t DLL##_##N = (DLL##_##N##_t)GetDllOffset((GetGameVersion() > D2Version::V113c ? GAME_EXE : DLLBASE_##DLL), O);   ///
+#define D2PTR(DLL, N, T, O) __declspec(selectany) extern T* DLL##_##N = (T*)GetDllOffset((GetGameVersion() > D2Version::V113c ? GAME_EXE : DLLBASE_##DLL), O);
 
-#define F2(DLL, N, R, C, A, O113c, O114d) D2FUNC(DLL, N, R, C, A, (GetGameVersion() == GameVersion::V114d ? O114d : O113c))
-#define P2(DLL, N, T, O113c, O114d) D2PTR(DLL, N, T, (GetGameVersion() == GameVersion::V114d ? O114d : O113c))
+#define F2(DLL, N, R, C, A, O113c, O114d) D2FUNC(DLL, N, R, C, A, (GetGameVersion() == D2Version::V114d ? O114d : O113c))
+#define P2(DLL, N, T, O113c, O114d) D2PTR(DLL, N, T, (GetGameVersion() == D2Version::V114d ? O114d : O113c))
 
 //Hooks for item filter
 P2(D2CLIENT, fpGetItemDescPatch, void, 0x5612C, 0xE64CE);
@@ -100,7 +100,8 @@ F2(D2WIN, SetTextFont, Font, __fastcall, (Font dwSize), -10184, 0x102EF0);
 F2(D2WIN, D2DrawText, void, __fastcall, (const wchar_t* wStr, uint32_t nXpos, uint32_t nYpos, TextColor eColor, uint32_t dwCentered), -10150, 0x102320);
 
 //fix 1.14d
-F2(D2WIN, GetTextPixelWidth, uint32_t, __fastcall, (const wchar_t* wStr), -10055, 0x1017D0);
+F2(D2WIN, GetTextPixelWidthFileNo, uint32_t, __fastcall, (const wchar_t* wStr, uint32_t* dwWidth, uint32_t* dwFileNo), -10177, 0x0);
+F2(D2WIN, GetTextPixelWidth, uint32_t, __fastcall, (const wchar_t* wStr), 0x0, 0x1017D0);
 
 //006C9030 / .  55            PUSH EBP
 //$ + 2C9030 / .  55            PUSH EBP

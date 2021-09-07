@@ -1,14 +1,58 @@
 #include <Windows.h>
 #include <map>
-#include <fmt/core.h>
 #include "Action.h"
 #include "D2Structs.h"
 #include "D2Ptrs.h"
 #include "ItemFilter.h"
 
-typedef std::wstring(*TokenReplaceFunction)(ItemActionResult* action, Unit* pItem);
+typedef std::wstring(*TokenReplaceFunction)(ActionResult* action, Unit* pItem);
 
-static std::wstring GetItemName(ItemActionResult* action, Unit* pItem) {
+#define COLOR(STR, IDX) { L"{"#STR"}", ##IDX## }
+static std::unordered_map<std::wstring, std::wstring> COLOR_TO_STRING = {
+	COLOR(White, TEXT_WHITE),
+	COLOR(Red, TEXT_RED),
+	COLOR(Green, TEXT_GREEN),
+	COLOR(Blue, TEXT_BLUE),
+	COLOR(Gold, TEXT_GOLD),
+	COLOR(Gray, TEXT_GRAY),
+	COLOR(Black, TEXT_BLACK),
+	COLOR(Tan, TEXT_TAN),
+	COLOR(Orange, TEXT_ORANGE),
+	COLOR(Yellow, TEXT_YELLOW),
+	COLOR(Purple, TEXT_PURPLE),
+	COLOR(Dark Green, TEXT_DARK_GREEN),
+	//Glide Only
+	COLOR(Coral, TEXT_CORAL),
+	COLOR(Sage, TEXT_SAGE),
+	COLOR(Teal, TEXT_TEAL),
+	COLOR(Light Gray, TEXT_LIGHT_GRAY)
+};
+#undef COLOR
+
+#define COLOR(STR, IDX) { L#STR, ##IDX## }, { L"\""#STR"\"", ##IDX## } 
+static std::unordered_map<std::wstring, uint8_t> COLOR_TO_PALETTE_IDX = {
+	COLOR(White, 0x20),
+	COLOR(White, 0x20),
+	COLOR(Red, 0x0A),
+	COLOR(Green, 0x84),
+	COLOR(Blue, 0x97),
+	COLOR(Gold, 0x0D),
+	COLOR(Gray, 0xD0),
+	COLOR(Black, 0x00),
+	COLOR(Tan, 0x5A),
+	COLOR(Orange, 0x60),
+	COLOR(Yellow, 0x0C),
+	COLOR(Purple, 0x9B),
+	COLOR(Dark Green, 0x76),
+	COLOR(Coral, 0x66),
+	COLOR(Sage, 0x82),
+	COLOR(Teal, 0xCB),
+	COLOR(Light Gray, 0xD6)
+};
+#undef COLOR
+
+
+static std::wstring GetItemName(ActionResult* action, Unit* pItem) {
 	if (action->bItemNameSet) {
 		return action->wsItemName;
 	} else {
@@ -16,7 +60,7 @@ static std::wstring GetItemName(ItemActionResult* action, Unit* pItem) {
 	}
 }
 
-static std::wstring GetItemDesc(ItemActionResult* action, Unit* pItem) {
+static std::wstring GetItemDesc(ActionResult* action, Unit* pItem) {
 	if (action->bItemDescSet) {
 		return action->wsItemDesc;
 	} else {
@@ -24,19 +68,19 @@ static std::wstring GetItemDesc(ItemActionResult* action, Unit* pItem) {
 	}
 }
 
-static std::wstring GetRuneNumber(ItemActionResult* action, Unit* pItem) {
+static std::wstring GetRuneNumber(ActionResult* action, Unit* pItem) {
 	if (!D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::RUNE)) {
 		return L"";
 	}
 	ItemsTxt pItemTxt = D2COMMON_ItemDataTbl->pItemsTxt[pItem->dwLineId];
-	return std::to_wstring(std::stoi(std::string(&pItemTxt.szCode[1], 3)));
+	return std::to_wstring(std::stoi(std::string(&GetItemsTxt(pItem).szCode[1], 3)));
 }
 
-static std::wstring Newline(ItemActionResult* action, Unit* pItem) {
+static std::wstring Newline(ActionResult* action, Unit* pItem) {
 	return L"\n";
 }
 
-static std::wstring GetItemPrice(ItemActionResult* action, Unit* pItem) {
+static std::wstring GetItemPrice(ActionResult* action, Unit* pItem) {
 	int nPrice = 0;
 	Unit* pPlayer = D2CLIENT_GetPlayerUnit();
 	if (pItem != NULL && pPlayer != NULL) {
@@ -45,27 +89,48 @@ static std::wstring GetItemPrice(ItemActionResult* action, Unit* pItem) {
 	return std::to_wstring(nPrice);
 }
 
-static std::wstring GetItemSockets(ItemActionResult* action, Unit* pItem) {
+static std::wstring GetItemSockets(ActionResult* action, Unit* pItem) {
 	return std::to_wstring(D2COMMON_STATLIST_GetUnitStatUnsigned(pItem, Stat::ITEM_NUMSOCKETS, 0));
 }
 
-void HideAction::SetResult(ItemActionResult* action, Unit* pItem) {
+
+ColorTextAction::ColorTextAction(std::wstring value, ActionType type) : Action(value, type) {
+	for (auto const& color : COLOR_TO_STRING) {
+		replace(m_Value, color.first, color.second);
+	}
+}
+
+PaletteIndexAction::PaletteIndexAction(std::wstring value, ActionType type) : Action(value, type) {
+	if (COLOR_TO_PALETTE_IDX.contains(value)) {
+		m_PaletteIndex = COLOR_TO_PALETTE_IDX[value];
+	}
+	else {
+		m_PaletteIndex = static_cast<uint8_t>(std::stoi(value, nullptr, 16));
+	}
+}
+
+
+void HideAction::SetResult(ActionResult* action, Unit* pItem) {
 	action->bHide = true;
 }
 
-void ShowAction::SetResult(ItemActionResult* action, Unit* pItem) {
+void ShowAction::SetResult(ActionResult* action, Unit* pItem) {
 	action->bHide = false;
 }
 
-void SetStyleAction::SetResult(ItemActionResult* action, Unit* pItem) {
-	if (STYLES.contains(m_Value)) {
-		for (auto act : STYLES[m_Value]) {
+void ContinueAction::SetResult(ActionResult* action, Unit* pItem) {
+	action->bContinue = true;
+}
+
+void SetStyleAction::SetResult(ActionResult* action, Unit* pItem) {
+	if (GlobalStyles.contains(m_Value)) {
+		for (auto act : GlobalStyles[m_Value]) {
 			act->SetResult(action, pItem);
 		}
 	}
 }
 
-void SetNameAction::SetResult(ItemActionResult* action, Unit* pItem) {
+void SetNameAction::SetResult(ActionResult* action, Unit* pItem) {
 	std::map<std::wstring, TokenReplaceFunction> TOKEN_REPLACEMENT_FUNCTIONS = {
 		{ L"{Name}", &GetItemName },
 		{ L"{Sockets}", &GetItemSockets },
@@ -82,7 +147,7 @@ void SetNameAction::SetResult(ItemActionResult* action, Unit* pItem) {
 	action->bItemNameSet = true;
 }
 
-void SetDescriptionAction::SetResult(ItemActionResult* action, Unit* pItem) {
+void SetDescriptionAction::SetResult(ActionResult* action, Unit* pItem) {
 	std::map<std::wstring, TokenReplaceFunction> TOKEN_REPLACEMENT_FUNCTIONS = {
 		{ L"{Description}", &GetItemDesc },
 		{ L"{Sockets}", &GetItemSockets },
@@ -99,29 +164,29 @@ void SetDescriptionAction::SetResult(ItemActionResult* action, Unit* pItem) {
 	action->bItemDescSet = true;
 }
 
-void SetBackgroundColorAction::SetResult(ItemActionResult* action, Unit* pItem) {
+void SetBackgroundColorAction::SetResult(ActionResult* action, Unit* pItem) {
 	action->bBackgroundPaletteIndexSet = true;
 	action->nBackgroundPaletteIndex = m_PaletteIndex;
 }
 
-void SetInventoryColorAction::SetResult(ItemActionResult* action, Unit* pItem) {
+void SetInventoryColorAction::SetResult(ActionResult* action, Unit* pItem) {
 	action->bInvBackgroundPaletteIndexSet = true;
 	action->nInvBackgroundPaletteIndex = m_PaletteIndex;
 }
 
-void SetBorderColorAction::SetResult(ItemActionResult* action, Unit* pItem) {
+void SetBorderColorAction::SetResult(ActionResult* action, Unit* pItem) {
 	action->bBorderPaletteIndexSet = true;
 	action->nBorderPaletteIndex = m_PaletteIndex;
 }
 
-void ChatNotifyAction::SetResult(ItemActionResult* action, Unit* pItem) {
+void ChatNotifyAction::SetResult(ActionResult* action, Unit* pItem) {
 	action->bChatAlert = true;
 }
 
-void PlayAlertAction::SetResult(ItemActionResult* action, Unit* pItem) {
+void PlayAlertAction::SetResult(ActionResult* action, Unit* pItem) {
 }
 
-void MinimapIconAction::SetResult(ItemActionResult* action, Unit* pItem) {
+void MinimapIconAction::SetResult(ActionResult* action, Unit* pItem) {
 	action->bMinimapIcon = true;
 	action->nMinimapIconPaletteIndex = m_PaletteIndex;
 }

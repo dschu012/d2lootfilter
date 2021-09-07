@@ -58,14 +58,6 @@
     <LinkIncremental>true</LinkIncremental>
     <TargetName>d2lootfilter</TargetName>
   </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -132,8 +124,9 @@ if defined D2Path (
   <ItemGroup>
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="Condition.cpp" />
-    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Expression.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Hooking.cpp" />
     <ClCompile Include="ItemFilter.cpp" />
@@ -143,7 +136,7 @@ if defined D2Path (
   <ItemGroup>
     <ClInclude Include="Action.h" />
     <ClInclude Include="Condition.h" />
-    <ClInclude Include="Config.h" />
+    <ClInclude Include="Configuration.h" />
     <ClInclude Include="D2Constants.h" />
     <ClInclude Include="D2Tables.h" />
     <ClInclude Include="D2Ptrs.h" />

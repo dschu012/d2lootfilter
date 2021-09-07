@@ -34,7 +34,7 @@ template<typename Enum,
 }
 
 //user defined 
-enum class GameVersion : uint8_t {
+enum class D2Version : uint8_t {
 	V113c,
 	V114d,
 	NONE,
@@ -270,6 +270,26 @@ enum class UnitFlagEx : uint32_t
 	NODRAW = 1 << 18,				//don't draw this unit
 	ISEXPANSION = 1 << 25,		//is expansion unit
 	SERVERUNIT = 1 << 26			//is server-side unit
+};
+
+enum StatlistFlags : uint32_t
+{
+	BASE = 0x0,
+	BASIC = 0x1,
+	NEWLENGTH = 0x2,
+	TEMPONLY = 0x4,
+	BUFF = 0x8,
+	CURSE = 0x20,
+	MAGIC = 0x40,
+	OVERLAY = 0x80,
+	UNK_0x100 = 0x100,
+	TOGGLE = 0x200,
+	CONVERT = 0x800,
+	SET = 0x2000,
+	ITEM_EX = 0x200000,
+	PERMANENT = 0x20000000,
+	DYNAMIC = 0x40000000,
+	EXTENDED = 0x80000000,
 };
 
 enum ItemFlags : uint32_t

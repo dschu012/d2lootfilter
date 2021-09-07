@@ -1,16 +1,16 @@
 #pragma once
 
 #include <Windows.h>
-#include <map>
 #include <string>
 #include "Utils.h"
 #include "D2Structs.h"
 
 
-struct ItemActionResult {
+struct ActionResult {
 	std::vector<uint32_t> vMatchedRules;
 
 	bool bHide = false;
+	bool bContinue = false;
 
 	bool bBackgroundPaletteIndexSet = false;
 	uint8_t nBackgroundPaletteIndex = 0;
@@ -36,140 +36,104 @@ struct ItemActionResult {
 };
 
 
+enum class ActionType : uint8_t {
+	NONE, SHOW, HIDE, CONTINUE, SET_STYLE, SET_NAME,
+	SET_DESCRIPTION, SET_BG_COLOR, SET_INVENTORY_COLOR,
+	SET_BORDER_COLOR, CHAT_NOTIFY, PLAY_ALERT, MINIMAP_ICON
+};
 
 class Action {
 protected:
+	ActionType m_Type;
 	std::wstring m_Value;
 public:
-	Action(std::wstring value) : m_Value(value) {};
-	~Action() {};
-	virtual void SetResult(ItemActionResult* action, Unit* pItem) = 0;
-};
-
-class HideAction : public Action {
-public:
-	HideAction() : Action(L"") {}
-	void  SetResult(ItemActionResult* action, Unit* pItem);
+	Action(std::wstring value = L"", ActionType type = ActionType::NONE) : m_Value(value), m_Type(type) {};
+	ActionType GetType() { return m_Type; }
+	virtual void SetResult(ActionResult* pResult, Unit* pItem) = 0;
 };
 
 class ShowAction : public Action {
 public:
-	ShowAction() : Action(L"") {}
-	void SetResult(ItemActionResult* action, Unit* pItem);
+	ShowAction(std::wstring value = L"") : Action(value, ActionType::SHOW) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
+};
+
+class HideAction : public Action {
+public:
+	HideAction(std::wstring value = L"") : Action(value, ActionType::HIDE) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
+};
+
+class ContinueAction : public Action {
+public:
+	ContinueAction(std::wstring value = L"") : Action(value, ActionType::CONTINUE) { };
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };
 
 class ColorTextAction : public Action {
 public:
-	ColorTextAction(std::wstring value) : Action(value) {
-		std::map<std::wstring, std::wstring> COLOR_TO_PALETTE_IDX = {
-			{ L"{White}", TEXT_WHITE },
-			{ L"{Red}", TEXT_RED },
-			{ L"{Green}", TEXT_GREEN },
-			{ L"{Blue}", TEXT_BLUE },
-			{ L"{Gold}", TEXT_GOLD },
-			{ L"{Gray}", TEXT_GRAY },
-			{ L"{Black}", TEXT_BLACK },
-			{ L"{Tan}", TEXT_TAN },
-			{ L"{Orange}", TEXT_ORANGE },
-			{ L"{Yellow}", TEXT_YELLOW },
-			{ L"{Purple}", TEXT_PURPLE },
-			{ L"{Dark Green}", TEXT_DARK_GREEN },
-			//Glide Only
-			{ L"{Coral}", TEXT_CORAL },
-			{ L"{Sage}", TEXT_SAGE },
-			{ L"{Teal}", TEXT_TEAL },
-			{ L"{Light Gray}", TEXT_LIGHT_GRAY }
-		};
-		for (auto const& color : COLOR_TO_PALETTE_IDX) {
-			replace(m_Value, color.first, color.second);
-		}
-	}
-	virtual void SetResult(ItemActionResult* action, Unit* pItem) = 0;
+	ColorTextAction(std::wstring value = L"", ActionType type = ActionType::NONE);
+	virtual void SetResult(ActionResult* pResult, Unit* pItem) = 0;
 };
 
 class PaletteIndexAction : public Action {
 protected:
 	uint8_t m_PaletteIndex = 0;
 public:
-	PaletteIndexAction(std::wstring value) : Action(value) {
-		std::map<std::wstring, uint8_t> COLOR_TO_PALETTE_IDX = {
-			{ L"White", 0x20 },
-			{ L"Red", 0x0A },
-			{ L"Green", 0x84 },
-			{ L"Blue", 0x97 },
-			{ L"Gold", 0x0D },
-			{ L"Gray", 0xD0 },
-			{ L"Black", 0x00 },
-			{ L"Tan", 0x5A },
-			{ L"Orange", 0x60 },
-			{ L"Yellow", 0x0C },
-			{ L"Purple", 0x9B },
-			{ L"Dark Green", 0x76 },
-			{ L"Coral", 0x66 },
-			{ L"Sage", 0x82 },
-			{ L"Teal", 0xCB },
-			{ L"Light Gray", 0xD6 }
-		};
-		if (COLOR_TO_PALETTE_IDX.contains(value)) {
-			m_PaletteIndex = COLOR_TO_PALETTE_IDX[value];
-		}
-		else {
-			m_PaletteIndex = static_cast<uint8_t>(std::stoi(value, nullptr, 16));
-		}
-	}
-	virtual void SetResult(ItemActionResult* action, Unit* pItem) = 0;
+	PaletteIndexAction(std::wstring value = L"", ActionType type = ActionType::NONE);
+	virtual void SetResult(ActionResult* pResult, Unit* pItem) = 0;
 };
 
 class SetStyleAction : public Action {
 public:
-	SetStyleAction(std::wstring value) : Action(value) { }
-	void SetResult(ItemActionResult* action, Unit* pItem);
+	SetStyleAction(std::wstring value = L"") : Action(value, ActionType::SET_STYLE) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };
 
 class SetNameAction : public ColorTextAction {
 public:
-	SetNameAction(std::wstring value) : ColorTextAction(value) { }
-	void SetResult(ItemActionResult* action, Unit* pItem);
+	SetNameAction(std::wstring value = L"") : ColorTextAction(value, ActionType::SET_NAME) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };
 
 class SetDescriptionAction : public ColorTextAction {
 public:
-	SetDescriptionAction(std::wstring value) : ColorTextAction(value) {}
-	void  SetResult(ItemActionResult* action, Unit* pItem);
+	SetDescriptionAction(std::wstring value = L"") : ColorTextAction(value, ActionType::SET_DESCRIPTION) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };
 
 class SetBackgroundColorAction : public PaletteIndexAction {
 public:
-	SetBackgroundColorAction(std::wstring value) : PaletteIndexAction(value) {}
-	void SetResult(ItemActionResult* action, Unit* pItem);
+	SetBackgroundColorAction(std::wstring value = L"") : PaletteIndexAction(value, ActionType::SET_BORDER_COLOR) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };
 
 class SetInventoryColorAction : public PaletteIndexAction {
 public:
-	SetInventoryColorAction(std::wstring value) : PaletteIndexAction(value) {}
-	void SetResult(ItemActionResult* action, Unit* pItem);
+	SetInventoryColorAction(std::wstring value = L"") : PaletteIndexAction(value, ActionType::SET_INVENTORY_COLOR) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };
 
 class SetBorderColorAction : public PaletteIndexAction {
 public:
-	SetBorderColorAction(std::wstring value) : PaletteIndexAction(value) {}
-	void SetResult(ItemActionResult* action, Unit* pItem);
+	SetBorderColorAction(std::wstring value = L"") : PaletteIndexAction(value, ActionType::SET_BORDER_COLOR) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };
 
 class ChatNotifyAction : public Action {
 public:
-	ChatNotifyAction(std::wstring value) : Action(value) {}
-	void  SetResult(ItemActionResult* action, Unit* pItem);
+	ChatNotifyAction(std::wstring value = L"") : Action(value, ActionType::CHAT_NOTIFY) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };
 
 class PlayAlertAction : public Action {
 public:
-	PlayAlertAction(std::wstring value) : Action(value) {}
-	void  SetResult(ItemActionResult* action, Unit* pItem);
+	PlayAlertAction(std::wstring value = L"") : Action(value, ActionType::PLAY_ALERT) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };
 
 class MinimapIconAction : public PaletteIndexAction {
 public:
-	MinimapIconAction(std::wstring value) : PaletteIndexAction(value) {}
-	void  SetResult(ItemActionResult* action, Unit* pItem);
+	MinimapIconAction(std::wstring value = L"") : PaletteIndexAction(value, ActionType::MINIMAP_ICON) {};
+	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };

@@ -1,56 +1,71 @@
-#include <Windows.h>
-#include <fmt/core.h>
 #include "Condition.h"
-#include "D2Structs.h"
-#include "D2Ptrs.h"
-
-std::map<std::wstring, uint32_t> STRICTNESS_LEVEL_TO_ENUM = {
-	{ L"None", 0 },
-	{ L"Soft", 1 },
-	{ L"Regular", 2 },
-	{ L"Semi-Strict", 3 },
-	{ L"Strict", 4 },
-	{ L"Very Strict", 5 },
-	{ L"Uber Strict", 6 },
-	{ L"Uber+ Strict", 7 }
-};
-
-bool AndCondition::Evaluate(Unit* pItem) {
-	return std::all_of(m_Conditions.begin(), m_Conditions.end(), [pItem](Condition* c) { return c->Evaluate(pItem); });
-}
-
-bool RarityCondition::Evaluate(Unit* pItem) {
-	m_Lhs->SetValue(static_cast<std::underlying_type_t<ItemRarity>>(pItem->pItemData->dwRarity));
-	return m_Expression->Evaluate(pItem);
-}
+#include "Utils.h"
+#include <algorithm>
 
 bool CodeCondition::Evaluate(Unit* pItem) {
-	ItemsTxt pItemTxt = D2COMMON_ItemDataTbl->pItemsTxt[pItem->dwLineId];
-	m_Lhs->SetValue(pItemTxt.dwCode);
+	m_Left->SetValue(GetItemsTxt(pItem).dwCode);
 	return m_Expression->Evaluate(pItem);
 }
 
+void CodeCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
 bool TypeCondition::Evaluate(Unit* pItem) {
-	ItemsTxt pItemTxt = D2COMMON_ItemDataTbl->pItemsTxt[pItem->dwLineId];
-	m_Lhs->SetValue(pItemTxt.dwCode);
+	m_Left->SetValue(GetItemsTxt(pItem).dwCode);
 	return m_Expression->Evaluate(pItem);
 }
+
+void TypeCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool ClassCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-bool EtherealCondition::Evaluate(Unit* pItem) {
-	uint8_t isEthereal = (pItem->pItemData->dwItemFlags & ItemFlags::ETHEREAL) == ItemFlags::ETHEREAL;
-	m_Lhs->SetValue(isEthereal);
+void ClassCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::ParseCall(Token::CLASS, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool RarityCondition::Evaluate(Unit* pItem) {
+	m_Left->SetValue(static_cast<int32_t>(pItem->pItemData->dwRarity));
 	return m_Expression->Evaluate(pItem);
 }
 
-bool RunewordCondition::Evaluate(Unit* pItem) {
-	uint8_t isRuneword = (pItem->pItemData->dwItemFlags & ItemFlags::RUNEWORD) == ItemFlags::RUNEWORD;
-	m_Lhs->SetValue(isRuneword);
+void RarityCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool EtherealCondition::Evaluate(Unit* pItem) {
+	m_Left->SetValue((pItem->pItemData->dwItemFlags & ItemFlags::ETHEREAL) == ItemFlags::ETHEREAL);
 	return m_Expression->Evaluate(pItem);
 }
+
+void EtherealCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool RunewordCondition::Evaluate(Unit* pItem) {
+	m_Left->SetValue((pItem->pItemData->dwItemFlags & ItemFlags::RUNEWORD) == ItemFlags::RUNEWORD);
+	return m_Expression->Evaluate(pItem);
+}
+
+void RunewordCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool PrefixCondition::Evaluate(Unit* pItem) {
 	uint8_t isIdentified = (pItem->pItemData->dwItemFlags & ItemFlags::IDENTIFIED) == ItemFlags::IDENTIFIED;
@@ -58,13 +73,19 @@ bool PrefixCondition::Evaluate(Unit* pItem) {
 		return false;
 	}
 	for (auto& prefix : pItem->pItemData->wMagicPrefix) {
-		m_Lhs->SetValue(prefix);
+		m_Left->SetValue(prefix);
 		if (m_Expression->Evaluate(pItem)) {
 			return true;
 		}
 	}
 	return false;
 }
+
+void PrefixCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool SuffixCondition::Evaluate(Unit* pItem) {
 	uint8_t isIdentified = (pItem->pItemData->dwItemFlags & ItemFlags::IDENTIFIED) == ItemFlags::IDENTIFIED;
@@ -72,7 +93,7 @@ bool SuffixCondition::Evaluate(Unit* pItem) {
 		return false;
 	}
 	for (auto& prefix : pItem->pItemData->wMagicSuffix) {
-		m_Lhs->SetValue(prefix);
+		m_Left->SetValue(prefix);
 		if (m_Expression->Evaluate(pItem)) {
 			return true;
 		}
@@ -80,102 +101,240 @@ bool SuffixCondition::Evaluate(Unit* pItem) {
 	return false;
 }
 
+void SuffixCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
 bool ItemLevelCondition::Evaluate(Unit* pItem) {
-	m_Lhs->SetValue(pItem->pItemData->dwItemLevel);
+	m_Left->SetValue(pItem->pItemData->dwItemLevel);
 	return m_Expression->Evaluate(pItem);
 }
+
+void ItemLevelCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool QualityCondition::Evaluate(Unit* pItem) {
-	ItemsTxt pItemTxt = D2COMMON_ItemDataTbl->pItemsTxt[pItem->dwLineId];
-	if (pItemTxt.dwCode == pItemTxt.dwUltraCode) {
-		m_Lhs->SetValue(static_cast<std::underlying_type_t<ItemQualityLevel>>(ItemQualityLevel::ELITE));
-	} else if (pItemTxt.dwCode == pItemTxt.dwUberCode) {
-		m_Lhs->SetValue(static_cast<std::underlying_type_t<ItemQualityLevel>>(ItemQualityLevel::EXCEPTIONAL));
-	} else if (pItemTxt.dwCode == pItemTxt.dwNormCode) {
-		m_Lhs->SetValue(static_cast<std::underlying_type_t<ItemQualityLevel>>(ItemQualityLevel::NORMAL));
-	} else {
-		m_Lhs->SetValue(static_cast<std::underlying_type_t<ItemQualityLevel>>(ItemQualityLevel::UNKNOWN));
+	ItemsTxt txt = GetItemsTxt(pItem);
+	if (txt.dwCode == txt.dwUltraCode) {
+		m_Left->SetValue(2);
+	}
+	else if (txt.dwCode == txt.dwUberCode) {
+		m_Left->SetValue(1);
+	}
+	else if (txt.dwCode == txt.dwNormCode) {
+		m_Left->SetValue(0);
+	}
+	else {
+		m_Left->SetValue(-1);
 	}
 	return m_Expression->Evaluate(pItem);
 }
+
+void QualityCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool AreaLevelCondition::Evaluate(Unit* pItem) {
+	return false;
+}
+
+void AreaLevelCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool CharacterLevelCondition::Evaluate(Unit* pItem) {
-	Unit* pPlayer = D2CLIENT_GetPlayerUnit();
-	if (!pPlayer) {
-		return false;
-	}
-	m_Lhs->SetValue(D2COMMON_STATLIST_GetUnitStatUnsigned(pPlayer, Stat::LEVEL, 0));
+	m_Left->SetValue(D2COMMON_STATLIST_GetUnitStatUnsigned(D2CLIENT_GetPlayerUnit(), Stat::LEVEL, 0));
 	return m_Expression->Evaluate(pItem);
 }
+
+void CharacterLevelCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool DifficultyCondition::Evaluate(Unit* pItem) {
-	m_Lhs->SetValue(D2CLIENT_GetDifficulty());
+	m_Left->SetValue(D2CLIENT_GetDifficulty());
 	return m_Expression->Evaluate(pItem);
 }
 
-bool IdCondition::Evaluate(Unit* pItem) {
-	m_Lhs->SetValue(pItem->pItemData->dwFileIndex);
-	return m_Expression->Evaluate(pItem);
-}
-
-bool GoldCondition::Evaluate(Unit* pItem) {
-	return D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::GOLD)
-			&& UnsignedStatCondition::Evaluate(pItem);
-}
-
-bool StatsCondition::Evaluate(Unit* pItem) {
-	return m_Expression->Evaluate(pItem);
-}
-
+void DifficultyCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool RuneCondition::Evaluate(Unit* pItem) {
 	if (!D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::RUNE)) {
 		return false;
 	}
-	ItemsTxt pItemTxt = D2COMMON_ItemDataTbl->pItemsTxt[pItem->dwLineId];
-	int nRuneNumber = std::stoi(std::string(&pItemTxt.szCode[1], 3));
-	m_Lhs->SetValue(nRuneNumber);
+	int nRuneNumber = std::stoi(std::string(&GetItemsTxt(pItem).szCode[1], 3));
+	m_Left->SetValue(nRuneNumber);
 	return m_Expression->Evaluate(pItem);
 }
+
+void RuneCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool IdCondition::Evaluate(Unit* pItem) {
+	m_Left->SetValue(pItem->dwLineId);
+	return m_Expression->Evaluate(pItem);
+}
+
+void IdCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool GoldCondition::Evaluate(Unit* pItem) {
+	if (!D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::GOLD)) {
+		return false;
+	}
+	m_Left->SetValue(D2COMMON_STATLIST_GetUnitStatUnsigned(pItem, Stat::GOLD, 0));
+	return m_Expression->Evaluate(pItem);
+}
+
+void GoldCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool StatsCondition::Evaluate(Unit* pItem) {
+	return m_Expression->Evaluate(pItem);
+}
+
+void StatsCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	for (auto stat : CustomStats) {
+		replace(m_Value, stat.first, stat.second);
+	}
+	m_Expression = Parser::Parse(m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool DefenseCondition::Evaluate(Unit* pItem) {
+	m_Left->SetValue(D2COMMON_STATLIST_GetUnitStatUnsigned(pItem, Stat::ARMORCLASS, 0));
+	return m_Expression->Evaluate(pItem);
+}
+
+void DefenseCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool ArmorCondition::Evaluate(Unit* pItem) {
-	m_Lhs->SetValue(D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::ANY_ARMOR));
+	m_Left->SetValue(D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::ANY_ARMOR));
 	return m_Expression->Evaluate(pItem);
 }
+
+void ArmorCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool WeaponCondition::Evaluate(Unit* pItem) {
-	m_Lhs->SetValue(D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::WEAPON));
+	m_Left->SetValue(D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::WEAPON));
 	return m_Expression->Evaluate(pItem);
 }
 
-bool ModeCondition::Evaluate(Unit* pItem) {
-	return false;
-}
+void WeaponCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool PriceCondition::Evaluate(Unit* pItem) {
 	Unit* pPlayer = D2CLIENT_GetPlayerUnit();
 	if (pItem != NULL && pPlayer != NULL) {
 		int nPrice = D2COMMON_ITEMS_GetTransactionCost(pPlayer, pItem, D2CLIENT_GetDifficulty(), D2CLIENT_GetQuestFlags(), 0x201, 1);
-		m_Lhs->SetValue(nPrice);
+		m_Left->SetValue(nPrice);
 		return m_Expression->Evaluate(pItem);
 	}
 	return false;
 }
 
+void PriceCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool ModeCondition::Evaluate(Unit* pItem) {
+	return false;
+}
+
+void ModeCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
 bool IdentifiedCondition::Evaluate(Unit* pItem) {
-	uint8_t isIdentified = (pItem->pItemData->dwItemFlags & ItemFlags::IDENTIFIED) == ItemFlags::IDENTIFIED;
-	m_Lhs->SetValue(isIdentified);
+	m_Left->SetValue((pItem->pItemData->dwItemFlags & ItemFlags::IDENTIFIED) == ItemFlags::IDENTIFIED);
 	return m_Expression->Evaluate(pItem);
 }
+
+void IdentifiedCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool SocketsCondition::Evaluate(Unit* pItem) {
+	m_Left->SetValue(D2COMMON_STATLIST_GetUnitStatUnsigned(pItem, Stat::ITEM_NUMSOCKETS, 0));
+	return m_Expression->Evaluate(pItem);
+}
+
+void SocketsCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
 
 bool WidthCondition::Evaluate(Unit* pItem) {
-	ItemsTxt pItemTxt = D2COMMON_ItemDataTbl->pItemsTxt[pItem->dwLineId];
-	m_Lhs->SetValue(pItemTxt.nInvWidth);
+	m_Left->SetValue(GetItemsTxt(pItem).nInvWidth);
 	return m_Expression->Evaluate(pItem);
 }
 
+void WidthCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
 bool HeightCondition::Evaluate(Unit* pItem) {
-	ItemsTxt pItemTxt = D2COMMON_ItemDataTbl->pItemsTxt[pItem->dwLineId];
-	m_Lhs->SetValue(pItemTxt.nInvHeight);
+	m_Left->SetValue(GetItemsTxt(pItem).nInvHeight);
 	return m_Expression->Evaluate(pItem);
 }
+
+void HeightCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
+bool RandomCondition::Evaluate(Unit* pItem) {
+	m_Left->SetValue(rand() % 100);	//random between 0-99
+	return m_Expression->Evaluate(pItem);
+}
+
+void RandomCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};

@@ -1,29 +1,26 @@
 #pragma once
 
-#include <Windows.h>
 #include <cstdint>
 #include <vector>
-#include <string>
+#include "D2Structs.h"
 #include "Condition.h"
 #include "Action.h"
 
-
-
 class Rule {
 private:
-	uint32_t m_LineNum;
-	bool m_IsContinue = false;
+	uint32_t m_LineNumber;
 	std::vector<Condition*> m_Conditions;
 	std::vector<Action*> m_Actions;
 public:
-	Rule(uint32_t lineNum);
-	bool Evaluate(Unit* pItem);
-	void EvaluateActionResult(ItemActionResult* action, Unit* pItem);
-	void SetIsContinue(bool isContinue) { m_IsContinue = isContinue; };
-	bool IsContinue() { return m_IsContinue; };
-	void InitializeConditions();
-	void AddCondition(Condition* condition) { m_Conditions.push_back(condition); };
-	void AddAction(Action* condition) { m_Actions.push_back(condition); };
-	uint32_t GetLine() { return m_LineNum; }
+	Rule() {}
+	bool Evaluate(Unit* pUnit);
+	void EvaluateActionResult(ActionResult* pActionResult, Unit* pItem);
+	uint32_t GetLineNumber();
+	void SetLineNumber(uint32_t lineNumber);
+	std::vector<Condition*> GetConditions();
+	std::vector<Action*> GetActions();
+	void AddAction(Action* pAction, int32_t idx);
+	void AddActions(std::vector<Action*> actions);
+	void AddCondition(Condition* pCondition);
+	void AddConditions(std::vector<Condition*> conditions);
 };
-

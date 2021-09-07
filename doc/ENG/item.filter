@@ -1,10 +1,34 @@
 ######
+#
+# Filter Organization Notes:
+#   * Styles for different Tiers
+#   * Metadata
+#       * Gem Names
+#       * Rune Upgrade Recipies
+#       * Runeword Recipies
+#       * Upgrade Uniques Recipies
+#       * Upgrade Rares Recipies
+#       * General Metadata (colors for Magic/Rares/etc)
+#       * Socket Recipies
+#   * Runes
+#   * Gems
+#   * Shopping Tiers 1-6
+#   * Uniques and Sets Tiers 1-6
+#   * Rares Tiers 1-6
+#   * Magic Tiers 1-6
+#   * Socketables Tiers 1-6
+#   * Misc Tiers 1-6
+#   * TODO: Identified (Uniques and Sets) Tiers 1-6
+#   * TODO: Normal Items
+#
+######
+######
 # START Styles
 ######
 
 Style T1 Rune
     SetName {Purple}<<< {Orange}T1 {Name} {Purple}>>>
-    ChatNotify True
+    ChatNotify "Ping Level" > 0
     SetBackgroundColor Purple
     SetBorderColor Purple
     SetInventoryColor Purple
@@ -12,7 +36,7 @@ Style T1 Rune
 
 Style T2 Rune
     SetName {Purple}<<< {Orange}T2 {Name} {Purple}>>>
-    ChatNotify True
+    ChatNotify "Ping Level" > 1
     SetBackgroundColor Purple
     SetBorderColor Purple
     SetInventoryColor Purple
@@ -20,52 +44,52 @@ Style T2 Rune
 
 Style T3 Rune
     SetName {Orange}T3 {Name}
-    ChatNotify True
+    ChatNotify "Ping Level" > 2
     SetBackgroundColor Red
     SetBorderColor Red
     MinimapIcon Red
 
 Style T4 Rune
     SetName {Orange}T4 {Name}
-    ChatNotify True
+    ChatNotify "Ping Level" > 3
     SetBorderColor Gold
     MinimapIcon Gold
 
 Style T1
     SetName {Orange}T1 {Name}
-    ChatNotify True
+    ChatNotify "Ping Level" > 0
     SetBorderColor Orange
     MinimapIcon Orange
 
 Style T2
     SetName {Purple}T2 {Name}
-    ChatNotify True
+    ChatNotify "Ping Level" > 1
     SetBorderColor Purple
     MinimapIcon Purple
 
 Style T3
     SetName {Red}T3 {Name}
-    ChatNotify True
+    ChatNotify "Ping Level" > 2
     SetBorderColor Red
     MinimapIcon Red
 
 Style T4
     SetName {Gold}T4 {Name}
-    ChatNotify True
+    ChatNotify "Ping Level" > 3
     SetBorderColor Gold
     MinimapIcon Gold
 
 Style T5
     SetName {Dark Green}T5 {Name}
-#    ChatNotify True
-    SetBorderColor Dark Green
-#    MinimapIcon Dark Green
+    ChatNotify "Ping Level" > 4
+    SetBorderColor "Dark Green"
+    MinimapIcon "Dark Green"
 
 Style T6
     SetName {Gray}T6 {Name}
-#    ChatNotify True
+    ChatNotify "Ping Level" > 5
     SetBorderColor Gray
-#    MinimapIcon Gray
+    MinimapIcon Gray
 
 ######
 # END Styles
@@ -116,7 +140,7 @@ Continue
 Show
     Class Gem
     Class Skull
-    SetName {Gray}0 {White}{Name}
+    SetName {Grey}0 {White}{Name}
 Continue
 
 ######
@@ -272,71 +296,6 @@ Show
     Rune El
     SetDescription {Description}{White}3x {Orange}El -> {Orange}Eld{Newline}
 Continue
-
-######
-# Upgrade Uniques Metadata
-######
-
-Show
-    Weapon True
-    Rarity Unique
-    Quality Normal
-    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Ral Sol {Green}0{White}Perfect{Newline}
-Continue
-
-Show
-    Armor True
-    Rarity Unique
-    Quality Normal
-    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Tal Sheal {White}0{White}Perfect{Newline}
-Continue
-
-Show
-    Weapon True
-    Rarity Unique
-    Quality Exceptional
-    SetDescription {Description}{White}Upgrade to elite with {Orange}Lum Pul {Green}0{White}Perfect{Newline}
-Continue
-
-Show
-    Armor True
-    Rarity Unique
-    Quality Exceptional
-    SetDescription {Description}{White}Upgrade to elite with {Orange}Ko Lem {White}0{White}Perfect{Newline}
-Continue
-
-######
-# Upgrade Rares Metadata
-######
-
-Show
-    Weapon True
-    Rarity Rare
-    Quality Normal
-    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Ort Amn {Blue}0{White}Perfect{Newline}
-Continue
-
-Show
-    Armor True
-    Rarity Rare
-    Quality Normal
-    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Ral Thul {White}0{White}Perfect{Newline}
-Continue
-
-Show
-    Weapon True
-    Rarity Rare
-    Quality Exceptional
-    SetDescription {Description}{White}Upgrade to elite with {Orange}Fal Um {Green}0{White}Perfect{Newline}
-Continue
-
-Show
-    Armor True
-    Rarity Rare
-    Quality Exceptional
-    SetDescription {Description}{White}Upgrade to elite with {Orange}Ko Pul {White}0{White}Perfect{Newline}
-Continue
-
 
 ######
 # Runewords Metadata
@@ -588,20 +547,85 @@ Show
     SetDescription {Description}{White}Breath of the Dying: {Orange}VexHelElEldZodEth{Newline}
 Continue
 
+
+######
+# Upgrade Uniques Metadata
+######
+
+Show
+    Weapon True
+    Rarity Unique
+    Quality Normal
+    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Ral Sol {Green}0{White}Perfect{Newline}
+Continue
+
+Show
+    Armor True
+    Rarity Unique
+    Quality Normal
+    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Tal Sheal {White}0{White}Perfect{Newline}
+Continue
+
+Show
+    Weapon True
+    Rarity Unique
+    Quality Exceptional
+    SetDescription {Description}{White}Upgrade to elite with {Orange}Lum Pul {Green}0{White}Perfect{Newline}
+Continue
+
+Show
+    Armor True
+    Rarity Unique
+    Quality Exceptional
+    SetDescription {Description}{White}Upgrade to elite with {Orange}Ko Lem {White}0{White}Perfect{Newline}
+Continue
+
+######
+# Upgrade Rares Metadata
+######
+
+Show
+    Weapon True
+    Rarity Rare
+    Quality Normal
+    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Ort Amn {Blue}0{White}Perfect{Newline}
+Continue
+
+Show
+    Armor True
+    Rarity Rare
+    Quality Normal
+    SetDescription {Description}{White}Upgrade to exceptional with {Orange}Ral Thul {White}0{White}Perfect{Newline}
+Continue
+
+Show
+    Weapon True
+    Rarity Rare
+    Quality Exceptional
+    SetDescription {Description}{White}Upgrade to elite with {Orange}Fal Um {Green}0{White}Perfect{Newline}
+Continue
+
+Show
+    Armor True
+    Rarity Rare
+    Quality Exceptional
+    SetDescription {Description}{White}Upgrade to elite with {Orange}Ko Pul {White}0{White}Perfect{Newline}
+Continue
+
 ######
 # General Metadata
 ######
 
+#Show
+#    Class Any Armor, Weapon, Ring, Amulet
+#    Rarity <= Magic
+#    Price 35000
+#    SetName {Name} {Gray}+35k
+#Continue
+
 Show
     Rarity < Magic
     SetName {White}{Name}
-Continue
-
-Show
-    Class Any Armor, Weapon, Ring, Amulet
-    Rarity <= Magic
-    Price 35000
-    SetName {Name} {Gray}+35k
 Continue
 
 Show
@@ -730,6 +754,361 @@ Show
 # END Gems
 ######
 ######
+# START Shopping
+######
+######
+# Shopping Tier 1
+######
+
+# 3 trap, 3 LS claws (alvl 60+)
+Show
+    Class Hand to Hand, Hand to Hand 2
+	Rarity Magic
+    Stats "Assassin +%d to Traps" = 3 and "Lightning Sentry" = 3
+    SetStyle T1
+
+# 3 pal combat, 3 BH, 3 conc scepter (alvl 60+)
+Show
+    Class Scepter
+    Rarity Magic
+    Stats "Paladin +%d to Combat Skills" = 3 and "Blessed Hammer" = 3 and "Concentration" = 3
+    SetStyle T1
+
+# 3 pal combat, 3 FoH, 3 conviction scepter (alvl 60+)
+Show
+    Class Scepter
+	Rarity Magic
+    Stats "Paladin +%d to Combat Skills" = 3 and "Fist of the Heavens" = 3 and "Conviction" = 3
+    SetStyle T1
+
+######
+# Shopping Tier 2
+######
+
+# 3/20 Javazon Gloves (alvl 60+) [nightmare anya]
+Show
+    Class Gloves
+	Rarity Magic
+    Ethereal False
+    Stats "Amazon +%d to Javelin and Spear Skills" = 3 and "Increased Attack Speed" >= 20
+    SetStyle T2
+
+# 4os archon plate with life (of the whale, alvl 50) [hell Larzuk]
+Show
+    Type Archon Plate
+    Rarity Magic
+    Ethereal False
+    Sockets 4
+    Stats "Life" >= 80
+    SetStyle T2
+
+# 2 sin, 3 LS claws (alvl 50+)
+Show
+    Class Hand to Hand, Hand to Hand 2
+	Rarity Magic
+    Stats "Assassin Skills" >= 2 and "Lightning Sentry" = 3
+    SetStyle T2
+
+# 3 trap, 2+ LS claws (alvl 60+)
+Show
+    Class Hand to Hand, Hand to Hand 2
+	Rarity Magic
+    Stats "Assassin +%d to Traps" = 3 and "Lightning Sentry" >= 2
+    SetStyle T2
+
+# 3 shadow, 3 venom claws (alvl 60+)
+Show
+    Class Hand to Hand, Hand to Hand 2
+	Rarity Magic
+    Stats "Assassin +%d to Shadow Disciplines" = 3 and "Venom" = 3
+    SetStyle T2
+
+# 2 pal, 3 FoH, 3 conviction scepter (alvl 50+)
+Show
+    Class Scepter
+	Rarity Magic
+    Stats "Paladin Skills" = 2 and "Fist of the Heavens" = 3 and "Conviction" = 3
+    SetStyle T2
+
+######
+# Shopping Tier 3
+######
+
+# 2 trap, 3 LS claws (alvl 40+)
+Show
+    Class Hand to Hand, Hand to Hand 2
+	Rarity Magic
+    Stats "Assassin +%d to Traps" >= 2 and "Lightning Sentry" = 3
+    SetStyle T3
+
+# 2 sin, 3 venom claws (alvl 50+)
+Show
+    Class Hand to Hand, Hand to Hand 2
+	Rarity Magic
+    Stats "Assassin Skills" = 2 and "Venom" = 3
+    SetStyle T3
+
+# 3 shadow, 2+ venom claws (alvl 60+)
+Show
+    Class Hand to Hand, Hand to Hand 2
+	Rarity Magic
+    Stats "Assassin +%d to Shadow Disciplines" = 3 and "Venom" >= 2
+    SetStyle T3
+
+# 2 shadow, 3 venom claws (alvl 40+)
+Show
+    Class Hand to Hand, Hand to Hand 2
+	Rarity Magic
+    Stats "Assassin +%d to Shadow Disciplines" = 2 and "Venom" = 3
+    SetStyle T3
+
+######
+# Shopping Tier 4
+######
+
+# 4os gothic plates and ancient armor with life (of the whale, alvl 50) [hell charsi]
+Show
+    Type Gothic Plate, Ancient Armor
+	Rarity Magic
+    Sockets 4
+    Ethereal False
+    Stats "Life" >= 80
+    SetStyle T4
+
+# 2/20 jav gloves (alvl 40+) [nightmare anya]
+Show
+    Class Gloves
+	Rarity Magic
+    Ethereal False
+    Stats "Amazon +%d to Javelin and Spear Skills" >= 2 and "Increased Attack Speed" >= 20
+    SetStyle T4
+
+# 3os shields of deflecting (alvl 33+)
+# tower, gothic, dragon, blade barrier, troll nest
+Show
+    Type Tower Shield, Gothic Shield, Dragon Shield, Blade Barrier, Troll Nest
+	Rarity Magic
+    Ethereal False
+    Sockets 3
+    Stats "Faster Block Rate" >= 30
+    SetStyle T4
+
+# 4os shields of deflecting (alvl 55+)
+# aegis, ward
+Show
+    Type Aegis, Ward
+	Rarity Magic
+    Ethereal False
+    Sockets 4
+    Stats "Faster Block Rate" >= 30
+    SetStyle T4
+
+######
+# Shopping Tier 5
+######
+
+# Lower res wand (need 1.9.8 or later)
+Show
+    Class Wand
+	Rarity Magic
+    Stats ChargedSkill(91)
+    SetStyle T5
+
+# Life tap wand (need 1.9.8 or later)
+Show
+    Class Wand
+	Rarity Magic
+    Stats ChargedSkill(82)
+    SetStyle T5
+
+# 3os helm with life (of the mammoth, no corona, spired helm, winged helm)
+# Artisan's, alvl 33
+# of the Mammoth, alvl 68
+Show
+    Class Helm
+    Type != Corona
+    Type != Spired Helm
+    Type != Winged Helm
+    Rarity Magic
+    Sockets 3
+    Stats "Life" >= 30
+    SetStyle T5
+
+# BO Sticks (+3 WC sticks)
+# Echoing, alvl 60
+Show
+    Class Weapon
+    Rarity Magic
+    Stats "Barbarian +%d to Warcries" = 3
+    SetStyle T5
+
+# Javazon Gloves (+3)
+# Lancer's, alvl 60
+Show
+    Class Gloves
+    Rarity Magic
+    Stats "Amazon +%d to Javelin and Spear Skills" = 3
+    SetStyle T5
+
+# Claws (+3 traps)
+# Cunning, alvl 60
+Show
+    Class Hand to Hand, Hand to Hand 2
+    Rarity Magic
+    Stats "Assassin +%d to Traps" = 3
+    SetStyle T5
+
+# 3 pal combat scepters
+# Rose Branded, alvl 60
+Show
+    Class Scepter
+    Rarity Magic
+    Stats "Paladin +%d to Combat Skills" = 3
+    SetStyle T5
+
+# 2 pal scepters
+# Priests, alvl 50
+Show
+    Class Scepter
+    Rarity Magic
+    Stats "Paladin Skills" = 2
+    SetStyle T5
+
+######
+# Shopping Tier 6
+######
+
+# ilvl restrictions below prevent these items from showing as drops later in the game.
+# Note white items cannot be bought from vendors with ilvl>24.
+
+# Tele staff (SK=54, lvl=1-6, formula SK*64+lvl)
+# of Teleportation, alvl 24
+# Teleport staff (need 1.9.8 or later)
+Show
+    Class Staff
+	Rarity Magic
+    Stats ChargedSkill(54)
+    SetStyle T6
+
+# 3 warmth, 2os staff (leaf) [normal Akara at clvl<7]
+# 3 fire ball, 2os staff (leaf) [normal Akara at clvl 7+, Drognan at clvl 14+]
+# 3 enchant, 2os staff (leaf) [normal Drognan at clvl 14+]
+Show
+    Class Staff
+	Rarity < Magic
+    Runeword False
+    Sockets 2
+    Stats "Warmth" = 3 or "Fire Ball" = 3 or "Enchant" = 3
+    SetStyle T6
+
+Show
+    Type Short Staff
+	Rarity < Magic
+    Runeword False
+    Sockets 0, 2
+    Stats "Warmth" = 3 or "Fire Ball" = 3 or "Enchant" = 3
+    SetStyle T6
+
+# 3 bone spear white base [normal Drognan at clvl 14+]
+# 3 CE white base [normal Drognan at clvl 13]
+Show
+    Class Wand
+	Rarity < Magic
+    Runeword False
+    Sockets 0, 2
+    Stats "Bone Spear" = 3 or "Corpse Explosion" = 3
+    SetStyle T6
+
+
+# alvl restrictions below prevent the items from being highlighted when higher tier
+# shopping targets are available. For example, don't show mf/res gloves once +3 jav
+# is available. Likely you don't care about seeing this crap at that point.
+
+# Prismatic, single res, or socketed shield of deflection (alvl 33 - 3 sockets available)
+# of Deflecting, alvl 11
+# Mechanic's, alvl 10
+# Cobalt/Garnet/Coral, alvl 18
+# prismatic, alvl 28
+Show
+    Class Shield
+	Rarity Magic
+    Stats ("All Resist" > 15 or "Any Resist" > 20 or "Sockets" = 2) and "Faster Block Rate" >= 30
+    SetStyle T6
+
+# FRW boots w/ res
+# of Haste, alvl 22
+# Sapphire/Ruby/Amber, alvl 25
+Show
+    Class Boots
+	Rarity Magic
+    Stats "Any Resist" > 30 and "Faster Run Walk" >= 20
+    SetStyle T6
+
+
+# MF, str, or dex gloves w/ res (alvl 60 - 3 jav available)
+# of Fortune, alvl 16
+# of Precision, alvl 56
+# of the Ox, alvl 45
+# Cobalt/Garnet/Coral, alvl 18
+Show
+    Class Gloves
+	Rarity Magic
+    Stats ("Magic Find" > 15 or "Dexterity" > 9 or "Strength" > 5) and ("Any Resist" > 20)
+    SetStyle T6
+
+# Belt with life or fhr and res
+# of Stability, alvl 18
+# of the Mammoth, alvl 25
+# Cobalt/Garnet/Coral, alvl 18
+Show
+    Class Belt
+	Rarity Magic
+    Stats ("Faster Hit Recovery" = 24 or "Life" > 30) and ("Any Resist" > 20)
+    SetStyle T6
+
+# Belt with 81-100 life
+# of the Whale, alvl 50
+# #ItemDisplay[MAG BELT LIFE>80]: %GRAY%T6%MAP% %PURPLE%%NAME%%TIER-6%
+Show
+    Class Belt
+	Rarity Magic
+    Stats "Life" > 80
+    SetStyle T6
+
+# FHR or life armor w/ res or sockets (alvl 55 - 4 sockets available)
+# of Stability, alvl 18
+# of the Colossus, alvl 30
+# Cobalt/Garnet/Coral, alvl 18
+# Mechanic's, alvl 10
+# Artisan's, alvl 33
+Show
+    Class Armor
+	Rarity Magic
+    Stats ("Faster Hit Recovery" = 24 or "Life" > 40) and ("Any Resist" > 20 or "Sockets" >= 2)
+    SetStyle T6
+
+# helm with fhr and res or sockets (alvl 33 - 3 sockets available)
+# of Balance, alvl 5
+# Cobalt/Garnet/Coral, alvl 18
+# Mechanic's, alvl 10
+Show
+    Class Helm
+	Rarity Magic
+    Stats "Faster Hit Recovery" > 9 and ("Any Resist" > 20 or "Sockets" = 2)
+    SetStyle T6
+
+# 3 socket helm (alvl 68 - 31-40 life available)
+# Artisan's, alvl 33 (also need ilvl 41+ base)
+Show
+    Class Helm
+	Rarity Magic
+    Sockets 3
+    SetStyle T6
+
+######
+# END Shopping
+######
+######
 # START Uniques and Sets
 ######
 ######
@@ -830,7 +1209,7 @@ Show
 # Eschuta's Temper, Sandstorm Trek, Azurewrath, Magefist, Silkweave
 # Valkyrie Wing, Razortail, Skullder's Ire
 Show
-    Type Swirling Crystal, Elder Staff, Gilded Shield, Cermonial Javelin, Serpentskin Armor, War Boots, Demonhide Sash, Vampirebone Gloves, Slayer Guard, War Belt, Mithril Coil, Vampirefang Belt, Monarch, Bone Knife, Grand Charm, Matriarchal Javelin, Thresher, Balrog Skin, Eldritch Orb, Scarabshell Boots, Phase Blade, Light Gauntlets, Silkweave, Winged Helm, Sharkskin Belt, Russet Armor
+    Type Swirling Crystal, Elder Staff, Gilded Shield, Ceremonial Javelin, Serpentskin Armor, War Boots, Demonhide Sash, Vampirebone Gloves, Slayer Guard, War Belt, Mithril Coil, Vampirefang Belt, Monarch, Bone Knife, Grand Charm, Matriarchal Javelin, Thresher, Balrog Skin, Eldritch Orb, Scarabshell Boots, Phase Blade, Light Gauntlets, Mesh Boots, Winged Helm, Sharkskin Belt, Russet Armor
     Rarity Unique
     SetStyle T4
 
@@ -895,22 +1274,260 @@ Show
     SetStyle T6
 
 ######
-# Identified Uniques and Sets
-######
-
-# todo
-# different styling for soj/maras/etc...
-
-######
-# Whitelist All Uniques and Sets
+#  Uniques and Sets Tierless/Whitelist
 ######
 
 Show
-    Rarity Set, Unique
+    Rarity Unique
+    SetStyle T6
 
+Show
+    Rarity Set
+    SetStyle T6
 
 ######
 # END Uniques and Sets
+######
+######
+# START Rares Tiers
+######
+######
+# Rares Tier 1
+######
+######
+# Rares Tier 2
+######
+######
+# Rares Tier 3
+######
+######
+# Rares Tier 4
+######
+
+# Rings, Amulets, Jewels, & Circlets
+Show
+    Type Amulet, Ring, Jewel, Circlet
+    Rarity Rare
+    Identified False
+    SetStyle T4
+
+######
+# Rares Tier 5
+######
+
+# Boots
+Show
+    Class Boots
+    Rarity Rare
+    Identified False
+    SetStyle T4
+
+# Gloves
+Show
+    Class Gloves
+    Rarity Rare
+    Identified False
+    SetStyle T4
+
+######
+# Rares Tier 6
+######
+######
+# Rares Tierless/Whitelist
+######
+
+# rare claws capable of spawning staffmods
+Show
+    Class Hand to Hand, Hand to Hand 2
+    Rarity Rare
+    Identified False
+    Stats "Quality Level" >= 40
+
+# Druid Pelts
+#ItemDisplay[RARE DRU !ID]: %WHITE%+ %NAME%
+Show
+    Class Pelt
+    Rarity Rare
+    Identified False
+
+# eth rare claws
+Show
+    Class Hand to Hand, Hand to Hand 2
+    Rarity Rare
+    Ethereal True
+    Identified False
+
+# Rare eth weapons capable of cruel + master's (alvl 55+)
+Show
+    Class Weapon
+    Rarity Rare
+    Ethereal True
+    Identified False
+    Stats "Affix Level" >= 55
+
+# Rare eth armor capable of 200 ED (Godly, alvl 50+)
+#ItemDisplay[RARE ETH !ID CHEST ALVL>49]: %NAME%
+Show
+    Class Armor
+    Rarity Rare
+    Ethereal True
+    Identified False
+    Stats "Affix Level" >= 50
+
+# Sorc Orbs (for +5 orbs)
+Show
+    Class Orb
+    Rarity Rare
+    Identified False
+
+# Barb Hats (for +5 BO)
+Show
+    Class Primal Helm
+    Rarity Rare
+    Identified False
+
+# Amazon javs (for 4/40s)
+Show
+    Type Maiden Javelin, Ceremonial Javelin, Matriarchal Javelin
+    Rarity Rare
+    Identified False
+
+# Amazon bows
+Show
+    Type Stag Bow, Reflex Bow, Ashwood Bow, Ceremonial Bow, Matriarchal Bow, Grand Matron Bow
+    Rarity Rare
+    Identified False
+
+# Scepters (for +5 hammer/FoH)
+Show
+    Class Scepter
+    Rarity Rare
+    Identified False
+
+# Eth rares
+Show
+    Ethereal True
+    Rarity Rare
+    Identified False
+
+######
+# END Rares Tiers
+######
+######
+# START Magic Items
+######
+######
+# Magic Items Tier 4
+######
+
+# Circlet Variants (many good things)
+Show
+    Type Circlet
+    Rarity Magic
+    Ethereal False
+    Identified False
+    SetStyle T4
+
+# Small charms and Grand charms
+Show
+    Type Small Charm, Grand Charm
+    Rarity Magic
+    Identified False
+    SetStyle T4
+
+# Jewels
+Show
+    Type Jewel
+    Rarity Magic
+    Identified False
+    SetStyle T4
+
+# JMoD?
+Show
+    Type Monarch
+    Rarity Magic
+    Ethereal False
+    Identified False
+    SetStyle T4
+
+######
+# Magic Items Tier 6
+######
+# Barb Hats (for +6 BO)
+Show
+    Class Primal Helm
+    Rarity Magic
+    Identified False
+    SetStyle T6
+
+# Assassin katars capable of staffmods (for +6 LS)
+Show
+    Class Hand to Hand, Hand to Hand 2
+    Rarity Magic
+    Identified False
+    SetStyle T6
+
+# Rings and Amulets
+Show
+    Type Amulet, Ring
+    Rarity Magic
+    Identified False
+    SetStyle T6
+
+# Sorc Orbs (for +6 orbs)
+Show
+    Class Orb
+    Rarity Magic
+    Identified False
+    SetStyle T6
+
+# Druid Pelts (for +6 nado)
+Show
+    Class Pelt
+    Rarity Magic
+    Ethereal False
+    Identified False
+    SetStyle T6
+
+# Amazon javs (for +6 jav)
+Show
+    Type Maiden Javelin, Ceremonial Javelin, Matriarchal Javelin
+    Rarity Magic
+    Ethereal False
+    Identified False
+    SetStyle T6
+
+# Elite light armor (for 4os/life)
+Show
+    Type Dusk Shroud, Wyrmhide, Scarab Husk, Wire Fleece, Great Hauberk, Archon Plate
+    Rarity Magic
+    Ethereal False
+    Identified False
+    SetStyle T6
+
+# Large Charms
+Show
+    Type Large Charm
+    Rarity Magic
+    Identified False
+    SetStyle T6
+
+# Amazon javs (for +6 jav)
+Show
+    Class Scepter
+    Rarity Magic
+    Identified False
+    SetStyle T6
+
+# Whitelist common crafting bases except in aggressive mode
+Show
+    Type Sharkskin Gloves, Heavy Bracers, Demonhide Boots, Sharkskin Belt, Mesh Belt, Vampirebone Gloves, Vambraces, Wyrmhide Boots, Vampirefang Belt, Mithril Coil
+    Rarity Magic
+    Identified False
+    SetStyle T6
+
+######
+# END Magic Items
 ######
 ######
 # START Socketables
@@ -1698,7 +2315,7 @@ Show
 
 # 4os phase blade (Passion)
 Show
-    Typwe Phase Blade
+    Type Phase Blade
 	Rarity < Magic
 	Runeword False
 	Sockets 4
@@ -1906,7 +2523,7 @@ Show
 
 # 4os Eth Oath Bases (Oath)
 Show
-    Type Berserker Axe, Colossus Sword, Colossus Blade, Scourge, Ettin Axe, War Spike, Silver-edged Axe, Decapitator, Champion Axe, Glorious Axe
+    Type Berserker Axe, Colossus Sword, Colossus Blade, Scourge, Ettin Axe, War Spike, "Silver-edged Axe", Decapitator, Champion Axe, Glorious Axe
 	Rarity < Magic
 	Runeword False
 	Ethereal True
@@ -2038,28 +2655,34 @@ Show
 ######
 # START Misc
 ######
+######
+# Misc Tier 1
+######
+######
+# Misc Tier 2
+######
+######
+# Misc Tier 3
+######
+######
+# Misc Tier 4
+######
+
 Show
     Type Key of Terror, Key of Hate, Key of Destruction
 	SetStyle T4
 
+######
+# Misc Tier 5
+######
+######
+# Misc Tier 6
+######
+######
+# Misc Tierless/Whitelist
+######
 Show
     Type Wirt's Leg
-    SetStyle T4
-
-######
-# END Misc
-######
-######
-# Magic/Rares/Misc...
-######
-
-
-Show
-    Type Small Charm
-    Rarity Magic
-    Stats "Life" > 15 and "Any Resist"
-    SetInventoryColor Green
-Continue
 
 #Comment to hide large charms
 Show
@@ -2077,5 +2700,8 @@ Show
 Show
     Runeword True
 
-#Hide anything not specifically included
+######
+# END Misc
+######
+
 Hide

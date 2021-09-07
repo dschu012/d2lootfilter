@@ -19,7 +19,7 @@ BOOL DllAttach() {
     freopen_s(reinterpret_cast<FILE**>(stdout), "CONOUT$", "w", stdout);
     freopen_s(reinterpret_cast<FILE**>(stderr), "CONOUT$", "w", stderr);
 #endif
-    if (GetGameVersion() == GameVersion::ERR) {
+    if (GetGameVersion() == D2Version::ERR) {
         Error(L"Could not determine the game version.");
     }
 

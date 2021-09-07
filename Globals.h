@@ -3,19 +3,17 @@
 #include <Windows.h>
 #include <map>
 #include <string>
+#include <unordered_map>
 #include "Action.h"
 #include "D2Constants.h"
 
-extern GameVersion GAME_VERSION;
+//Globals
+extern D2Version GameVersion;
+extern int32_t FilterLevel;
+extern int32_t PingLevel;
+extern bool IsFilterDebug;
+extern bool IsTxtDataLoaded;
 
-extern bool TXT_DATA_LOADED;
-extern std::map<std::wstring, std::vector<Action*>> STYLES;
+extern std::unordered_map<std::wstring, int32_t> ItemTypes;
 
-extern std::map<std::wstring, uint16_t> ITEM_TYPE_LOOKUP_TABLE;
-extern std::map<std::wstring, uint32_t> ITEM_NAME_LOOKUP_TABLE;
-extern std::map<std::wstring, uint32_t> ITEM_CODE_LOOKUP_TABLE;
-extern std::map<std::wstring, uint32_t> RUNE_NAME_LOOKUP_TABLE;
-extern std::map<std::wstring, std::wstring> STAT_LOOKUP_TABLE;
-extern std::map<std::wstring, std::wstring> CLASS_SKILL_LOOKUP_TABLE;
-extern std::map<std::wstring, std::wstring> TAB_SKILL_LOOKUP_TABLE;
-extern std::map<std::wstring, std::wstring> SKILL_LOOKUP_TABLE;
+extern std::unordered_map<std::wstring, std::wstring> CustomStats;
