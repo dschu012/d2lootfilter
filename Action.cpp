@@ -131,7 +131,7 @@ void SetStyleAction::SetResult(ActionResult* action, Unit* pItem) {
 }
 
 void SetNameAction::SetResult(ActionResult* action, Unit* pItem) {
-	std::map<std::wstring, TokenReplaceFunction> TOKEN_REPLACEMENT_FUNCTIONS = {
+	std::unordered_map<std::wstring, TokenReplaceFunction> TOKEN_REPLACEMENT_FUNCTIONS = {
 		{ L"{Name}", &GetItemName },
 		{ L"{Sockets}", &GetItemSockets },
 		{ L"{Price}", &GetItemPrice },
@@ -148,7 +148,7 @@ void SetNameAction::SetResult(ActionResult* action, Unit* pItem) {
 }
 
 void SetDescriptionAction::SetResult(ActionResult* action, Unit* pItem) {
-	std::map<std::wstring, TokenReplaceFunction> TOKEN_REPLACEMENT_FUNCTIONS = {
+	std::unordered_map<std::wstring, TokenReplaceFunction> TOKEN_REPLACEMENT_FUNCTIONS = {
 		{ L"{Description}", &GetItemDesc },
 		{ L"{Sockets}", &GetItemSockets },
 		{ L"{Price}", &GetItemPrice },

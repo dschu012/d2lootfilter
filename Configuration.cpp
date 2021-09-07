@@ -11,7 +11,7 @@
 namespace fs = std::filesystem;
 
 std::unordered_map<std::wstring, std::vector<Action*>> GlobalStyles;
-std::map<uint32_t, Rule*> GlobalRules;
+std::unordered_map<uint32_t, Rule*> GlobalRules;
 
 #define COMMENT_STR L"#"
 #define STYLE_STR L"Style"

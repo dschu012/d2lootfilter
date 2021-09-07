@@ -21,7 +21,7 @@ static D2COMMON_DATATBLS_LoadAllTxts_t fpDATATBLS_LoadAllTxts;
 static D2WIN_WndProc_t fpWndProc;
 
 static std::queue<uint32_t> AUTOMAP_ITEMS;
-static std::map<uint32_t, ActionResult*> ITEM_ACTIONS;
+static std::unordered_map<uint32_t, ActionResult*> ITEM_ACTIONS;
 
 
 Configuration* ItemFilter::Config = NULL;
