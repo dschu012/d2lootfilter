@@ -28,7 +28,7 @@ Configuration* ItemFilter::Config = NULL;
 
 ItemFilter::ItemFilter() {
 	
-	Config = new Configuration(L"./item.filter");
+	Config = new Configuration();
 	
 	//alot of 114d functions need diff stubs or they changed from __stdcall to __fastcall
 	if (GetGameVersion() == D2Version::V114d) {
@@ -104,7 +104,7 @@ ItemFilter::ItemFilter() {
 }
 
 void ItemFilter::ReloadFilter() {
-	PrintGameString(std::format(L"Filter Reloaded"), TextColor::ORANGE);
+	PrintGameString(std::format(L"Filter Reloaded (PingLevel: {}, FilterLevel: {})", PingLevel, FilterLevel), TextColor::ORANGE);
 	Config->Load();
 	
 	for (uint8_t i = 0; i < 128; i++) {

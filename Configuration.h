@@ -8,9 +8,15 @@
 extern std::unordered_map<std::wstring, std::vector<Action*>> GlobalStyles;
 extern std::map<uint32_t, Rule*> GlobalRules;
 
+struct Settings {
+	std::string wPath;
+	int32_t nFilterLevel;
+	int32_t nPingLevel;
+};
+
 class Configuration {
 private:
-	std::wstring m_Path;
+	Settings m_Settings;
 	bool m_Loaded = false;
 
 	void HandleToken(uint32_t lineNumber, std::vector<std::wstring>& lines);
@@ -18,13 +24,15 @@ private:
 	Rule* ParseRule(std::vector<std::wstring>& lines);
 	std::vector<Condition*> ParseConditions(std::vector<std::wstring>& lines);
 	std::vector<Action*> ParseActions(std::vector<std::wstring>& lines);
+	void ReadSetting();
 	void InitalizeConditionVariables();
 	void InitializeTypesCodesAndRunes();
 	void InitializeClass();
 	void InitializeRaritiesAndQualities();
 	void InitializeOther();
 public:
-	Configuration(std::wstring sPath);
+	Configuration();
+
 	void Load();
 	bool IsLoaded() { return m_Loaded; }
 };

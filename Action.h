@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <string>
+#include "Expression.h"
 #include "Utils.h"
 #include "D2Structs.h"
 
@@ -121,8 +122,10 @@ public:
 };
 
 class ChatNotifyAction : public Action {
+protected:
+	Expression* m_Expression;
 public:
-	ChatNotifyAction(std::wstring value = L"") : Action(value, ActionType::CHAT_NOTIFY) {};
+	ChatNotifyAction(std::wstring value = L"");
 	void SetResult(ActionResult* pResult, Unit* pItem) override;
 };
 

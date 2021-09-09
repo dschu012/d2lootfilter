@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <filesystem>
 #include "Utils.h"
+#include "mINI.h"
 
 namespace fs = std::filesystem;
 
@@ -18,27 +19,64 @@ std::map<uint32_t, Rule*> GlobalRules;
 #define SHOW_STR L"Show"
 #define HIDE_STR L"Hide"
 
-Configuration::Configuration(std::wstring sPath) : m_Path(sPath) {
+#define SETTINGS_FILE "d2lootfilter.ini"
+
+Configuration::Configuration() {
+}
+
+std::string GetOrDefault(std::string& configLine, std::string defaultValue) {
+	if (configLine.empty()) {
+		configLine = defaultValue;
+	}
+	return configLine;
+}
+
+//todo wstring
+void Configuration::ReadSetting() {
+	Settings s = {};
+
+	mINI::INIFile file(SETTINGS_FILE);
+	mINI::INIStructure data;
+	bool exists = fs::exists(SETTINGS_FILE);
+
+	if (exists) {
+		file.read(data);
+	}
+
+	s.wPath = GetOrDefault(data["Setting"]["Path"], "./item.filter");
+	s.nFilterLevel = std::stoi(GetOrDefault(data["Setting"]["FilterLevel"], "6"));
+	s.nPingLevel = std::stoi(GetOrDefault(data["Setting"]["PingLevel"], "6"));
+
+	if (!exists) {
+		file.generate(data);
+	}
+
+	m_Settings = s;
 }
 
 void Configuration::Load() {
 	if (!IsTxtDataLoaded) {
 		return;
 	}
+	
+	ReadSetting();
+
 	auto t1 = std::chrono::high_resolution_clock::now();
 
+	PingLevel = m_Settings.nPingLevel;
+	FilterLevel = m_Settings.nFilterLevel;
 	GlobalRules.clear();
 	GlobalStyles.clear();
 
-	if (!fs::exists(m_Path)) {
-		std::ofstream out(m_Path);
+	if (!fs::exists(m_Settings.wPath)) {
+		std::ofstream out(m_Settings.wPath);
 		out.close();
 	}
 
 	uint32_t tokenLineNumber = 0;
 	uint32_t currentLineNumber = 0;
 
-	std::wifstream in(m_Path);
+	std::wifstream in(m_Settings.wPath);
 	std::wstring line;
 	std::vector<std::wstring> lines;
 

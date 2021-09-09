@@ -179,8 +179,12 @@ void SetBorderColorAction::SetResult(ActionResult* action, Unit* pItem) {
 	action->nBorderPaletteIndex = m_PaletteIndex;
 }
 
+ChatNotifyAction::ChatNotifyAction(std::wstring value) : Action(value, ActionType::CHAT_NOTIFY) {
+	m_Expression = Parser::Parse(value.c_str());
+}
+
 void ChatNotifyAction::SetResult(ActionResult* action, Unit* pItem) {
-	action->bChatAlert = true;
+	action->bChatAlert = m_Expression->Evaluate(pItem) != 0;
 }
 
 void PlayAlertAction::SetResult(ActionResult* action, Unit* pItem) {
