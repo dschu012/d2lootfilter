@@ -11,6 +11,8 @@ d2lootfilter is a plugin that can be used with [PlugY](http://plugy.free.fr/en/i
     * [Stats](#Stats)
 * [Actions](#Actions)
 * [Styles](#Styles)
+* [Settings](#Settings)
+* [In Game Commands](#In-Game-Commands)
 * [Credits](#Credits)
 
 **This has not been heavily tested, crashes may happen, and items may be lost**
@@ -171,6 +173,28 @@ Show
 ```
 
 will apply all of the `Tier 1 Items` styles to the items.
+
+### Settings
+
+The first time you join a game with the plugin loaded it should create a `d2lootfilter.ini` settings file in your Diablo II directory. These are the following settings that can be changed.
+
+| Setting | Description |
+| Path | Path to your filter file. Default: `./item.filter` |
+| FilterLevel | Used to dynamically change how strict your filter while playing. (Currently unused, still a planned feature) Default: `6` |
+| PingLevel | Used to dynamically change how strict drop notification are while playing. Default: `6` |
+
+
+### In Game Commands
+
+The filter has a few in-game commands for changing settings.
+
+| Command | Description |
+| `/reload` | Reloads your filter. |
+| `/debug` | Toggles debugging. |
+| `/test <number>` | Tests a specific rule (by line number) against your currently hovered mouse item. |
+| `/filterlevel <number>` | Change the filter level. |
+| `/pinglevel <number>` | Change the ping/notification level. |
+
 
 ### Credits
 
