@@ -16,6 +16,9 @@ struct AnimSeq;
 struct AnimData;
 struct GfxData;
 struct StatListEx;
+struct Corpse;
+struct InventoryGrid;
+struct InventoryNode;
 struct Inventory;
 struct Light;
 struct QuestRecord;
@@ -62,6 +65,26 @@ struct BitBuffer
 	int32_t nPos;								//0x08
 	int32_t nPosBits;							//0x0C
 	BOOL bFull;									//0x10
+};
+
+struct Inventory
+{
+	uint32_t dwSignature;					//0x00
+	void* pMemPool;							//0x04
+	Unit* pOwner;						//0x08
+	Unit* pFirstItem;					//0x0C
+	Unit* pLastItem;					//0x10
+	InventoryGrid* pGrids;			//0x14
+	int32_t nGridCount;						//0x18
+	uint32_t dwLeftItemGUID;				//0x1C
+	Unit* pCursorItem;				//0x20
+	uint32_t dwOwnerId;						//0x24
+	uint32_t dwItemCount;					//0x28
+	InventoryNode* pFirstNode;		//0x2C
+	InventoryNode* pLastNode;			//0x30
+	Corpse* pFirstCorpse;				//0x34
+	Corpse* pLastCorpse;				//0x38
+	int32_t nCorpseCount;					//0x3C
 };
 
 

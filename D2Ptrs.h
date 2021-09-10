@@ -40,6 +40,9 @@ P2(D2CLIENT, fpGroundHoverUnit, void, 0x51A80, 0x67A10); //check 1.14d???
 P2(D2WIN, callDrawHoverItemRectPatch, void, 0x1357B, 0x1031C1);			//Call to D2GFX_DrawSolidRectEx(uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode)
 P2(D2CLIENT, callDrawInventoryItemRectPatch, void, 0x8C678, 0x83A3F);	//Call to D2GFX_DrawSolidRectEx(uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode)
 
+//from plugy
+P2(D2CLIENT, callCommand, void, 0x70AB5, 0x7C519);
+
 //6FB166E1 | .  8B86 C8000000 MOV EAX, DWORD PTR DS : [ESI + 0C8]
 //6FB166E7 | .C1E8 12       SHR EAX, 12
 //6FB166EA | .  83E0 01       AND EAX, 00000001
@@ -77,10 +80,13 @@ F2(D2COMMON, STATLIST_GetUnitStatUnsigned, uint32_t, __stdcall, (const Unit* pUn
 //F2(D2COMMON, STATLIST_GetUnitStatSigned, int, __stdcall, (Unit* pUnit, Stat nStatId, uint16_t nLayer), -10587, 0x225480);
 F2(D2COMMON, DATATBLS_LoadAllTxts, void, __stdcall, (void* pMemPool, int a2, int a3), -10943, 0x219300);
 F2(D2COMMON, UNITS_FreeUnit, void, __stdcall, (Unit* pUnit), -10124, 0x220300);
+F2(D2COMMON, INVENTORY_GetNextItem, Unit*, __stdcall, (Unit* pItem), 0x0, 0x23DFA0);
 
 F2(D2CLIENT, UNITDRAW_DrawUnit, BOOL, __fastcall, (Unit* pUnit, uint32_t dwColorTint, int nXpos, int nYpos, BOOL bFade, BOOL bDrawOverlays), 0x6CC00, 0x71EC0);
+
 F2(D2CLIENT, ItemActionWorld, void, __fastcall, (uint8_t* pBitstream), 0xAE080, 0x5EB10);
 F2(D2CLIENT, ItemActionOwned, void, __fastcall, (uint8_t* pBitstream), 0xAE870, 0x5EC70);
+
 F2(D2CLIENT, AUTOMAP_Draw, void, __stdcall, (void), 0x5FFE0, 0x59E90);
 F2(D2CLIENT, GetQuestFlags, BitBuffer*, __stdcall, (void), 0x45A00, 0xB32D0);
 F2(D2CLIENT, GetDifficulty, uint8_t, __stdcall, (void), 0x41930, 0x4DCD0);

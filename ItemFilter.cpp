@@ -20,15 +20,29 @@ static D2COMMON_UNITS_FreeUnit_t fpUNITS_FreeUnit;
 static D2COMMON_DATATBLS_LoadAllTxts_t fpDATATBLS_LoadAllTxts;
 static D2WIN_WndProc_t fpWndProc;
 
+static BOOL(__stdcall* fpCallCommand)(char* sCmd);
+
 static std::queue<uint32_t> AUTOMAP_ITEMS;
 static std::unordered_map<uint32_t, ActionResult*> ITEM_ACTIONS;
 
 
 Configuration* ItemFilter::Config = NULL;
 
+const char* CMD_RELOAD = "/reload";
+const char* CMD_FILTERLEVEL = "/fl";
+const char* CMD_FILTERLEVEL2 = "/filterlevel";
+const char* CMD_PINGLEVEL = "/pl";
+const char* CMD_PINGLEVEL2 = "/pinglevel";
+const char* CMD_DEBUG = "/debug";
+const char* CMD_TEST = "/test";
+
 ItemFilter::ItemFilter() {
 	
 	Config = new Configuration();
+
+	//check if plugy already installed a command hook
+	//if so we do a trampoline, if not we isntall our own stub.
+	bool IsPlugyCommandHook = (*(BYTE*)D2CLIENT_callCommand) == 0xE8;
 	
 	//alot of 114d functions need diff stubs or they changed from __stdcall to __fastcall
 	if (GetGameVersion() == D2Version::V114d) {
@@ -51,6 +65,9 @@ ItemFilter::ItemFilter() {
 		//No draw hooks
 		Hooking::SetCall(D2CLIENT_checkUnitNoDrawPatch_1, &CheckUnitNoDraw1_STUB, 9);
 		Hooking::SetCall(D2CLIENT_checkUnitNoDrawPatch_2, &CheckUnitNoDraw2_STUB_114d, 9);
+
+		//Call Command Hook
+		Hooking::SetCall(D2CLIENT_callCommand, &CallCommand_STUB_114d, 5);
 
 		//Item Rect on Ground Hooks
 		Hooking::SetCall(D2WIN_callDrawAltDownItemRectPatch, &DrawAltDownItemRect_STUB_114d, 5);
@@ -84,6 +101,9 @@ ItemFilter::ItemFilter() {
 		//No draw hooks
 		Hooking::SetCall(D2CLIENT_checkUnitNoDrawPatch_1, &CheckUnitNoDraw1_STUB, 9);
 		Hooking::SetCall(D2CLIENT_checkUnitNoDrawPatch_2, &CheckUnitNoDraw2_STUB, 9);
+
+		//Call Command Hook
+		Hooking::SetCall(D2CLIENT_callCommand, &CallCommand_STUB, 5);
 
 		//Item Rect on Ground Hooks
 		Hooking::SetCall(D2WIN_callDrawAltDownItemRectPatch, &DrawAltDownItemRect_STUB, 5);
@@ -387,6 +407,49 @@ BOOL __fastcall ItemFilter::IsUnitNoDraw(Unit* pUnit) {
 	return pUnit->dwFlagEx >> 0x12;
 }
 
+BOOL __stdcall ItemFilter::CallCommand(char* sCmd) {
+	if (!strncmp(sCmd, CMD_RELOAD, strlen(CMD_RELOAD))) {
+		ItemFilter::ReloadFilter();
+		return FALSE;
+	}
+
+	if (!strncmp(sCmd, CMD_FILTERLEVEL, strlen(CMD_FILTERLEVEL))) {
+		FilterLevel = atoi(&sCmd[strlen(CMD_FILTERLEVEL)]);
+		ItemFilter::ReloadFilter();
+		return FALSE;
+	}
+
+	if (!strncmp(sCmd, CMD_FILTERLEVEL2, strlen(CMD_FILTERLEVEL2))) {
+		FilterLevel = atoi(&sCmd[strlen(CMD_FILTERLEVEL2)]);
+		ItemFilter::ReloadFilter();
+		return FALSE;
+	}
+
+	if (!strncmp(sCmd, CMD_PINGLEVEL, strlen(CMD_PINGLEVEL))) {
+		PingLevel = atoi(&sCmd[strlen(CMD_PINGLEVEL)]);
+		ItemFilter::ReloadFilter();
+		return FALSE;
+	}
+
+	if (!strncmp(sCmd, CMD_PINGLEVEL2, strlen(CMD_PINGLEVEL2))) {
+		PingLevel = atoi(&sCmd[strlen(CMD_PINGLEVEL2)]);
+		ItemFilter::ReloadFilter();
+		return FALSE;
+	}
+
+	if (!strncmp(sCmd, CMD_DEBUG, strlen(CMD_DEBUG))) {
+		ItemFilter::ToggleDebug();
+		return FALSE;
+	}
+
+	if (!strncmp(sCmd, CMD_TEST, strlen(CMD_TEST))) {
+		uint32_t rule = atoi(&sCmd[strlen(CMD_TEST)]);
+		ItemFilter::DebugRule(rule);
+		return FALSE;
+	}
+	return TRUE;
+}
+
 void ItemFilter::DoChatAlert(Unit* pUnit) {
 	if (HasActions(pUnit)
 		&& ITEM_ACTIONS[pUnit->dwUnitId]->bChatAlert
@@ -409,6 +472,23 @@ void ItemFilter::ToggleDebug() {
 	DEBUG_LOG(L"Debug {}", IsFilterDebug ? L"On" : L"Off");
 	if (D2CLIENT_GetPlayerUnit()) {
 		PrintGameString(std::format(L"Debug {}", IsFilterDebug ? L"On" : L"Off"), TextColor::ORANGE);
+	}
+}
+
+void ItemFilter::DebugRule(uint32_t nLineNumber) {
+	Rule* rule = GlobalRules[nLineNumber];
+	if (!rule) {
+		PrintGameString(std::format(L"No rule found on line {}.", nLineNumber), TextColor::RED);
+		return;
+	}
+	Unit* pUnit = *D2CLIENT_GetHoverItem;
+	if (!IsItem(pUnit)) {
+		PrintGameString(std::format(L"No item found under cursor."), TextColor::RED);
+		return;
+	}
+	for (Condition* condition : rule->GetConditions()) {
+		TextColor color = condition->Evaluate(pUnit) ? TextColor::GREEN : TextColor::RED;
+		PrintGameString(condition->ToString(pUnit), color);
 	}
 }
 
@@ -584,5 +664,36 @@ void __declspec(naked) __stdcall ItemFilter::DrawInventoryItemRect_STUB_114d() {
 		push[esp + 0x2c];
 		call ItemFilter::DrawInventoryItemRect;
 		ret 0x10;
+	}
+}
+
+//straight from plugy source but after (nopickup instead of soundchoasdebug)
+void __declspec(naked) __stdcall ItemFilter::CallCommand_STUB_114d() {
+	__asm
+	{
+		TEST EAX, EAX
+		JE MANAGESOUNDCHAOSDEBUG
+		PUSH EDI
+		CALL ItemFilter::CallCommand
+		TEST EAX, EAX
+		JNZ MANAGESOUNDCHAOSDEBUG
+		ADD DWORD PTR SS : [ESP] , 19
+	MANAGESOUNDCHAOSDEBUG :
+		RETN 8
+	}
+}
+
+void __declspec(naked) __stdcall ItemFilter::CallCommand_STUB() {
+	__asm
+	{
+		TEST EAX, EAX
+		JE MANAGESOUNDCHAOSDEBUG
+		PUSH ESI
+		CALL ItemFilter::CallCommand
+		TEST EAX, EAX
+		JNZ MANAGESOUNDCHAOSDEBUG
+		ADD DWORD PTR SS : [ESP] , 21
+	MANAGESOUNDCHAOSDEBUG :
+		RETN 8
 	}
 }

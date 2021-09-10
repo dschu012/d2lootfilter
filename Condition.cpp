@@ -338,3 +338,39 @@ void RandomCondition::Initialize(std::unordered_map<std::wstring, int32_t> varia
 	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
 	m_Expression->SetVariables(variables);
 };
+
+bool OwnedCondition::Evaluate(Unit* pItem) {
+	//only check set/unique items for duplicates
+	if (pItem->pItemData->dwRarity != ItemRarity::SET
+		&& pItem->pItemData->dwRarity != ItemRarity::UNIQUE) {
+		return false;
+	}
+
+	Unit* pPlayer = D2CLIENT_GetPlayerUnit();
+	if (!pPlayer || !pPlayer->pInventory) {
+		return false;
+	}
+
+	int unitId = pItem->dwUnitId;
+	int lineId = pItem->dwLineId;
+	int value = 0;
+	
+	for (Unit* pOtherItem = pPlayer->pInventory->pFirstItem; pOtherItem; pOtherItem = pOtherItem->pItemData->pNextItem) {
+		if (pOtherItem->pItemData->dwRarity != ItemRarity::SET
+			&& pOtherItem->pItemData->dwRarity != ItemRarity::UNIQUE) {
+			continue;
+		}
+		if (lineId == pOtherItem->dwLineId && unitId != pOtherItem->dwUnitId) {
+			value = 1;
+			break;
+		}
+	}
+	m_Left->SetValue(value);
+	return m_Expression->Evaluate(pItem);
+}
+
+void OwnedCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};

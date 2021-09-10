@@ -18,6 +18,7 @@ public:
 	static void RunRules(Unit* pItem);
 	
 	static void ToggleDebug();
+	static void DebugRule(uint32_t nLineNumber);
 
 	static void DoChatAlert(Unit* pUnit);
 
@@ -47,6 +48,9 @@ public:
 	static void __stdcall AUTOMAP_Draw();
 	static BOOL __fastcall UNITDRAW_DrawUnit(Unit* pUnit, uint32_t dwColorTint, int nXpos, int nYpos, BOOL bFade, BOOL bDrawOverlays);
 	static BOOL __fastcall IsUnitNoDraw(Unit* pUnit);
+
+	static BOOL __stdcall CallCommand(char* wCmd);
+
 #pragma endregion
 
 #pragma region Stubs
@@ -65,6 +69,9 @@ public:
 
 	static void __stdcall GetItemDesc_STUB();
 	static void __stdcall GetItemDesc_STUB_114d();
+
+	static void __stdcall CallCommand_STUB();
+	static void __stdcall CallCommand_STUB_114d();
 #pragma endregion
 
 };
