@@ -519,7 +519,7 @@ Show
     Class Wand
     Rarity < Magic
     Runeword False
-    Sockets 3
+    Sockets 2
     SetDescription {Description}{White}White: {Orange}DolIo{Newline}
 Continue
 
