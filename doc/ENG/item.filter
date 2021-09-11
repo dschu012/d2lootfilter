@@ -140,7 +140,7 @@ Continue
 Show
     Class Gem
     Class Skull
-    SetName {Grey}0 {White}{Name}
+    SetName {Gray}0 {White}{Name}
 Continue
 
 ######
