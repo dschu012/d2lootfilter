@@ -128,6 +128,7 @@ void ItemFilter::ReloadFilter() {
 	PrintGameString(std::format(L"Filter Reloaded (PingLevel: {}, FilterLevel: {})", PingLevel, FilterLevel), TextColor::ORANGE);
 	Config->Load();
 	
+	ITEM_ACTIONS.clear();
 	for (uint8_t i = 0; i < 128; i++) {
 		Unit* pUnit = FindUnitFromTable(i, UnitType::ITEM);
 		while (pUnit) {

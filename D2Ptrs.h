@@ -66,8 +66,8 @@ P2(D2CLIENT, Divisor, int, 0xF16B0, 0x311254);
 P2(D2CLIENT, Offset, POINT, 0x11C1F8, 0x3A5198);
 P2(D2CLIENT, ResolutionX, uint32_t, 0xDBC48, 0x31146C);
 
-P2(D2CLIENT, ServerSideUnitHashTables, UnitHashTable, 0x0, 0x3A5E70) // Updated 1.14d //007A5E70-BASE
-P2(D2CLIENT, ClientSideUnitHashTables, UnitHashTable, 0x0, 0x3A5270) // Updated 1.14d //007A5270-BASE
+P2(D2CLIENT, ServerSideUnitHashTables, UnitHashTable, 0x10A608, 0x3A5E70) // Updated 1.14d //007A5E70-BASE
+P2(D2CLIENT, ClientSideUnitHashTables, UnitHashTable, 0x109A08, 0x3A5270) // Updated 1.14d //007A5270-BASE
 
 /*
 FUNCPTR(D2COMMON, MapToAbsScreen, void __stdcall, (long* pX, long* pY), 0x243260)             // Updated 1.14d //00643260-BASE
