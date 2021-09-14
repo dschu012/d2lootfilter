@@ -288,25 +288,15 @@ void Configuration::InitializeClass() {
 	}
 }
 
-#define KV(STR, IDX) { L#STR, ##IDX## }
 void Configuration::InitializeRaritiesAndQualities() {
-	std::unordered_map<std::wstring, int32_t> rarities = {
-		KV(None, 0), KV(Inferior, 1), KV(Normal, 2),
-		KV(Superior, 3), KV(Magic, 4), KV(Set, 5), KV(Rare, 6),
-		KV(Unique, 7), KV(Crafted, 8), KV(Tempered, 9)
-	};
-
-	std::unordered_map<std::wstring, int32_t> qualities = {
-		KV(None, -1), KV(Normal, 0), KV(Exceptional, 1), KV(Elite, 2)
-	};
 	for (auto& rule : GlobalRules) {
 		for (auto& condition : rule.second->GetConditions()) {
 			switch (condition->GetType()) {
 			case ConditionType::RARITY:
-				condition->Initialize(rarities);
+				condition->Initialize(Rarities);
 				break;
 			case ConditionType::QUALITY:
-				condition->Initialize(qualities);
+				condition->Initialize(Qualities);
 				break;
 			default:
 				break;
@@ -314,7 +304,6 @@ void Configuration::InitializeRaritiesAndQualities() {
 		}
 	}
 }
-#undef KV
 
 
 void Configuration::InitializeOther() {

@@ -20,11 +20,14 @@ public:
 	static void ToggleDebug();
 	static void DebugRule(uint32_t nLineNumber);
 
+	static void Clip();
+
 	static void DoChatAlert(Unit* pUnit);
 
 	static bool IsItem(Unit* pUnit);
 	static bool HasActions(Unit* pUnit);
 	static POINT ScreenToAutomap(int nX, int nY);
+
 	
 #pragma region Hooks
 	//Hooked Methods

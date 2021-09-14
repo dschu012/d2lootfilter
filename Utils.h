@@ -19,6 +19,8 @@ uint32_t __fastcall GetDllOffset(uint32_t baseAddress, int offset);
 
 D2Version GetGameVersion();
 void PrintGameString(std::wstring wStr, TextColor color);
+
+Unit* FindUnitFromTable(uint32_t unitId, UnitType type);
 Unit* FindUnit(uint32_t unitId, UnitType type);
 
 //String funcs
@@ -34,3 +36,4 @@ std::vector<std::wstring> split(const std::wstring& stringToSplit, const std::ws
 
 //Utility D2 Methods
 ItemsTxt GetItemsTxt(Unit* pUnit);
+int32_t GetQualityLevel(Unit* pItem);

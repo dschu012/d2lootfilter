@@ -35,6 +35,7 @@ const char* CMD_PINGLEVEL = "/pl";
 const char* CMD_PINGLEVEL2 = "/pinglevel";
 const char* CMD_DEBUG = "/debug";
 const char* CMD_TEST = "/test";
+const char* CMD_CLIP = "/clip";
 
 ItemFilter::ItemFilter() {
 	
@@ -128,11 +129,11 @@ void ItemFilter::ReloadFilter() {
 	Config->Load();
 	
 	for (uint8_t i = 0; i < 128; i++) {
-		Unit* pUnit = FindUnit(i, UnitType::ITEM);
+		Unit* pUnit = FindUnitFromTable(i, UnitType::ITEM);
 		while (pUnit) {
 			RunRules(pUnit);
 			DoChatAlert(pUnit);
-			pUnit = pUnit->pListNext;
+			pUnit = pUnit->pRoomNext;
 		}
 	}
 }
@@ -289,7 +290,17 @@ void __stdcall ItemFilter::DrawDebugInfo(Unit* pItem, uint32_t nXStart, uint32_t
 		}
 		os << match;
 	}
+	ItemsTxt txt = GetItemsTxt(pItem);
+
 	lines.push_back(std::format(L"ID: {}{}", TEXT_WHITE, pItem->dwUnitId));
+	lines.push_back(std::format(L"File Index: {}{}", TEXT_WHITE, pItem->pItemData->dwFileIndex));
+	lines.push_back(std::format(L"Type: {}{}", TEXT_WHITE, std::wstring(D2LANG_GetStringFromTblIndex(txt.wNameStr))));
+	std::wstring wCode = std::wstring(4, L' ');
+	mbstowcs(&wCode[0], txt.szCode, 4);
+	lines.push_back(std::format(L"Code: {}{}", TEXT_WHITE, wCode));
+	lines.push_back(std::format(L"Quality: {}{}", TEXT_WHITE, QualitiesLookup[GetQualityLevel(pItem)]));
+	lines.push_back(std::format(L"Rarity: {}{}", TEXT_WHITE, RaritiesLookup[static_cast<int32_t>(pItem->pItemData->dwRarity)]));
+	lines.push_back(std::format(L"Class: {}{}", TEXT_WHITE, ItemTypesLookup[static_cast<int32_t>(txt.wType[0])]));
 	lines.push_back(os.str());
 	lines.push_back(std::format(L"Shown: {}{}", TEXT_WHITE, actions->bHide ? L"False" : L"True"));
 	if (actions->bItemNameSet) {
@@ -441,6 +452,11 @@ BOOL __stdcall ItemFilter::CallCommand(char* sCmd) {
 		ItemFilter::DebugRule(rule);
 		return FALSE;
 	}
+
+	if (!strncmp(sCmd, CMD_CLIP, strlen(CMD_CLIP))) {
+		ItemFilter::Clip();
+		return FALSE;
+	}
 	return TRUE;
 }
 
@@ -484,6 +500,51 @@ void ItemFilter::DebugRule(uint32_t nLineNumber) {
 		TextColor color = condition->Evaluate(pUnit) ? TextColor::GREEN : TextColor::RED;
 		PrintGameString(condition->ToString(pUnit), color);
 	}
+}
+
+void ItemFilter::Clip() {
+	Unit* pItem = *D2CLIENT_GetHoverItem;
+	if (!IsItem(pItem)) {
+		PrintGameString(std::format(L"No item found under cursor."), TextColor::RED);
+		return;
+	}
+	LPTSTR  lptstrCopy;
+	HGLOBAL hglbCopy;
+
+	if (!OpenClipboard(NULL)) {
+		return;
+	}
+
+	// Allocate a global memory object for the text.
+	ItemsTxt txt = GetItemsTxt(pItem);
+
+	std::wstring wCode = std::wstring(4, L' ');
+	mbstowcs(&wCode[0], txt.szCode, 4);
+	wCode = trim(wCode);
+
+	std::wstring s = std::format(L"Show\n\tType {}\n\tCode {}\n\tQuality {}\n\tRarity {}\n\tClass {}\n\n",
+		std::wstring(D2LANG_GetStringFromTblIndex(txt.wNameStr)),
+		wCode,
+		QualitiesLookup[GetQualityLevel(pItem)],
+		RaritiesLookup[static_cast<int32_t>(pItem->pItemData->dwRarity)],
+		ItemTypesLookup[static_cast<int32_t>(txt.wType[0])]);
+	hglbCopy = GlobalAlloc(GMEM_MOVEABLE, (s.size() + 1) * sizeof(wchar_t));
+	if (hglbCopy == NULL)
+	{
+		CloseClipboard();
+		return;
+	}
+
+	lptstrCopy = (LPTSTR)GlobalLock(hglbCopy);
+	memcpy(lptstrCopy, s.c_str(), s.size() * sizeof(wchar_t));
+	GlobalUnlock(hglbCopy);
+
+	EmptyClipboard();
+	SetClipboardData(CF_UNICODETEXT, hglbCopy);
+
+	CloseClipboard();
+
+	PrintGameString(std::format(L"Item successfully copied to clipboard."), TextColor::ORANGE);
 }
 
 LRESULT ItemFilter::WndProc(HWND hWnd, int msg, WPARAM wParam, LPARAM lParam) {

@@ -64,6 +64,16 @@ void  PrintGameString(std::wstring wStr, TextColor color) {
     }
 }
 
+Unit* FindUnitFromTable(uint32_t unitId, UnitType type) {
+    UnitHashTable serverSideUnitTable = D2CLIENT_ServerSideUnitHashTables[static_cast<int32_t>(type)];
+    Unit* unit = serverSideUnitTable.table[unitId];
+    if (unit == NULL) {
+        UnitHashTable clientSideUnitTable = D2CLIENT_ClientSideUnitHashTables[static_cast<int32_t>(type)];
+        unit = clientSideUnitTable.table[unitId];
+    }
+    return unit;
+}
+
 Unit* FindUnit(uint32_t unitId, UnitType type) {
     Unit* unit = D2CLIENT_FindServerSideUnit(unitId, type);
     if (unit == NULL) {
@@ -141,5 +151,20 @@ std::vector<std::wstring> split(const std::wstring& stringToSplit, const std::ws
 
 ItemsTxt GetItemsTxt(Unit* pUnit) {
     return D2COMMON_ItemDataTbl->pItemsTxt[pUnit->dwLineId];
+}
+
+int32_t GetQualityLevel(Unit* pItem) {
+    ItemsTxt txt = GetItemsTxt(pItem);
+    int32_t quality = -1;
+    if (txt.dwCode == txt.dwUltraCode) {
+        quality = 2;
+    }
+    else if (txt.dwCode == txt.dwUberCode) {
+        quality = 1;
+    }
+    else if (txt.dwCode == txt.dwNormCode) {
+        quality = 0;
+    }
+    return quality;
 }
 

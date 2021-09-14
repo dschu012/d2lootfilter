@@ -17,7 +17,7 @@ enum class ConditionType : uint8_t {
 	IDENTIFIED, SOCKETS, WIDTH, HEIGHT, RANDOM, OWNED
 };
 
-static const wchar_t* CONDITIONS[] = { L"", L"Code", L"Type", L"Class", L"Rarity", L"Ethereal", L"Runeword", L"Prefix", L"Suffix", L"ItemLevel", L"Quality", L"AreaLevel", L"CharacterLevel",
+static const wchar_t* CONDITIONS[] = { L"", L"Code", L"Type", L"PlayerClass", L"Class", L"Rarity", L"Ethereal", L"Runeword", L"Prefix", L"Suffix", L"ItemLevel", L"Quality", L"AreaLevel", L"CharacterLevel",
 	L"Difficulty", L"Rune", L"Id", L"Gold", L"Stats", L"Defense", L"Armor", L"Weapon", L"Price", L"Mode", L"Identified", L"Sockets", L"Width", L"Height", L"Random", L"Owned" };
 
 class Condition {

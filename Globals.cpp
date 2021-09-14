@@ -539,3 +539,27 @@ std::unordered_map<std::wstring, std::wstring> CustomStats = {
 	STAT("TownPortal", Stat(107,359))
 };
 #undef STAT
+
+#define KV(STR, IDX) { L#STR, ##IDX## }
+std::unordered_map<std::wstring, int32_t> Rarities = {
+		KV(None, 0), KV(Inferior, 1), KV(Normal, 2),
+		KV(Superior, 3), KV(Magic, 4), KV(Set, 5), KV(Rare, 6),
+		KV(Unique, 7), KV(Crafted, 8), KV(Tempered, 9)
+};
+
+std::unordered_map<std::wstring, int32_t> Qualities = {
+	KV(None, -1), KV(Normal, 0), KV(Exceptional, 1), KV(Elite, 2)
+};
+#undef KV
+
+template<typename K, typename V>
+static std::unordered_map<V, K> reverse_map(const std::unordered_map<K, V>& m) {
+	std::unordered_map<V, K> r;
+	for (const auto& kv : m)
+		r[kv.second] = kv.first;
+	return r;
+}
+
+std::unordered_map<int32_t, std::wstring> ItemTypesLookup = reverse_map(ItemTypes);
+std::unordered_map<int32_t, std::wstring> RaritiesLookup = reverse_map(Rarities);
+std::unordered_map<int32_t, std::wstring> QualitiesLookup = reverse_map(Qualities);

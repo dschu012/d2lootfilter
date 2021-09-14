@@ -131,19 +131,7 @@ void ItemLevelCondition::Initialize(std::unordered_map<std::wstring, int32_t> va
 };
 
 bool QualityCondition::Evaluate(Unit* pItem) {
-	ItemsTxt txt = GetItemsTxt(pItem);
-	if (txt.dwCode == txt.dwUltraCode) {
-		m_Left->SetValue(2);
-	}
-	else if (txt.dwCode == txt.dwUberCode) {
-		m_Left->SetValue(1);
-	}
-	else if (txt.dwCode == txt.dwNormCode) {
-		m_Left->SetValue(0);
-	}
-	else {
-		m_Left->SetValue(-1);
-	}
+	m_Left->SetValue(GetQualityLevel(pItem));
 	return m_Expression->Evaluate(pItem);
 }
 
@@ -363,20 +351,32 @@ bool OwnedCondition::Evaluate(Unit* pItem) {
 		return false;
 	}
 
-	int unitId = pItem->dwUnitId;
-	int lineId = pItem->dwLineId;
+	int32_t unitId = pItem->dwUnitId;
+	int32_t fileIndex = pItem->pItemData->dwFileIndex;
+	ItemRarity rarity = pItem->pItemData->dwRarity;
 	int value = 0;
 	
-	for (Unit* pOtherItem = pPlayer->pInventory->pFirstItem; pOtherItem; pOtherItem = pOtherItem->pItemData->pNextItem) {
-		if (pOtherItem->pItemData->dwRarity != ItemRarity::SET
-			&& pOtherItem->pItemData->dwRarity != ItemRarity::UNIQUE) {
-			continue;
+	for (int i = 0; i < 128; i++) {
+		Unit* pOtherItem = FindUnitFromTable(i, UnitType::ITEM);
+		while (pOtherItem) {
+			if (pOtherItem->pItemData->dwRarity != ItemRarity::SET
+				&& pOtherItem->pItemData->dwRarity != ItemRarity::UNIQUE) {
+				pOtherItem = pOtherItem->pRoomNext;
+				continue;
+			}
+			if (fileIndex == pOtherItem->pItemData->dwFileIndex
+				&& pItem->pItemData->dwRarity == pOtherItem->pItemData->dwRarity
+				&& unitId != pOtherItem->dwUnitId) {
+				value = 1;
+				break;
+			}
+			pOtherItem = pOtherItem->pRoomNext;
 		}
-		if (lineId == pOtherItem->dwLineId && unitId != pOtherItem->dwUnitId) {
-			value = 1;
+		if (value == 1) {
 			break;
 		}
 	}
+
 	m_Left->SetValue(value);
 	return m_Expression->Evaluate(pItem);
 }

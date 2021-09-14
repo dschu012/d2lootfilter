@@ -359,6 +359,10 @@ struct Game
 	uint32_t nSyncTimer;						//0x1DC4
 };
 
+struct UnitHashTable {
+	Unit* table[128];
+};
+
 struct Unit
 {
 	UnitType dwUnitType;					//0x00
