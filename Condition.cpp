@@ -24,6 +24,18 @@ void TypeCondition::Initialize(std::unordered_map<std::wstring, int32_t> variabl
 	m_Expression->SetVariables(variables);
 };
 
+bool PlayerClassCondition::Evaluate(Unit* pItem) {
+	Unit* pUnit = D2CLIENT_GetPlayerUnit();
+	m_Left->SetValue(static_cast<int32_t>(pUnit->dwClassId));
+	return m_Expression->Evaluate(pItem);
+}
+
+void PlayerClassCondition::Initialize(std::unordered_map<std::wstring, int32_t> variables) {
+	m_Left = new Variable();
+	m_Expression = Parser::Parse(m_Left, m_Value.c_str());
+	m_Expression->SetVariables(variables);
+};
+
 bool ClassCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }

@@ -146,6 +146,7 @@ std::vector<Condition*> Configuration::ParseConditions(std::vector<std::wstring>
 		bool match = false;
 		CONDITION(Code)
 		else CONDITION(Type)
+		else CONDITION(PlayerClass)
 		else CONDITION(Class)
 		else CONDITION(Rarity)
 		else CONDITION(Ethereal)
@@ -171,6 +172,7 @@ std::vector<Condition*> Configuration::ParseConditions(std::vector<std::wstring>
 		else CONDITION(Width)
 		else CONDITION(Height)
 		else CONDITION(Random)
+		else CONDITION(Owned)
 		return match;
 		}), lines.end());
 	return items;
@@ -240,6 +242,15 @@ void Configuration::InitializeTypesCodesAndRunes() {
 		}
 	}
 
+	std::unordered_map<std::wstring, int32_t> classNames;
+
+	for (int32_t i = 0; i < sgptDataTables->nCharStatsTxtRecordCount; i++) {
+		CharStatsTxt charStats = sgptDataTables->pCharStatsTxt[i];
+		std::wstring className = std::wstring(charStats.wszClassName);
+		className = trim(className);
+		classNames[className] = i;
+	}
+
 	for (auto& rule : GlobalRules) {
 		for (auto& condition : rule.second->GetConditions()) {
 			switch (condition->GetType()) {
@@ -252,12 +263,16 @@ void Configuration::InitializeTypesCodesAndRunes() {
 			case ConditionType::RUNE:
 				condition->Initialize(runes);
 				break;
+			case ConditionType::PLAYERCLASS:
+				condition->Initialize(classNames);
+				break;
 			default:
 				break;
 			}
 		}
 	}
 }
+
 
 void Configuration::InitializeClass() {
 	for (auto& rule : GlobalRules) {
@@ -329,6 +344,7 @@ void Configuration::InitializeOther() {
 			case ConditionType::WIDTH:
 			case ConditionType::HEIGHT:
 			case ConditionType::RANDOM:
+			case ConditionType::OWNED:
 				condition->Initialize(variables);
 				break;
 			default:

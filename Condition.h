@@ -11,7 +11,7 @@
 
 //to be able to access conditions by type to set variables and such
 enum class ConditionType : uint8_t {
-	NONE, CODE, TYPE, CLASS, RARITY, ETHEREAL, RUNEWORD, PREFIX, SUFFIX,
+	NONE, CODE, TYPE, PLAYERCLASS, CLASS, RARITY, ETHEREAL, RUNEWORD, PREFIX, SUFFIX,
 	ITEM_LEVEL, QUALITY, AREA_LEVEL, CHARACTER_LEVEL, DIFFICULTY,
 	RUNE, ID, GOLD, STATS, DEFENSE, ARMOR, WEAPON, PRICE, MODE,
 	IDENTIFIED, SOCKETS, WIDTH, HEIGHT, RANDOM, OWNED
@@ -43,6 +43,18 @@ public:
 	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
 	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+};
+
+class PlayerClassCondition : public Condition {
+protected:
+	Variable* m_Left;
+	ListExpression* m_Expression;
+public:
+	PlayerClassCondition(std::wstring value = L"") : Condition(value, ConditionType::PLAYERCLASS) {};
+	bool Evaluate(Unit* pItem) override;
+	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
+	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+
 };
 
 class TypeCondition : public Condition {
@@ -361,7 +373,7 @@ protected:
 	Variable* m_Left;
 	ListExpression* m_Expression;
 public:
-	OwnedCondition(std::wstring value = L"") : Condition(value, ConditionType::RANDOM) {};
+	OwnedCondition(std::wstring value = L"") : Condition(value, ConditionType::OWNED) {};
 	bool Evaluate(Unit* pItem) override;
 	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
 	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
