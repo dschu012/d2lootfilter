@@ -135,12 +135,6 @@ void ItemFilter::ReloadFilter() {
 			pUnit = pUnit->pListNext;
 		}
 	}
-
-	for (auto entry : ITEM_ACTIONS) {
-		Unit* pUnit = FindUnit(entry.first, UnitType::ITEM);
-		RunRules(pUnit);
-		DoChatAlert(pUnit);
-	}
 }
 
 void ItemFilter::RunRules(Unit* pItem) {

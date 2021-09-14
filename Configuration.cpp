@@ -228,6 +228,7 @@ void Configuration::InitializeTypesCodesAndRunes() {
 		names[wNameStr] = pItemTxt.dwCode;
 		std::wstring wCode = std::wstring(4, L' ');
 		mbstowcs(&wCode[0], pItemTxt.szCode, 4);
+		wCode = trim(wCode);
 		codes[wCode] = pItemTxt.dwCode;
 		if (pItemTxt.wType[0] == ItemType::RUNE) {
 			int nRuneNumber = std::stoi(std::string(&pItemTxt.szCode[1], 3));

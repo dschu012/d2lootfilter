@@ -310,7 +310,7 @@ std::wstring Call::ToString(Unit* pItem) {
     std::wostringstream ss;
     for (auto& expression : m_Args) {
         if (&expression != &m_Args.front()) {
-            ss << L", L";
+            ss << L", ";
         }
         ss << expression->ToString(pItem);
     }
