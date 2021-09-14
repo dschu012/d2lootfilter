@@ -360,7 +360,7 @@ Handles the following.
 2) Item rect on ground when you hover over
 */
 void __stdcall ItemFilter::DrawGroundItemRect(DWORD retAddress, BOOL isHovered, Unit* pItem, uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode) {
-	if (!(retAddress == 0x0 || retAddress == reinterpret_cast<DWORD>(&D2CLIENT_callDrawAltDownItemRectRet))) {
+	if (retAddress == reinterpret_cast<DWORD>(D2CLIENT_callDrawAltDownItemRectRet)) {
 		//drawing a rect that isnt for an item. this is kinda a hack checking ret address of caller.
 		D2GFX_DrawSolidRectEx(nXStart, nYStart, nXEnd, nYEnd, nPaletteIndex, eDrawMode);
 		return;
