@@ -145,6 +145,7 @@ if defined D2Path (
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Hooking.h" />
     <ClInclude Include="ItemFilter.h" />
+    <ClInclude Include="mINI.h" />
     <ClInclude Include="Rule.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
