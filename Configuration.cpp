@@ -152,8 +152,8 @@ Rule* Configuration::ParseRule(std::vector<std::wstring>& lines) {
 	return rule;
 }
 
-#define CONDITION(NAME) if(line.compare(0, wcslen(L#NAME), L#NAME) == 0) { int len = wcslen(L#NAME); items.push_back(new NAME##Condition(line.length() > len ? trim_copy(line.substr(len + 1)) : L"")); match = true; }
-#define ACTION(NAME) if(line.compare(0, wcslen(L#NAME), L#NAME) == 0) { int len = wcslen(L#NAME); items.push_back(new NAME##Action(line.length() > len ? trim_copy(line.substr(len + 1)) : L"")); match = true; }
+#define CONDITION(NAME) if(line.compare(0, wcslen(L#NAME), L#NAME) == 0) { uint32_t len = wcslen(L#NAME); items.push_back(new NAME##Condition(line.length() > len ? trim_copy(line.substr(len + 1)) : L"")); match = true; }
+#define ACTION(NAME) if(line.compare(0, wcslen(L#NAME), L#NAME) == 0) { uint32_t len = wcslen(L#NAME); items.push_back(new NAME##Action(line.length() > len ? trim_copy(line.substr(len + 1)) : L"")); match = true; }
 
 std::vector<Condition*> Configuration::ParseConditions(std::vector<std::wstring>& lines) {
 	std::vector<Condition*> items;
