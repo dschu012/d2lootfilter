@@ -18,6 +18,7 @@ static D2CLIENT_UNITDRAW_DrawUnit_t fpUNITDRAW_DrawUnit;
 static D2CLIENT_AUTOMAP_Draw_t fpAUTOMAP_Draw;
 static D2COMMON_UNITS_FreeUnit_t fpUNITS_FreeUnit;
 static D2COMMON_DATATBLS_LoadAllTxts_t fpDATATBLS_LoadAllTxts;
+static D2CLIENT_DrawGameUI_t fpD2CLIENT_DrawGameUI;
 static D2WIN_WndProc_t fpWndProc;
 
 static BOOL(__stdcall* fpCallCommand)(char* sCmd);
@@ -82,6 +83,7 @@ ItemFilter::ItemFilter() {
 
 		//Load Datatables Hook
 		Hooking::TrampolineHook(D2COMMON_DATATBLS_LoadAllTxts, &DATATBLS_LoadAllTxts, reinterpret_cast<void**>(&fpDATATBLS_LoadAllTxts), 5);
+		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&fpD2CLIENT_DrawGameUI), 6);
 	} else {
 		//Item Action Own/World Packet Hooks
 		Hooking::TrampolineHook(D2CLIENT_ItemActionWorld, &ItemActionWorld, reinterpret_cast<void**>(&fpItemActionWorld), 6);
@@ -118,6 +120,7 @@ ItemFilter::ItemFilter() {
 
 		//Load Datatables Hook
 		Hooking::TrampolineHook(D2COMMON_DATATBLS_LoadAllTxts, &DATATBLS_LoadAllTxts, reinterpret_cast<void**>(&fpDATATBLS_LoadAllTxts), 6);
+		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&fpD2CLIENT_DrawGameUI), 5);
 	}
 	
 	//User Input/WndProc Hook
@@ -125,7 +128,7 @@ ItemFilter::ItemFilter() {
 }
 
 void ItemFilter::ReloadFilter() {
-	PrintGameString(std::format(L"Filter Reloaded (PingLevel: {}, FilterLevel: {})", PingLevel, FilterLevel), TextColor::ORANGE);
+	INFO_LOG(std::format(L"Item Filter Loaded (PingLevel: {}, FilterLevel: {})", PingLevel, FilterLevel));
 	Config->Load();
 	
 	ITEM_ACTIONS.clear();
@@ -177,9 +180,14 @@ POINT ItemFilter::ScreenToAutomap(int nX, int nY) {
 void ItemFilter::DATATBLS_LoadAllTxts(void* pMemPool, int a2, int a3) {
 	fpDATATBLS_LoadAllTxts(pMemPool, a2, a3);
 	IsTxtDataLoaded = true;
+
+}
+
+void __stdcall ItemFilter::DrawGameUI() {
 	if (!Config->IsLoaded()) {
-		Config->Load();
+		ItemFilter::ReloadFilter();
 	}
+	fpD2CLIENT_DrawGameUI();
 }
 
 void ItemFilter::HandlePacket(uint8_t* pBitStream, D2GSServerToClientPacketHandlerFn pHandler) {
@@ -485,21 +493,18 @@ void ItemFilter::DoChatAlert(Unit* pUnit) {
 
 void ItemFilter::ToggleDebug() {
 	IsFilterDebug = !IsFilterDebug;
-	DEBUG_LOG(L"Debug {}", IsFilterDebug ? L"On" : L"Off");
-	if (D2CLIENT_GetPlayerUnit()) {
-		PrintGameString(std::format(L"Debug {}", IsFilterDebug ? L"On" : L"Off"), TextColor::ORANGE);
-	}
+	INFO_LOG(std::format(L"Debug {}", IsFilterDebug ? L"On" : L"Off"));
 }
 
 void ItemFilter::DebugRule(uint32_t nLineNumber) {
 	Rule* rule = GlobalRules[nLineNumber];
 	if (!rule) {
-		PrintGameString(std::format(L"No rule found on line {}.", nLineNumber), TextColor::RED);
+		ERROR_LOG(std::format(L"No rule found on line {}.", nLineNumber));
 		return;
 	}
 	Unit* pUnit = *D2CLIENT_GetHoverItem;
 	if (!IsItem(pUnit)) {
-		PrintGameString(std::format(L"No item found under cursor."), TextColor::RED);
+		ERROR_LOG(std::format(L"No item found under cursor."));
 		return;
 	}
 	for (Condition* condition : rule->GetConditions()) {
@@ -511,7 +516,7 @@ void ItemFilter::DebugRule(uint32_t nLineNumber) {
 void ItemFilter::Clip() {
 	Unit* pItem = *D2CLIENT_GetHoverItem;
 	if (!IsItem(pItem)) {
-		PrintGameString(std::format(L"No item found under cursor."), TextColor::RED);
+		ERROR_LOG(std::format(L"No item found under cursor."));
 		return;
 	}
 	LPTSTR  lptstrCopy;
@@ -550,7 +555,7 @@ void ItemFilter::Clip() {
 
 	CloseClipboard();
 
-	PrintGameString(std::format(L"Item successfully copied to clipboard."), TextColor::ORANGE);
+	INFO_LOG(std::format(L"Item successfully copied to clipboard."));
 }
 
 LRESULT ItemFilter::WndProc(HWND hWnd, int msg, WPARAM wParam, LPARAM lParam) {

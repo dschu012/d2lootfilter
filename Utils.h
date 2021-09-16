@@ -8,10 +8,14 @@
 #include "D2Tables.h"
 
 #ifdef _DEBUG
-#define DEBUG_LOG(f, ...) std::wprintf(f, __VA_ARGS__); 
+#define DEBUG_LOG(f) std::wprintf(f); PrintGameString(f, TextColor::YELLOW);
 #else
-#define DEBUG_LOG(f, ...) ;
+#define DEBUG_LOG(f) ;
 #endif
+
+#define INFO_LOG(f) PrintGameString(f, TextColor::YELLOW);
+#define WARN_LOG(f) PrintGameString(f, TextColor::ORANGE);
+#define ERROR_LOG(f) PrintGameString(f, TextColor::RED);
 
 
 //Hooking

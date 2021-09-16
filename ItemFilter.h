@@ -46,6 +46,8 @@ public:
 
 	static void __stdcall GetItemDesc(wchar_t* pBuffer);
 	static void __stdcall DATATBLS_LoadAllTxts(void* pMemPool, int a2, int a3);
+	static void __stdcall DrawGameUI();
+
 	static void __stdcall UNITS_FreeUnit(Unit* pUnit);
 
 	static void __stdcall AUTOMAP_Draw();

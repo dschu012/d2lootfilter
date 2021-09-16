@@ -85,6 +85,7 @@ F2(D2COMMON, DATATBLS_LoadAllTxts, void, __stdcall, (void* pMemPool, int a2, int
 F2(D2COMMON, UNITS_FreeUnit, void, __stdcall, (Unit* pUnit), -10124, 0x220300);
 F2(D2COMMON, INVENTORY_GetNextItem, Unit*, __stdcall, (Unit* pItem), 0x0, 0x23DFA0);
 
+F2(D2CLIENT, DrawGameUI, void, __stdcall, (),  0x285C0, 0x96B10);
 F2(D2CLIENT, UNITDRAW_DrawUnit, BOOL, __fastcall, (Unit* pUnit, uint32_t dwColorTint, int nXpos, int nYpos, BOOL bFade, BOOL bDrawOverlays), 0x6CC00, 0x71EC0);
 
 F2(D2CLIENT, ItemActionWorld, void, __fastcall, (uint8_t* pBitstream), 0xAE080, 0x5EB10);

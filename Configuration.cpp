@@ -119,7 +119,7 @@ void Configuration::Load() {
 
 	auto t2 = std::chrono::high_resolution_clock::now();
 	auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
-	DEBUG_LOG(L"Rules parsed in %dms", ms_int.count());
+	DEBUG_LOG(std::format(L"Rules parsed in {}ms", ms_int.count()));
 }
 
 void Configuration::HandleToken(uint32_t lineNumber, std::vector<std::wstring>& lines) {
@@ -137,6 +137,9 @@ void Configuration::HandleToken(uint32_t lineNumber, std::vector<std::wstring>& 
 		else rule->AddAction(new HideAction(), 0);
 		rule->SetLineNumber(lineNumber);
 		GlobalRules[lineNumber] = rule;
+	}
+	for (auto line : lines) {
+		ERROR_LOG(std::format(L"Rule {}: Error parsing {}.", lineNumber, line));
 	}
 	lines.clear();
 }
