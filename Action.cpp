@@ -15,6 +15,7 @@ static std::unordered_map<std::wstring, std::wstring> COLOR_TO_STRING = {
 	COLOR(Blue, TEXT_BLUE),
 	COLOR(Gold, TEXT_GOLD),
 	COLOR(Gray, TEXT_GRAY),
+	COLOR(Grey, TEXT_GRAY),
 	COLOR(Black, TEXT_BLACK),
 	COLOR(Tan, TEXT_TAN),
 	COLOR(Orange, TEXT_ORANGE),
@@ -25,7 +26,8 @@ static std::unordered_map<std::wstring, std::wstring> COLOR_TO_STRING = {
 	COLOR(Coral, TEXT_CORAL),
 	COLOR(Sage, TEXT_SAGE),
 	COLOR(Teal, TEXT_TEAL),
-	COLOR(Light Gray, TEXT_LIGHT_GRAY)
+	COLOR(Light Gray, TEXT_LIGHT_GRAY),
+	COLOR(Light Grey, TEXT_LIGHT_GRAY)
 };
 #undef COLOR
 
@@ -38,6 +40,7 @@ static std::unordered_map<std::wstring, uint8_t> COLOR_TO_PALETTE_IDX = {
 	COLOR(Blue, 0x97),
 	COLOR(Gold, 0x0D),
 	COLOR(Gray, 0xD0),
+	COLOR(Grey, 0xD0),
 	COLOR(Black, 0x00),
 	COLOR(Tan, 0x5A),
 	COLOR(Orange, 0x60),
@@ -47,10 +50,10 @@ static std::unordered_map<std::wstring, uint8_t> COLOR_TO_PALETTE_IDX = {
 	COLOR(Coral, 0x66),
 	COLOR(Sage, 0x82),
 	COLOR(Teal, 0xCB),
-	COLOR(Light Gray, 0xD6)
+	COLOR(Light Gray, 0xD6),
+	COLOR(Light Grey, 0xD6)
 };
 #undef COLOR
-
 
 static std::wstring GetItemName(ActionResult* action, Unit* pItem) {
 	if (action->bItemNameSet) {
@@ -68,12 +71,26 @@ static std::wstring GetItemDesc(ActionResult* action, Unit* pItem) {
 	}
 }
 
-static std::wstring GetRuneNumber(ActionResult* action, Unit* pItem) {
-	if (!D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::RUNE)) {
-		return L"";
+static std::wstring GetPotionNumber(ActionResult* action, Unit* pItem) {
+	if(D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::HEALING_POTION)
+		|| D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::MANA_POTION)) {
+		return GetItemCode(pItem).substr(2);
 	}
-	ItemsTxt pItemTxt = D2COMMON_ItemDataTbl->pItemsTxt[pItem->dwLineId];
-	return std::to_wstring(std::stoi(std::string(&GetItemsTxt(pItem).szCode[1], 3)));
+	if (D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::REJUV_POTION)) {
+		std::wstring code = GetItemCode(pItem);
+		return code == L"rvl" ? L"2" : L"1";
+	}
+	if (D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::POTION)) {
+		return L"1";
+	}
+	return L"";
+}
+
+static std::wstring GetRuneNumber(ActionResult* action, Unit* pItem) {
+	if (D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::RUNE)) {
+		return std::to_wstring(_wtoi(GetItemCode(pItem).substr(1).c_str()));
+	}
+	return L"";
 }
 
 static std::wstring Newline(ActionResult* action, Unit* pItem) {
@@ -136,6 +153,7 @@ void SetNameAction::SetResult(ActionResult* action, Unit* pItem) {
 		{ L"{Sockets}", &GetItemSockets },
 		{ L"{Price}", &GetItemPrice },
 		{ L"{Rune Number}", &GetRuneNumber },
+		{ L"{Potion Number}", &GetPotionNumber },
 		{ L"{Newline}", &Newline }
 	};
 	//we got here from a CONTINUE

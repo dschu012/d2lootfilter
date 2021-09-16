@@ -337,7 +337,7 @@ Show
 Continue
 
 Show
-    Class Shield
+    Class Any Shield
     Rarity < Magic
     Ethereal False
     Runeword False
@@ -346,7 +346,7 @@ Show
 Continue
 
 Show
-    Class Shield
+    Class Any Shield
     Rarity < Magic
     Ethereal False
     Runeword False
@@ -355,7 +355,7 @@ Show
 Continue
 
 Show
-    Class Shield
+    Class Any Shield
     Rarity < Magic
     Ethereal False
     Runeword False
@@ -364,7 +364,7 @@ Show
 Continue
 
 Show
-    Class Shield
+    Class Any Shield
     Rarity < Magic
     Ethereal True
     Runeword False
@@ -616,15 +616,51 @@ Continue
 # General Metadata
 ######
 
-#Show
-#    Class Any Armor, Weapon, Ring, Amulet
-#    Rarity <= Magic
-#    Price 35000
-#    SetName {Name} {Gray}+35k
-#Continue
+Show
+    Class Any Armor, Weapon, Ring, Amulet
+    Rarity <= Magic
+    Price 35000
+    SetName {Name} {Gray}+35k
+Continue
 
 Show
-    Rarity < Magic
+    Type Identify Scroll
+    SetName {Blue}*{White}ID
+Continue
+
+Show
+    Type Town Portal Scroll
+    SetName {Green}*{White}TP
+Continue
+
+Show
+    Class Healing Potion
+    SetName {Red}HP{Potion Number}
+Continue
+
+Show
+    Class Mana Potion
+    SetName {Blue}MP{Potion Number}
+Continue
+
+Show
+    Class Rejuv Potion
+    SetName {Purple}R{Potion Number}
+Continue
+
+Show 
+    Class Rune
+    SetName {Orange}{Name}
+Continue
+
+Show
+    Rarity Inferior
+    SetName {Gray}{Name}
+Continue
+
+
+Show
+    Rarity in Normal-Superior
     SetName {White}{Name}
 Continue
 
@@ -730,7 +766,6 @@ Show
 
 Show
     Rune in El-Fal
-    SetName {Orange}{Name}
 
 ######
 # END Runes
@@ -1030,7 +1065,7 @@ Show
 # Cobalt/Garnet/Coral, alvl 18
 # prismatic, alvl 28
 Show
-    Class Shield
+    Class Any Shield
 	Rarity Magic
     Stats ("All Resist" > 15 or "Any Resist" > 20 or "Sockets" = 2) and "Faster Block Rate" >= 30
     SetStyle T6
@@ -2699,6 +2734,33 @@ Show
 #Show all runeword
 Show
     Runeword True
+
+#Show all "quest" items
+Show
+    Class Quest
+    SetName {Gold}{Name}
+
+#show quest items that aren't type "quest"
+Show
+    Type "Khalim's Flail", "Khalim's Will"
+    SetName {Gold}{Name}
+
+#show all types of potions
+Show
+    Class Potion
+
+#show scrolls
+Show
+    Type Town Portal Scroll, Identify Scroll
+
+#show keys
+Show
+    Type Key
+
+#show arrows and bolts if you are an amazon
+Show
+    Type Arrows, Bolts
+    PlayerClass Amazon
 
 ######
 # END Misc

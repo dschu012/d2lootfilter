@@ -153,6 +153,14 @@ ItemsTxt GetItemsTxt(Unit* pUnit) {
     return D2COMMON_ItemDataTbl->pItemsTxt[pUnit->dwLineId];
 }
 
+std::wstring GetItemCode(Unit* pUnit) {
+    ItemsTxt txt = GetItemsTxt(pUnit);
+    std::wstring wCode = std::wstring(4, L' ');
+    mbstowcs(&wCode[0], txt.szCode, 4);
+    wCode = trim(wCode);
+    return wCode;
+}
+
 int32_t GetQualityLevel(Unit* pItem) {
     ItemsTxt txt = GetItemsTxt(pItem);
     int32_t quality = -1;

@@ -32,8 +32,8 @@ std::string GetOrDefault(std::string& configLine, std::string defaultValue) {
 }
 
 //todo wstring
-void Configuration::ReadSetting() {
-	Settings s = {};
+void Configuration::ReadSettings() {
+	Settings* s = new Settings();
 
 	mINI::INIFile file(SETTINGS_FILE);
 	mINI::INIStructure data;
@@ -43,9 +43,9 @@ void Configuration::ReadSetting() {
 		file.read(data);
 	}
 
-	s.wPath = GetOrDefault(data["Setting"]["Path"], "./item.filter");
-	s.nFilterLevel = std::stoi(GetOrDefault(data["Setting"]["FilterLevel"], "6"));
-	s.nPingLevel = std::stoi(GetOrDefault(data["Setting"]["PingLevel"], "6"));
+	s->wPath = GetOrDefault(data["Setting"]["Path"], "./item.filter");
+	s->nFilterLevel = std::stoi(GetOrDefault(data["Setting"]["FilterLevel"], "6"));
+	s->nPingLevel = std::stoi(GetOrDefault(data["Setting"]["PingLevel"], "6"));
 
 	if (!exists) {
 		file.generate(data);
@@ -54,29 +54,44 @@ void Configuration::ReadSetting() {
 	m_Settings = s;
 }
 
+void Configuration::SaveSettings() {
+	if (!m_Settings) {
+		ReadSettings();
+	}
+
+	mINI::INIFile file(SETTINGS_FILE);
+	mINI::INIStructure data;
+	
+	data["Setting"]["Path"] = m_Settings->wPath;
+	data["Setting"]["FilterLevel"] = std::to_string(FilterLevel);
+	data["Setting"]["PingLevel"] = std::to_string(PingLevel);
+
+	file.generate(data);
+}
+
 void Configuration::Load() {
 	if (!IsTxtDataLoaded) {
 		return;
 	}
 	
-	ReadSetting();
+	ReadSettings();
 
 	auto t1 = std::chrono::high_resolution_clock::now();
 
-	PingLevel = m_Settings.nPingLevel;
-	FilterLevel = m_Settings.nFilterLevel;
+	PingLevel = m_Settings->nPingLevel;
+	FilterLevel = m_Settings->nFilterLevel;
 	GlobalRules.clear();
 	GlobalStyles.clear();
 
-	if (!fs::exists(m_Settings.wPath)) {
-		std::ofstream out(m_Settings.wPath);
+	if (!fs::exists(m_Settings->wPath)) {
+		std::ofstream out(m_Settings->wPath);
 		out.close();
 	}
 
 	uint32_t tokenLineNumber = 0;
 	uint32_t currentLineNumber = 0;
 
-	std::wifstream in(m_Settings.wPath);
+	std::wifstream in(m_Settings->wPath);
 	std::wstring line;
 	std::vector<std::wstring> lines;
 

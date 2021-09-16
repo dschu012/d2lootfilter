@@ -234,7 +234,8 @@ void __stdcall ItemFilter::HandleItemName(Unit* pItem, wchar_t* pBuffer, uint32_
 	}
 }
 
-void __stdcall ItemFilter::GetItemDesc(Unit* pItem, wchar_t* pBuffer) {
+void __stdcall ItemFilter::GetItemDesc(wchar_t* pBuffer) {
+	Unit* pItem = *D2CLIENT_GetHoverItem;
 	if (HasActions(pItem)
 		&& ITEM_ACTIONS[pItem->dwUnitId]->bItemDescSet) {
 		std::wstring copy = ITEM_ACTIONS[pItem->dwUnitId]->wsItemDesc;
@@ -421,24 +422,28 @@ BOOL __stdcall ItemFilter::CallCommand(char* sCmd) {
 
 	if (!strncmp(sCmd, CMD_FILTERLEVEL, strlen(CMD_FILTERLEVEL))) {
 		FilterLevel = atoi(&sCmd[strlen(CMD_FILTERLEVEL)]);
+		Config->SaveSettings();
 		ItemFilter::ReloadFilter();
 		return FALSE;
 	}
 
 	if (!strncmp(sCmd, CMD_FILTERLEVEL2, strlen(CMD_FILTERLEVEL2))) {
 		FilterLevel = atoi(&sCmd[strlen(CMD_FILTERLEVEL2)]);
+		Config->SaveSettings();
 		ItemFilter::ReloadFilter();
 		return FALSE;
 	}
 
 	if (!strncmp(sCmd, CMD_PINGLEVEL, strlen(CMD_PINGLEVEL))) {
 		PingLevel = atoi(&sCmd[strlen(CMD_PINGLEVEL)]);
+		Config->SaveSettings();
 		ItemFilter::ReloadFilter();
 		return FALSE;
 	}
 
 	if (!strncmp(sCmd, CMD_PINGLEVEL2, strlen(CMD_PINGLEVEL2))) {
 		PingLevel = atoi(&sCmd[strlen(CMD_PINGLEVEL2)]);
+		Config->SaveSettings();
 		ItemFilter::ReloadFilter();
 		return FALSE;
 	}
@@ -578,7 +583,6 @@ void __declspec(naked) __stdcall ItemFilter::GetItemDesc_STUB() {
 	__asm {
 			add esp, 0x808;
 			push eax;
-			push[esp + 0x8];
 			call ItemFilter::GetItemDesc;
 			ret 0xc;
 	}
@@ -589,7 +593,6 @@ void __declspec(naked) __stdcall ItemFilter::GetItemDesc_STUB_114d() {
 		mov esp, ebp
 		pop ebp
 		push eax;
-		push ebx;
 		call ItemFilter::GetItemDesc;
 		ret 0xc;
 	}

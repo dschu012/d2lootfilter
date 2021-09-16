@@ -16,7 +16,7 @@ struct Settings {
 
 class Configuration {
 private:
-	Settings m_Settings;
+	Settings* m_Settings;
 	bool m_Loaded = false;
 
 	void HandleToken(uint32_t lineNumber, std::vector<std::wstring>& lines);
@@ -24,7 +24,7 @@ private:
 	Rule* ParseRule(std::vector<std::wstring>& lines);
 	std::vector<Condition*> ParseConditions(std::vector<std::wstring>& lines);
 	std::vector<Action*> ParseActions(std::vector<std::wstring>& lines);
-	void ReadSetting();
+	void ReadSettings();
 	void InitalizeConditionVariables();
 	void InitializeTypesCodesAndRunes();
 	void InitializeClass();
@@ -33,6 +33,7 @@ private:
 public:
 	Configuration();
 
+	void SaveSettings();
 	void Load();
 	bool IsLoaded() { return m_Loaded; }
 };

@@ -36,4 +36,5 @@ std::vector<std::wstring> split(const std::wstring& stringToSplit, const std::ws
 
 //Utility D2 Methods
 ItemsTxt GetItemsTxt(Unit* pUnit);
+std::wstring GetItemCode(Unit* pUnit);
 int32_t GetQualityLevel(Unit* pItem);

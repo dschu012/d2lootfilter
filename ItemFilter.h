@@ -44,7 +44,7 @@ public:
 	static BOOL __stdcall GetItemName(Unit* pItem, wchar_t* pBuffer, uint32_t dwSize);
 	static void __stdcall HandleItemName(Unit* pItem, wchar_t* pBuffer, uint32_t dwSize);
 
-	static void __stdcall GetItemDesc(Unit* pUnit, wchar_t* pBuffer);
+	static void __stdcall GetItemDesc(wchar_t* pBuffer);
 	static void __stdcall DATATBLS_LoadAllTxts(void* pMemPool, int a2, int a3);
 	static void __stdcall UNITS_FreeUnit(Unit* pUnit);
 
