@@ -28,7 +28,6 @@ Still todo:
 
 * Error handling. Filter just silently ignores errors right now.
 * Disable sound for hidden drops
-* UI for enabling/disabling debugging features (temporarily show hidden items and show what conditions caused them being hidden). Currently Ctrl + Shift + Z disabled the filter and shows debug information.
 * Tier system to change filter levels in game.
 
 Example with custom item name/border/background color/inventory background color and chat notification.
