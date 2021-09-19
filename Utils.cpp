@@ -30,6 +30,7 @@ D2Version InitGameVersion(LPCVOID pVersionResource) {
         return D2Version::ERR;
     if (minor == 0 && revision == 13 && subrevision == 60) return D2Version::V113c;
     if (minor == 14 && revision == 3 && subrevision == 71) return D2Version::V114d;
+    if (minor == 0 && revision == 10 && subrevision == 39) return D2Version::V110f;
     return D2Version::ERR;
 }
 
@@ -57,7 +58,7 @@ D2Version GetGameVersion() {
 }
 
 void  PrintGameString(std::wstring wStr, TextColor color) {
-    if (GetGameVersion() == D2Version::V114d) {
+    if (GetGameVersion() == D2Version::V114d || GetGameVersion() == D2Version::V110f) {
         D2CLIENT_PrintGameStringe_114d(wStr.c_str(), color);
     } else {
         D2CLIENT_PrintGameString(wStr.c_str(), color);

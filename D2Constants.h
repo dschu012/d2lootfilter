@@ -35,6 +35,7 @@ template<typename Enum,
 
 //user defined 
 enum class D2Version : uint8_t {
+	V110f,
 	V113c,
 	V114d,
 	NONE,
