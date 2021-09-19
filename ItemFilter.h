@@ -65,6 +65,7 @@ public:
 
 	static void __stdcall DrawHoverItemRect_STUB();
 
+	static void __stdcall DrawInventoryItemRect_STUB_110f();
 	static void __stdcall DrawInventoryItemRect_STUB();
 	static void __stdcall DrawInventoryItemRect_STUB_114d();
 

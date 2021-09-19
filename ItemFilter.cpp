@@ -84,7 +84,7 @@ ItemFilter::ItemFilter() {
 		//Load Datatables Hook
 		Hooking::TrampolineHook(D2COMMON_DATATBLS_LoadAllTxts, &DATATBLS_LoadAllTxts, reinterpret_cast<void**>(&fpDATATBLS_LoadAllTxts), 5);
 		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&fpD2CLIENT_DrawGameUI), 6);
-	} else {
+	} else if (GetGameVersion() == D2Version::V113c) {
 		//Item Action Own/World Packet Hooks
 		Hooking::TrampolineHook(D2CLIENT_ItemActionWorld, &ItemActionWorld, reinterpret_cast<void**>(&fpItemActionWorld), 6);
 		Hooking::TrampolineHook(D2CLIENT_ItemActionOwned, &ItemActionOwned, reinterpret_cast<void**>(&fpItemActionOwned), 6);
@@ -121,8 +121,44 @@ ItemFilter::ItemFilter() {
 		//Load Datatables Hook
 		Hooking::TrampolineHook(D2COMMON_DATATBLS_LoadAllTxts, &DATATBLS_LoadAllTxts, reinterpret_cast<void**>(&fpDATATBLS_LoadAllTxts), 6);
 		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&fpD2CLIENT_DrawGameUI), 5);
-	}
-	
+	} else if (GetGameVersion() == D2Version::V110f) {
+		//Item Action Own/World Packet Hooks
+		Hooking::TrampolineHook(D2CLIENT_ItemActionWorld, &ItemActionWorld, reinterpret_cast<void**>(&fpItemActionWorld), 6);
+		Hooking::TrampolineHook(D2CLIENT_ItemActionOwned, &ItemActionOwned, reinterpret_cast<void**>(&fpItemActionOwned), 6);
+
+		//Item Name Hook
+		Hooking::TrampolineHook(D2CLIENT_GetItemName_114d, &GetItemName_114d, reinterpret_cast<void**>(&fpD2CLIENT_GetItemName_114d), 5);
+
+		//Item Desc Hook
+		Hooking::SetJmp(D2CLIENT_fpGetItemDescPatch, &GetItemDesc_STUB, 6);
+
+		//Automap Draw Hook
+		Hooking::TrampolineHook(D2CLIENT_AUTOMAP_Draw, &AUTOMAP_Draw, reinterpret_cast<void**>(&fpAUTOMAP_Draw), 6);
+
+		//Unit Draw Hook
+		Hooking::TrampolineHook(D2CLIENT_UNITDRAW_DrawUnit, &UNITDRAW_DrawUnit, reinterpret_cast<void**>(&fpUNITDRAW_DrawUnit), 6);
+
+		//No draw hooks
+		Hooking::SetCall(D2CLIENT_checkUnitNoDrawPatch_1, &CheckUnitNoDraw1_STUB, 9);
+		Hooking::SetCall(D2CLIENT_checkUnitNoDrawPatch_2, &CheckUnitNoDraw2_STUB, 9);
+
+		//Call Command Hook
+		Hooking::SetCall(D2CLIENT_callCommand, &CallCommand_STUB, 5);
+
+		//Item Rect on Ground Hooks
+		Hooking::SetCall(D2WIN_callDrawAltDownItemRectPatch, &DrawAltDownItemRect_STUB, 5);
+		Hooking::SetCall(D2WIN_callDrawHoverItemRectPatch, &DrawHoverItemRect_STUB, 5);
+
+		//Item Rect in Inv Hook
+		Hooking::SetCall(D2CLIENT_callDrawInventoryItemRectPatch, &DrawInventoryItemRect_STUB_110f, 5);
+
+		//Cleanup Cached Item Data Hook
+		Hooking::TrampolineHook(D2COMMON_UNITS_FreeUnit, &UNITS_FreeUnit, reinterpret_cast<void**>(&fpUNITS_FreeUnit), 5);
+
+		//Load Datatables Hook
+		Hooking::TrampolineHook(D2COMMON_DATATBLS_LoadAllTxts, &DATATBLS_LoadAllTxts, reinterpret_cast<void**>(&fpDATATBLS_LoadAllTxts), 6);
+		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&fpD2CLIENT_DrawGameUI), 8);
+	}	
 	//User Input/WndProc Hook
 	Hooking::TrampolineHook(D2WIN_WndProc, &WndProc, reinterpret_cast<void**>(&fpWndProc), 5);
 }
@@ -480,7 +516,7 @@ void ItemFilter::DoChatAlert(Unit* pUnit) {
 		&& (pUnit->eItemAnimMode == ItemAnimationMode::DROPPING
 			|| pUnit->eItemAnimMode == ItemAnimationMode::GROUND)) {
 		wchar_t buffer[0x100] = L"";
-		if (GetGameVersion() == D2Version::V114d) {
+		if (GetGameVersion() == D2Version::V114d || GetGameVersion() == D2Version::V110f) {
 			D2CLIENT_GetItemName_114d(pUnit, buffer, 0x100);
 		} else {
 			D2CLIENT_GetItemName(pUnit, buffer, 0x100);
@@ -694,6 +730,26 @@ void __declspec(naked) __stdcall ItemFilter::DrawHoverItemRect_STUB() {
 		push 0;
 		call ItemFilter::DrawGroundItemRect;
 		ret 0x18;
+	}
+}
+
+//Copy what D2Client.6FB5B0F0(guessed Arg1, Arg2, Arg3, Arg4) is doing and put ptItem
+void __declspec(naked) __stdcall ItemFilter::DrawInventoryItemRect_STUB_110f() {
+	__asm
+	{
+		push[esp + 0x10];
+		push[esp + 0x10];
+		mov eax, [esp + 0x10];
+		add eax, edx;
+		push eax;
+		mov eax, [esp + 0x10];
+		add eax, ecx;
+		push eax;
+		push edx;
+		push ecx;
+		push[esp + 0x38];
+		call ItemFilter::DrawInventoryItemRect;
+		ret 0x10;
 	}
 }
 
