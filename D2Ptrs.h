@@ -37,7 +37,7 @@ P2(D2CLIENT, callDrawAltDownItemRectRet, void, 0x59473, 0xA72F4, 0x6A3F0);
 //1.14d $ + A72F4 | > \5F            POP EDI
 
 P2(D2CLIENT, fpGroundHoverUnit, void, 0x51A80, 0x67A10, 0x15A20); //check 1.14d???
-P2(D2WIN, callDrawHoverItemRectPatch, void, 0x1357B, 0x1031C1, 0xB71B);			//Call to D2GFX_DrawSolidRectEx(uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode)
+P2(D2WIN, callDrawHoverItemRectPatch, void, 0x1357B, 0x1031C1, 0xA89E);			//Call to D2GFX_DrawSolidRectEx(uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode)
 
 //in 110f  D2Client.0x6FAE1710_DrawItemBackground(D2InventoryGridInfoStrc* pInventoryGridInfo, int nX, int nY, BYTE nItemWidth, BYTE nItemHeight, DWORD nColorIndex)
 //uses strange wrapper insted of digerct D2GFX_DrawSolidRectEx call
