@@ -625,12 +625,12 @@ Continue
 
 Show
     Type Scroll of Identify
-    SetName {Blue}*{White}ID
+    SetName {Blue}* {White}ID
 Continue
 
 Show
     Type Scroll of Town Portal
-    SetName {Green}*{White}TP
+    SetName {Green}* {White}TP
 Continue
 
 Show

@@ -203,4 +203,8 @@ Special thanks to everyone that has shared their work at [Phrozen-Keep](https://
 
 To name a few Necrolis, Lectem, Kingpin, whist, Revan, etc...
 
+<<<<<<< HEAD
 Thanks to coffin_spirit on Discord for the 1.10f implementation.
+=======
+Thanks to coffin_spirit on Discord for the 1.10f implementation.
+>>>>>>> 3202dffebb9345e9cd76d79dbff9c61d2bb6ea70
