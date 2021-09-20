@@ -370,7 +370,7 @@ void __stdcall ItemFilter::DrawDebugInfo(Unit* pItem, uint32_t nXStart, uint32_t
 	auto width = 0;
 	for (auto& line : lines) {
 		uint32_t w, fileNo;
-		if (GetGameVersion() == D2Version::V114d) {
+		if (GetGameVersion() == D2Version::V114d || GetGameVersion() == D2Version::V110f) {
 			w = D2WIN_GetTextPixelWidth(line.c_str());
 		} else {
 			D2WIN_GetTextPixelWidthFileNo(line.c_str(), &w, &fileNo);
