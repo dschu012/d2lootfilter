@@ -60,6 +60,7 @@ public:
 
 #pragma region Stubs
 	//Stubs
+	static void __stdcall DrawAltDownItemRect_STUB_110f();
 	static void __stdcall DrawAltDownItemRect_STUB();
 	static void __stdcall DrawAltDownItemRect_STUB_114d();
 

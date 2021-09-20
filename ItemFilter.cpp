@@ -146,7 +146,7 @@ ItemFilter::ItemFilter() {
 		Hooking::SetCall(D2CLIENT_callCommand, &CallCommand_STUB, 5);
 
 		//Item Rect on Ground Hooks
-		Hooking::SetCall(D2WIN_callDrawAltDownItemRectPatch, &DrawAltDownItemRect_STUB, 5);
+		Hooking::SetCall(D2WIN_callDrawAltDownItemRectPatch, &DrawAltDownItemRect_STUB_110f, 5);
 		Hooking::SetCall(D2WIN_callDrawHoverItemRectPatch, &DrawHoverItemRect_STUB, 5);
 
 		//Item Rect in Inv Hook
@@ -676,6 +676,24 @@ void __declspec(naked) __stdcall ItemFilter::CheckUnitNoDraw2_STUB_114d() {
 		pop edx;
 		pop ecx;
 		ret;
+	}
+}
+
+void __declspec(naked) __stdcall ItemFilter::DrawAltDownItemRect_STUB_110f() {
+	__asm
+	{
+		push[esp + 0x18];
+		push[esp + 0x18];
+		push[esp + 0x18];
+		push[esp + 0x18];
+		push[esp + 0x18];
+		push[esp + 0x18];
+		mov eax, [esp + 0x4c];
+		push[eax - 0x4];
+		push 0;
+		push 0;
+		call ItemFilter::DrawGroundItemRect;
+		ret 0x18;
 	}
 }
 
