@@ -6,6 +6,8 @@
 #include <vector>
 #include "D2Structs.h"
 #include "D2Tables.h"
+#include "mINI.h"
+#include <filesystem>
 
 #ifdef _DEBUG
 #define DEBUG_LOG(f) std::wprintf(f); PrintGameString(f, TextColor::YELLOW);

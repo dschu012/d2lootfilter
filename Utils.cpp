@@ -12,6 +12,8 @@
 
 #pragma comment(lib, "Version.Lib")
 
+#define D2SE_SETUP_FILE "D2SE_SETUP.ini"
+
 D2Version InitGameVersion(LPCVOID pVersionResource) {
     UINT uLen;
     VS_FIXEDFILEINFO* ptFixedFileInfo;
@@ -30,23 +32,38 @@ D2Version InitGameVersion(LPCVOID pVersionResource) {
         return D2Version::ERR;
     if (minor == 0 && revision == 13 && subrevision == 60) return D2Version::V113c;
     if (minor == 14 && revision == 3 && subrevision == 71) return D2Version::V114d;
+    if (minor == 0 && revision == 10 && subrevision == 39) return D2Version::V110f;
     return D2Version::ERR;
 }
 
 D2Version InitGameVersion() {
-    HMODULE hModule = GetModuleHandle(NULL);
-    HRSRC hResInfo = FindResource(hModule, MAKEINTRESOURCE(VS_VERSION_INFO), RT_VERSION);
-    if (!hResInfo) {
+    std::string core;
+    mINI::INIFile file(D2SE_SETUP_FILE);
+    mINI::INIStructure coredata;
+    bool exists = std::filesystem::exists(D2SE_SETUP_FILE);
+
+    if (!exists) {
+        HMODULE hModule = GetModuleHandle(NULL);
+        HRSRC hResInfo = FindResource(hModule, MAKEINTRESOURCE(VS_VERSION_INFO), RT_VERSION);
+        if (!hResInfo) {
+            return D2Version::ERR;
+        }
+        HGLOBAL hResData = LoadResource(hModule, hResInfo);
+        if (!hResData) {
+            return D2Version::ERR;
+        }
+        LPVOID pVersionResource = LockResource(hResData);
+        D2Version version = InitGameVersion(pVersionResource);
+        FreeResource(hResData);
+        return version;
+    }
+    else {
+        file.read(coredata);
+        core = coredata["Protected"]["D2Core"];
+        if (core == "1.10f") return D2Version::V110f;
+        if (core == "1.13c") return D2Version::V113c;
         return D2Version::ERR;
     }
-    HGLOBAL hResData = LoadResource(hModule, hResInfo);
-    if (!hResData) {
-        return D2Version::ERR;
-    }
-    LPVOID pVersionResource = LockResource(hResData);
-    D2Version version = InitGameVersion(pVersionResource);
-    FreeResource(hResData);
-    return version;
 }
 
 D2Version GetGameVersion() {
