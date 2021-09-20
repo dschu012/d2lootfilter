@@ -158,11 +158,7 @@ ItemFilter::ItemFilter() {
 		//Load Datatables Hook
 		Hooking::TrampolineHook(D2COMMON_DATATBLS_LoadAllTxts, &DATATBLS_LoadAllTxts, reinterpret_cast<void**>(&fpDATATBLS_LoadAllTxts), 6);
 		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&fpD2CLIENT_DrawGameUI), 8);
-<<<<<<< HEAD
 	}
-=======
-	}	
->>>>>>> 3202dffebb9345e9cd76d79dbff9c61d2bb6ea70
 	//User Input/WndProc Hook
 	Hooking::TrampolineHook(D2WIN_WndProc, &WndProc, reinterpret_cast<void**>(&fpWndProc), 5);
 }
