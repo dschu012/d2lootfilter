@@ -1,6 +1,6 @@
 ### d2lootfilter
 
-d2lootfilter is a plugin that can be used with [PlugY](http://plugy.free.fr/en/index.html) or other mod systems to filter loot on 1.13c and 1.14d. The syntax for filtering loot was made to be similar to [Path of Exile](https://pathofexile.fandom.com/wiki/Item_filter).
+d2lootfilter is a plugin that can be used with [PlugY](http://plugy.free.fr/en/index.html) or other mod systems to filter loot on 1.10f, 1.13c, and 1.14d. The syntax for filtering loot was made to be similar to [Path of Exile](https://pathofexile.fandom.com/wiki/Item_filter).
 
 * [Sample Filter](doc/ENG/item.filter)
 * [Features](#Features)
@@ -202,3 +202,5 @@ The filter has a few in-game commands for changing settings.
 Special thanks to everyone that has shared their work at [Phrozen-Keep](https://d2mods.info/forum/viewforum.php?f=8) [(Discord)](https://discord.gg/NvfftHY).
 
 To name a few Necrolis, Lectem, Kingpin, whist, Revan, etc...
+
+Thanks to coffin_spirit on Discord for the 1.10f implementation.

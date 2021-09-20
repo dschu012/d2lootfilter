@@ -624,13 +624,13 @@ Show
 Continue
 
 Show
-    Type Identify Scroll
-    SetName {Blue}*{White}ID
+    Type Scroll of Identify
+    SetName {Blue}* {White}ID
 Continue
 
 Show
-    Type Town Portal Scroll
-    SetName {Green}*{White}TP
+    Type Scroll of Town Portal
+    SetName {Green}* {White}TP
 Continue
 
 Show
@@ -2751,7 +2751,7 @@ Show
 
 #show scrolls
 Show
-    Type Town Portal Scroll, Identify Scroll
+    Type Scroll of Town Portal, Scroll of Identify
 
 #show keys
 Show
