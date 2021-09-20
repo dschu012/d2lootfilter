@@ -30,7 +30,7 @@ static const uint32_t DLLBASE_STORM = (uint32_t)LoadLibraryA("Storm.dll");
 #define P2(DLL, N, T, O110f, O113c, O114d) D2PTR(DLL, N, T, (GetGameVersion() == D2Version::V114d ? O114d : (GetGameVersion() == D2Version::V113c ? O113c : O110f)))
 
 //Hooks for item filter
-P2(D2CLIENT, fpGetItemDescPatch, void, 0x531F4, 0x5612C, 0xE64CE);
+P2(D2CLIENT, fpGetItemDescPatch, void, 0x531C9, 0x5612C, 0xE64CE);
 P2(D2WIN, callDrawAltDownItemRectPatch, void, 0xB160, 0x12F12, 0x102436);		//Call to D2GFX_DrawSolidRectEx(uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode)
 P2(D2CLIENT, callDrawAltDownItemRectRet, void, 0x6A3F0, 0x59473, 0xA72F4);
 //1.13c $+59473   |.  A1 0078BC6F   |MOV EAX,DWORD PTR DS:[6FBC7800]
