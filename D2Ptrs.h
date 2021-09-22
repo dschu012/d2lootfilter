@@ -102,7 +102,7 @@ F2(D2COMMON, STATLIST_GetUnitStatUnsigned, uint32_t, __stdcall, (const Unit* pUn
 //F2(D2COMMON, STATLIST_GetUnitStatSigned, int, __stdcall, (Unit* pUnit, Stat nStatId, uint16_t nLayer), -10587, 0x225480);
 F2(D2COMMON, DATATBLS_LoadAllTxts, void, __stdcall, (void* pMemPool, int a2, int a3), -10576, -10943, 0x219300);
 F2(D2COMMON, UNITS_FreeUnit, void, __stdcall, (Unit* pUnit), -11260, -10124, 0x220300);
-
+//F2(D2COMMON, GetCursorItem, Unit*, __stdcall, (Inventory* pInventory), -10262, 0x0, 0x0);
 F2(D2CLIENT, DrawGameUI, void, __stdcall, (), 0x5E650, 0x285C0, 0x96B10);
 
 //110f 0xBA720 looks way more complex that 0x6CC00 113c, need to be checked
