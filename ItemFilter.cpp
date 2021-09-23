@@ -438,12 +438,9 @@ void __stdcall ItemFilter::DrawGroundItemRect(DWORD retAddress, BOOL isHovered, 
 
 void __stdcall ItemFilter::DrawInventoryItemRect(Unit* pItem, uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode) {
 	//0x08: red, 0xea: blue, 0x76: green.
-	//Unit* pUnit = D2CLIENT_GetPlayerUnit();
-	//Unit* pCusror = D2COMMON_GetCursorItem(pUnit->pInventory);
-	if (nPaletteIndex == 0xEA) {
-		if (HasActions(pItem)) {
-			nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId]->bInvBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId]->nInvBackgroundPaletteIndex : nPaletteIndex;
-		}
+	if (nPaletteIndex == 0xEA
+			&& HasActions(pItem)) {
+		nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId]->bInvBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId]->nInvBackgroundPaletteIndex : nPaletteIndex;
 	}
 	//call original
 	D2GFX_DrawSolidRectEx(nXStart, nYStart, nXEnd, nYEnd, nPaletteIndex, eDrawMode);
