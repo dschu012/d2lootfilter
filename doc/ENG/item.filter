@@ -710,7 +710,7 @@ Continue
 
 Show
     Class Armor
-    Rarity < Magic
+    Rarity Normal
     Runeword False
     Sockets 0
     SetDescription {Description}{White}Add sockets with {Orange}Tal Thul {Yellow}0{White}Perfect{Newline}
@@ -718,7 +718,7 @@ Continue
 
 Show
     Class Melee Weapon
-    Rarity < Magic
+    Rarity Normal
     Runeword False
     Sockets 0
     SetDescription {Description}{White}Add sockets with {Orange}Ral Amn {Purple}0{White}Perfect{Newline}
@@ -726,7 +726,7 @@ Continue
 
 Show
     Class Any Shield
-    Rarity < Magic
+    Rarity Normal
     Runeword False
     Sockets 0
     SetDescription {Description}{White}Add sockets with {Orange}Tal Amn {Red}0{White}Perfect{Newline}
@@ -734,7 +734,7 @@ Continue
 
 Show
     Class Helm
-    Rarity < Magic
+    Rarity Normal
     Runeword False
     Sockets 0
     SetDescription {Description}{White}Add sockets with {Orange}Ral Thul {Blue}0{White}Perfect{Newline}
