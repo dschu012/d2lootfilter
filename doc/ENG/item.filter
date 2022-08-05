@@ -1341,7 +1341,7 @@ Show
 
 # Rings, Amulets, Jewels, & Circlets
 Show
-    Type Amulet, Ring, Jewel, Circlet
+    Type Amulet, Ring, Jewel, Circlet, Coronet, Tiara, Diadem
     Rarity Rare
     Identified False
     SetStyle T4
@@ -1457,7 +1457,7 @@ Show
 
 # Circlet Variants (many good things)
 Show
-    Type Circlet
+    Type Circlet, Coronet, Tiara, Diadem
     Rarity Magic
     Ethereal False
     Identified False
