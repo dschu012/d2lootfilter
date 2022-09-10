@@ -274,7 +274,19 @@ int32_t Call::Evaluate(Unit* pItem) {
     {
         int32_t statId = args[0];
         args.erase(args.begin());
-        return EvaluateStat(pItem, static_cast<Stat>(statId), args);
+        auto stat = static_cast<Stat>(statId);
+        int32_t value = EvaluateStat(pItem, stat, args);
+        if (stat == Stat::HITPOINTS
+            || stat == Stat::MAXHP
+            || stat == Stat::MANA
+            || stat == Stat::MAXMANA
+            || stat == Stat::STAMINA
+            || stat == Stat::MAXSTAMINA
+            || stat == Stat::ITEM_HP_PERLEVEL
+            || stat == Stat::ITEM_MANA_PERLEVEL) {
+            value = value >> 8;
+        }
+        return value;
     }
     case Token::CLASS:
         return EvaluateClass(pItem, args);
