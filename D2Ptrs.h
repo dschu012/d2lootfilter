@@ -85,6 +85,8 @@ P2(D2CLIENT, Divisor, int, 0xD7BC0, 0xF16B0, 0x311254);
 P2(D2CLIENT, Offset, POINT, 0x1119C8, 0x11C1F8, 0x3A5198);    //unshure for 110f
 P2(D2CLIENT, ResolutionX, uint32_t, 0xD40EC, 0xDBC48, 0x31146C);
 
+P2(D2CLIENT, UIVar_Game, BOOL, 0x11A6A8, 0xFAD80, 0x3A27C0);
+
 P2(D2CLIENT, ServerSideUnitHashTables, UnitHashTable, 0x11B600, 0x10A608, 0x3A5E70); // Updated 1.14d //007A5E70-BASE
 P2(D2CLIENT, ClientSideUnitHashTables, UnitHashTable, 0x11AA00, 0x109A08, 0x3A5270); // Updated 1.14d //007A5270-BASE
 

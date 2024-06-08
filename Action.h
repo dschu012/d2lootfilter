@@ -48,95 +48,143 @@ protected:
 	ActionType m_Type;
 	std::wstring m_Value;
 public:
-	Action(std::wstring value = L"", ActionType type = ActionType::NONE) : m_Value(value), m_Type(type) {};
-	ActionType GetType() { return m_Type; }
-	virtual void SetResult(ActionResult* pResult, Unit* pItem) = 0;
+	Action(std::wstring_view value = {}, ActionType type = ActionType::NONE) : m_Value(value), m_Type(type) {};
+	virtual ~Action() = default;
+	ActionType GetType() const { return m_Type; }
+	virtual void SetResult(ActionResult& action, Unit* pItem) const = 0;
 };
 
 class ShowAction : public Action {
 public:
-	ShowAction(std::wstring value = L"") : Action(value, ActionType::SHOW) {};
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	ShowAction(std::wstring_view value = {}) : Action(value, ActionType::SHOW) {};
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ShowAction>(value); }
 };
 
 class HideAction : public Action {
 public:
-	HideAction(std::wstring value = L"") : Action(value, ActionType::HIDE) {};
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	HideAction(std::wstring_view value = {}) : Action(value, ActionType::HIDE) {};
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<HideAction>(value); }
 };
 
 class ContinueAction : public Action {
 public:
-	ContinueAction(std::wstring value = L"") : Action(value, ActionType::CONTINUE) { };
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	ContinueAction(std::wstring_view value = {}) : Action(value, ActionType::CONTINUE) { };
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ContinueAction>(value); }
 };
 
 class ColorTextAction : public Action {
 public:
-	ColorTextAction(std::wstring value = L"", ActionType type = ActionType::NONE);
-	virtual void SetResult(ActionResult* pResult, Unit* pItem) = 0;
+	ColorTextAction(std::wstring_view value = {}, ActionType type = ActionType::NONE);
+	virtual void SetResult(ActionResult& action, Unit* pItem) const = 0;
 };
 
 class PaletteIndexAction : public Action {
 protected:
 	uint8_t m_PaletteIndex = 0;
 public:
-	PaletteIndexAction(std::wstring value = L"", ActionType type = ActionType::NONE);
-	virtual void SetResult(ActionResult* pResult, Unit* pItem) = 0;
+	PaletteIndexAction(std::wstring_view value = {}, ActionType type = ActionType::NONE);
+	virtual void SetResult(ActionResult& action, Unit* pItem) const = 0;
 };
 
 class SetStyleAction : public Action {
 public:
-	SetStyleAction(std::wstring value = L"") : Action(value, ActionType::SET_STYLE) {};
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	SetStyleAction(std::wstring_view value = {}) : Action(value, ActionType::SET_STYLE) {};
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<SetStyleAction>(value); }
 };
 
 class SetNameAction : public ColorTextAction {
 public:
-	SetNameAction(std::wstring value = L"") : ColorTextAction(value, ActionType::SET_NAME) {};
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	SetNameAction(std::wstring_view value = {}) : ColorTextAction(value, ActionType::SET_NAME) {};
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<SetNameAction>(value); }
 };
 
 class SetDescriptionAction : public ColorTextAction {
 public:
-	SetDescriptionAction(std::wstring value = L"") : ColorTextAction(value, ActionType::SET_DESCRIPTION) {};
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	SetDescriptionAction(std::wstring_view value = {}) : ColorTextAction(value, ActionType::SET_DESCRIPTION) {};
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<SetDescriptionAction>(value); }
 };
 
 class SetBackgroundColorAction : public PaletteIndexAction {
 public:
-	SetBackgroundColorAction(std::wstring value = L"") : PaletteIndexAction(value, ActionType::SET_BORDER_COLOR) {};
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	SetBackgroundColorAction(std::wstring_view value = {}) : PaletteIndexAction(value, ActionType::SET_BORDER_COLOR) {};
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<SetBackgroundColorAction>(value); }
 };
 
 class SetInventoryColorAction : public PaletteIndexAction {
 public:
-	SetInventoryColorAction(std::wstring value = L"") : PaletteIndexAction(value, ActionType::SET_INVENTORY_COLOR) {};
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	SetInventoryColorAction(std::wstring_view value = {}) : PaletteIndexAction(value, ActionType::SET_INVENTORY_COLOR) {};
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<SetInventoryColorAction>(value); }
 };
 
 class SetBorderColorAction : public PaletteIndexAction {
 public:
-	SetBorderColorAction(std::wstring value = L"") : PaletteIndexAction(value, ActionType::SET_BORDER_COLOR) {};
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	SetBorderColorAction(std::wstring_view value = {}) : PaletteIndexAction(value, ActionType::SET_BORDER_COLOR) {};
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<SetBorderColorAction>(value); }
 };
 
 class ChatNotifyAction : public Action {
 protected:
-	Expression* m_Expression;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	ChatNotifyAction(std::wstring value = L"");
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	ChatNotifyAction(std::wstring_view value = {});
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ChatNotifyAction>(value); }
 };
 
 class PlayAlertAction : public Action {
 public:
-	PlayAlertAction(std::wstring value = L"") : Action(value, ActionType::PLAY_ALERT) {};
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	PlayAlertAction(std::wstring_view value = {}) : Action(value, ActionType::PLAY_ALERT) {};
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<PlayAlertAction>(value); }
 };
 
 class MinimapIconAction : public PaletteIndexAction {
 public:
-	MinimapIconAction(std::wstring value = L"") : PaletteIndexAction(value, ActionType::MINIMAP_ICON) {};
-	void SetResult(ActionResult* pResult, Unit* pItem) override;
+	MinimapIconAction(std::wstring_view value = {}) : PaletteIndexAction(value, ActionType::MINIMAP_ICON) {};
+	void SetResult(ActionResult& action, Unit* pItem) const override;
+
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<MinimapIconAction>(value); }
+};
+
+class ActionFactory {
+public:
+	static std::unique_ptr<Action> MakeInstance(std::wstring_view action, std::wstring_view value = {}) {
+		static const utility::string_umap_icase<std::wstring, std::unique_ptr<Action>(&)(std::wstring_view)> lookup = {
+			{ L"Continue",				ContinueAction::MakeInstance },
+			{ L"SetStyle",				SetStyleAction::MakeInstance },
+			{ L"SetName",				SetNameAction::MakeInstance },
+			{ L"SetDescription",		SetDescriptionAction::MakeInstance },
+			{ L"SetBackgroundColor",	SetBackgroundColorAction::MakeInstance },
+			{ L"SetInventoryColor",		SetInventoryColorAction::MakeInstance },
+			{ L"SetBorderColor",		SetBorderColorAction::MakeInstance },
+			{ L"ChatNotify",			ChatNotifyAction::MakeInstance },
+			{ L"PlayAlert",				PlayAlertAction::MakeInstance },
+			{ L"MinimapIcon",			MinimapIconAction::MakeInstance },
+		};
+
+		if (auto search = lookup.find(action); search != lookup.end()) {
+			return search->second(value);
+		}
+		return nullptr;
+	}
 };

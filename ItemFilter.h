@@ -10,15 +10,31 @@ typedef void(__fastcall* D2GSServerToClientPacketHandlerFn)(uint8_t* pBitstream)
 class ItemFilter
 {
 private:
-	static Configuration* Config;
-public:
+	Configuration m_Config;
+
 	ItemFilter();
+
+	inline static bool DebugFlag = false;
+	inline static std::unique_ptr<ItemFilter> Instance = nullptr;
+public:
+	ItemFilter(const ItemFilter&) = delete;
+	ItemFilter& operator=(const ItemFilter&) = delete;
+
+	static void Initialize();
 
 	static void ReloadFilter();
 	static void RunRules(Unit* pItem);
+
+	static bool IsLoaded() { return Instance->m_Config.IsLoaded(); }
+	static void LoadSettings() { Instance->m_Config.LoadSettings(); }
+	static void SaveSettings() { Instance->m_Config.SaveSettings(); }
+
+	static int32_t& FilterLevel() { return Instance->m_Config.m_Settings.nFilterLevel; }
+	static int32_t& PingLevel() { return Instance->m_Config.m_Settings.nPingLevel; }
 	
 	static void ToggleDebug();
 	static void DebugRule(uint32_t nLineNumber);
+	static bool IsFilterDebug() { return DebugFlag; }
 
 	static void Clip();
 
@@ -28,6 +44,7 @@ public:
 	static bool HasActions(Unit* pUnit);
 	static POINT ScreenToAutomap(int nX, int nY);
 
+	static BOOL IsTxtDataLoaded() { return *D2CLIENT_UIVar_Game; }
 	
 #pragma region Hooks
 	//Hooked Methods
@@ -45,7 +62,6 @@ public:
 	static void __stdcall HandleItemName(Unit* pItem, wchar_t* pBuffer, uint32_t dwSize);
 
 	static void __stdcall GetItemDesc(wchar_t* pBuffer);
-	static void __stdcall DATATBLS_LoadAllTxts(void* pMemPool, int a2, int a3);
 	static void __stdcall DrawGameUI();
 
 	static void __stdcall UNITS_FreeUnit(Unit* pUnit);

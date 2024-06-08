@@ -9,6 +9,7 @@
 #include "D2Tables.h"
 #include "D2Structs.h"
 #include "D2Ptrs.h"
+#include "mINI.h"
 
 #pragma comment(lib, "Version.Lib")
 
@@ -37,7 +38,6 @@ D2Version InitGameVersion(LPCVOID pVersionResource) {
 }
 
 D2Version InitGameVersion() {
-    std::string core;
     mINI::INIFile file(D2SE_SETUP_FILE);
     mINI::INIStructure coredata;
     bool exists = std::filesystem::exists(D2SE_SETUP_FILE);
@@ -59,7 +59,7 @@ D2Version InitGameVersion() {
     }
     else {
         file.read(coredata);
-        core = coredata["Protected"]["D2Core"];
+        const auto& core = coredata["Protected"]["D2Core"];
         if (core == "1.10f") return D2Version::V110f;
         if (core == "1.13c") return D2Version::V113c;
         return D2Version::ERR;
@@ -67,13 +67,11 @@ D2Version InitGameVersion() {
 }
 
 D2Version GetGameVersion() {
-    if (GameVersion == D2Version::NONE) {
-        GameVersion = InitGameVersion();
-    }
+    static D2Version GameVersion = InitGameVersion();
     return GameVersion;
 }
 
-void  PrintGameString(std::wstring wStr, TextColor color) {
+void  PrintGameString(const std::wstring& wStr, TextColor color) {
     if (GetGameVersion() == D2Version::V114d || GetGameVersion() == D2Version::V110f) {
         D2CLIENT_PrintGameStringe_114d(wStr.c_str(), color);
     } else {
@@ -100,9 +98,9 @@ Unit* FindUnit(uint32_t unitId, UnitType type) {
 }
 
 uint32_t __fastcall GetDllOffset(uint32_t baseAddress, int offset) {
-    DEBUG_LOG(L"baseAddress: {}\n", baseAddress);
-    DEBUG_LOG(L"offset: {}\n", offset);
-    DEBUG_LOG(L"return: {}\n", baseAddress + offset);
+    DEBUG_LOG(std::format(L"baseAddress: {}\n", baseAddress));
+    DEBUG_LOG(std::format(L"offset: {}\n", offset));
+    DEBUG_LOG(std::format(L"return: {}\n", baseAddress + offset));
     if (offset < 0)
         return (uint32_t)GetProcAddress((HMODULE)baseAddress, (LPCSTR)(-offset));
     return baseAddress + offset;
@@ -126,68 +124,65 @@ std::wstring_view trim(std::wstring_view s) {
 	return ltrim(rtrim(s));
 }
 
-std::wstring ltrim_copy(std::wstring s) {
-    ltrim(s);
-    return std::wstring(s);
+std::wstring ltrim_copy(std::wstring_view s) {
+    return std::wstring(ltrim(s));
 }
 
 // trim from end (copying)
-std::wstring rtrim_copy(std::wstring s) {
-    rtrim(s);
-    return std::wstring(s);
+std::wstring rtrim_copy(std::wstring_view s) {
+    return std::wstring(rtrim(s));
 }
 
 // trim from both ends (copying)
-std::wstring trim_copy(std::wstring s) {
-    trim(s);
-    return std::wstring(s);
+std::wstring trim_copy(std::wstring_view s) {
+    return std::wstring(trim(s));
 }
 
-void replace(std::wstring& subject, const std::wstring& search, const std::wstring& replace) {
+void replace(std::wstring& subject, std::wstring_view search, std::wstring_view replace) {
     size_t pos = 0;
-    while ((pos = subject.find(search, pos)) != std::string::npos) {
+    while ((pos = subject.find(search, pos)) != std::wstring_view::npos) {
         subject.replace(pos, search.length(), replace);
         pos += replace.length();
     }
 }
 
-std::vector<std::wstring> split(const std::wstring& stringToSplit, const std::wstring& regexPattern)
+std::vector<std::wstring> split(std::wstring_view stringToSplit, std::wstring_view regexPattern)
 {
     std::vector<std::wstring> result;
 
-    const std::wregex rgx(regexPattern);
-    std::wsregex_token_iterator iter(stringToSplit.begin(), stringToSplit.end(), rgx, -1);
+    const std::wregex rgx(regexPattern.begin(), regexPattern.end());
+    std::regex_token_iterator<std::wstring_view::iterator> iter(stringToSplit.begin(), stringToSplit.end(), rgx, -1);
 
-    for (std::wsregex_token_iterator end; iter != end; ++iter)
+    for (std::regex_token_iterator<std::wstring_view::iterator> end; iter != end; ++iter)
     {
-        result.push_back(iter->str());
+        result.emplace_back(iter->str());
     }
 
     return result;
 }
 
-ItemsTxt GetItemsTxt(Unit* pUnit) {
-    return D2COMMON_ItemDataTbl->pItemsTxt[pUnit->dwLineId];
+ItemsTxt* GetItemsTxt(Unit* pUnit) {
+    return &D2COMMON_ItemDataTbl->pItemsTxt[pUnit->dwLineId];
 }
 
 std::wstring GetItemCode(Unit* pUnit) {
-    ItemsTxt txt = GetItemsTxt(pUnit);
+    ItemsTxt* pItemTxt = GetItemsTxt(pUnit);
     std::wstring wCode = std::wstring(4, L' ');
-    mbstowcs(&wCode[0], txt.szCode, 4);
+    mbstowcs(&wCode[0], pItemTxt->szCode, 4);
     wCode = trim(wCode);
     return wCode;
 }
 
 int32_t GetQualityLevel(Unit* pItem) {
-    ItemsTxt txt = GetItemsTxt(pItem);
+    ItemsTxt* pItemTxt = GetItemsTxt(pItem);
     int32_t quality = -1;
-    if (txt.dwCode == txt.dwUltraCode) {
+    if (pItemTxt->dwCode == pItemTxt->dwUltraCode) {
         quality = 2;
     }
-    else if (txt.dwCode == txt.dwUberCode) {
+    else if (pItemTxt->dwCode == pItemTxt->dwUberCode) {
         quality = 1;
     }
-    else if (txt.dwCode == txt.dwNormCode) {
+    else if (pItemTxt->dwCode == pItemTxt->dwNormCode) {
         quality = 0;
     }
     return quality;

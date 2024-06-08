@@ -5,9 +5,7 @@
 #include "D2Ptrs.h"
 #include "Expression.h"
 #include <unordered_map>
-
-#pragma warning( push )
-#pragma warning( disable : 26495 )
+#include "Utils.h"
 
 //to be able to access conditions by type to set variables and such
 enum class ConditionType : uint8_t {
@@ -25,359 +23,428 @@ protected:
 	ConditionType m_Type;
 	std::wstring m_Value;
 public:
-	Condition(std::wstring value = L"", ConditionType type = ConditionType::NONE) : m_Value(value), m_Type(type) {};
-	ConditionType GetType() { return m_Type; }
+	Condition(std::wstring_view value = {}, ConditionType type = ConditionType::NONE) : m_Value(value), m_Type(type) {};
+	virtual ~Condition() = default;
+	ConditionType GetType() const { return m_Type; }
 	virtual bool Evaluate(Unit* pItem) = 0;
-	virtual void Initialize(std::unordered_map<std::wstring, int32_t> variables) {};
-	virtual std::wstring ToString(Unit* pItem) = 0;
+	virtual void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) = 0;
+	virtual std::wstring ToString(Unit* pItem) const = 0;
 };
 
 
 class CodeCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	CodeCondition(std::wstring value = L"") : Condition(value, ConditionType::CODE) {};
+	CodeCondition(std::wstring_view value = {}) : Condition(value, ConditionType::CODE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<CodeCondition>(value); }
 };
 
 class PlayerClassCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	PlayerClassCondition(std::wstring value = L"") : Condition(value, ConditionType::PLAYERCLASS) {};
+	PlayerClassCondition(std::wstring_view value = {}) : Condition(value, ConditionType::PLAYERCLASS) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<PlayerClassCondition>(value); }
 };
 
 class TypeCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	TypeCondition(std::wstring value = L"") : Condition(value, ConditionType::TYPE) {};
+	TypeCondition(std::wstring_view value = {}) : Condition(value, ConditionType::TYPE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<TypeCondition>(value); }
 };
 
 class ClassCondition : public Condition {
 protected:
-	Variable* m_Left;
-	Expression* m_Expression;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	ClassCondition(std::wstring value = L"") : Condition(value, ConditionType::CLASS) {};
+	ClassCondition(std::wstring_view value = {}) : Condition(value, ConditionType::CLASS) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ClassCondition>(value); }
 };
 
 class RarityCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	RarityCondition(std::wstring value = L"") : Condition(value, ConditionType::RARITY) {};
+	RarityCondition(std::wstring_view value = {}) : Condition(value, ConditionType::RARITY) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<RarityCondition>(value); }
 };
 
 class EtherealCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	EtherealCondition(std::wstring value = L"") : Condition(value, ConditionType::ETHEREAL) {};
+	EtherealCondition(std::wstring_view value = {}) : Condition(value, ConditionType::ETHEREAL) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<EtherealCondition>(value); }
 };
 
 class RunewordCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	RunewordCondition(std::wstring value = L"") : Condition(value, ConditionType::RUNEWORD) {};
+	RunewordCondition(std::wstring_view value = {}) : Condition(value, ConditionType::RUNEWORD) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<RunewordCondition>(value); }
 };
 
 class PrefixCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	PrefixCondition(std::wstring value = L"") : Condition(value, ConditionType::PREFIX) {};
+	PrefixCondition(std::wstring_view value = {}) : Condition(value, ConditionType::PREFIX) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<PrefixCondition>(value); }
 };
 
 class SuffixCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	SuffixCondition(std::wstring value = L"") : Condition(value, ConditionType::SUFFIX) {};
+	SuffixCondition(std::wstring_view value = {}) : Condition(value, ConditionType::SUFFIX) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<SuffixCondition>(value); }
 };
 
 class ItemLevelCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	ItemLevelCondition(std::wstring value = L"") : Condition(value, ConditionType::ITEM_LEVEL) {};
+	ItemLevelCondition(std::wstring_view value = {}) : Condition(value, ConditionType::ITEM_LEVEL) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ItemLevelCondition>(value); }
 };
 
 class QualityCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	QualityCondition(std::wstring value = L"") : Condition(value, ConditionType::QUALITY) {};
+	QualityCondition(std::wstring_view value = {}) : Condition(value, ConditionType::QUALITY) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<QualityCondition>(value); }
 };
 
 class AreaLevelCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	AreaLevelCondition(std::wstring value = L"") : Condition(value, ConditionType::AREA_LEVEL) {};
+	AreaLevelCondition(std::wstring_view value = {}) : Condition(value, ConditionType::AREA_LEVEL) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<AreaLevelCondition>(value); }
 };
 
 class CharacterLevelCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	CharacterLevelCondition(std::wstring value = L"") : Condition(value, ConditionType::CHARACTER_LEVEL) {};
+	CharacterLevelCondition(std::wstring_view value = {}) : Condition(value, ConditionType::CHARACTER_LEVEL) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<CharacterLevelCondition>(value); }
 };
 
 class DifficultyCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	DifficultyCondition(std::wstring value = L"") : Condition(value, ConditionType::DIFFICULTY) {};
+	DifficultyCondition(std::wstring_view value = {}) : Condition(value, ConditionType::DIFFICULTY) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<DifficultyCondition>(value); }
 };
 
 class RuneCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	RuneCondition(std::wstring value = L"") : Condition(value, ConditionType::RUNE) {};
+	RuneCondition(std::wstring_view value = {}) : Condition(value, ConditionType::RUNE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<RuneCondition>(value); }
 };
 
 class IdCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	IdCondition(std::wstring value = L"") : Condition(value, ConditionType::ID) {};
+	IdCondition(std::wstring_view value = {}) : Condition(value, ConditionType::ID) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<IdCondition>(value); }
 };
 
 class GoldCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	GoldCondition(std::wstring value = L"") : Condition(value, ConditionType::GOLD) {};
+	GoldCondition(std::wstring_view value = {}) : Condition(value, ConditionType::GOLD) {};
 	bool Evaluate(Unit* pItem) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<GoldCondition>(value); }
 };
 
 class StatsCondition : public Condition {
 protected:
-	Expression* m_Expression;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	StatsCondition(std::wstring value = L"") : Condition(value, ConditionType::STATS) {};
+	StatsCondition(std::wstring_view value = {}) : Condition(value, ConditionType::STATS) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<StatsCondition>(value); }
 };
 
 class DefenseCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	DefenseCondition(std::wstring value = L"") : Condition(value, ConditionType::DEFENSE) {};
+	DefenseCondition(std::wstring_view value = {}) : Condition(value, ConditionType::DEFENSE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<DefenseCondition>(value); }
 };
 
 class ArmorCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	ArmorCondition(std::wstring value = L"") : Condition(value, ConditionType::ARMOR) {};
+	ArmorCondition(std::wstring_view value = {}) : Condition(value, ConditionType::ARMOR) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ArmorCondition>(value); }
 };
 
 class WeaponCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	WeaponCondition(std::wstring value = L"") : Condition(value, ConditionType::WEAPON) {};
+	WeaponCondition(std::wstring_view value = {}) : Condition(value, ConditionType::WEAPON) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<WeaponCondition>(value); }
 };
 
 class PriceCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	PriceCondition(std::wstring value = L"") : Condition(value, ConditionType::PRICE) {};
+	PriceCondition(std::wstring_view value = {}) : Condition(value, ConditionType::PRICE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<PriceCondition>(value); }
 };
 
 class ModeCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	ModeCondition(std::wstring value = L"") : Condition(value, ConditionType::MODE) {};
+	ModeCondition(std::wstring_view value = {}) : Condition(value, ConditionType::MODE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ModeCondition>(value); }
 };
 
 class IdentifiedCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	IdentifiedCondition(std::wstring value = L"") : Condition(value, ConditionType::IDENTIFIED) {};
+	IdentifiedCondition(std::wstring_view value = {}) : Condition(value, ConditionType::IDENTIFIED) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<IdentifiedCondition>(value); }
 };
 
 class SocketsCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	SocketsCondition(std::wstring value = L"") : Condition(value, ConditionType::SOCKETS) {};
+	SocketsCondition(std::wstring_view value = {}) : Condition(value, ConditionType::SOCKETS) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<SocketsCondition>(value); }
 };
 
 class WidthCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	WidthCondition(std::wstring value = L"") : Condition(value, ConditionType::WIDTH) {};
+	WidthCondition(std::wstring_view value = {}) : Condition(value, ConditionType::WIDTH) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<WidthCondition>(value); }
 };
 
 class HeightCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	HeightCondition(std::wstring value = L"") : Condition(value, ConditionType::HEIGHT) {};
+	HeightCondition(std::wstring_view value = {}) : Condition(value, ConditionType::HEIGHT) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<HeightCondition>(value); }
 };
 
 class RandomCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	RandomCondition(std::wstring value = L"") : Condition(value, ConditionType::RANDOM) {};
+	RandomCondition(std::wstring_view value = {}) : Condition(value, ConditionType::RANDOM) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<RandomCondition>(value); }
 };
 
 class OwnedCondition : public Condition {
 protected:
-	Variable* m_Left;
-	ListExpression* m_Expression;
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
 public:
-	OwnedCondition(std::wstring value = L"") : Condition(value, ConditionType::OWNED) {};
+	OwnedCondition(std::wstring_view value = {}) : Condition(value, ConditionType::OWNED) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(std::unordered_map<std::wstring, int32_t> variables) override;
-	std::wstring ToString(Unit* pItem) override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<OwnedCondition>(value); }
 };
 
-#pragma warning( pop )
+class ConditionFactory {
+public:
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view condition, std::wstring_view value = {}) {
+		static const utility::string_umap_icase<std::wstring, std::unique_ptr<Condition>(&)(std::wstring_view)> lookup = {
+			{ L"Code",				CodeCondition::MakeInstance },
+			{ L"Type",				TypeCondition::MakeInstance },
+			{ L"PlayerClass",		PlayerClassCondition::MakeInstance },
+			{ L"Class",				ClassCondition::MakeInstance },
+			{ L"Rarity",			RarityCondition::MakeInstance },
+			{ L"Ethereal",			EtherealCondition::MakeInstance },
+			{ L"Runeword",			RunewordCondition::MakeInstance },
+			{ L"Prefix",			PrefixCondition::MakeInstance },
+			{ L"Suffix",			SuffixCondition::MakeInstance },
+			{ L"ItemLevel",			ItemLevelCondition::MakeInstance },
+			{ L"Quality",			QualityCondition::MakeInstance },
+			{ L"AreaLevel",			AreaLevelCondition::MakeInstance },
+			{ L"CharacterLevel",	CharacterLevelCondition::MakeInstance },
+			{ L"Difficulty",		DifficultyCondition::MakeInstance },
+			{ L"Rune",				RuneCondition::MakeInstance },
+			{ L"Identified",		IdentifiedCondition::MakeInstance },
+			{ L"Id",				IdCondition::MakeInstance },
+			{ L"Gold",				GoldCondition::MakeInstance },
+			{ L"Stats",				StatsCondition::MakeInstance },
+			{ L"Defense",			DefenseCondition::MakeInstance },
+			{ L"Armor",				ArmorCondition::MakeInstance },
+			{ L"Weapon",			WeaponCondition::MakeInstance },
+			{ L"Price",				PriceCondition::MakeInstance },
+			{ L"Mode",				ModeCondition::MakeInstance },
+			{ L"Sockets",			SocketsCondition::MakeInstance },
+			{ L"Width",				WidthCondition::MakeInstance },
+			{ L"Height",			HeightCondition::MakeInstance },
+			{ L"Random",			RandomCondition::MakeInstance },
+			{ L"Owned",				OwnedCondition::MakeInstance }
+		};
+
+		if (auto search = lookup.find(condition); search != lookup.end()) {
+			return search->second(value);
+		}
+		return nullptr;
+	}
+};

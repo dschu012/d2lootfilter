@@ -1,15 +1,9 @@
 #include "Globals.h"
 #include "Action.h"
 
-D2Version GameVersion = D2Version::NONE;
-int32_t FilterLevel = 6;
-int32_t PingLevel = 6;
-bool IsFilterDebug = false;
-bool IsTxtDataLoaded = false;
-
 //item type linker object.
 #define ITEM_TYPE(STR, ENUM) { L#STR, static_cast<std::underlying_type_t<ItemType>>(ItemType::##ENUM##) }
-std::unordered_map<std::wstring, int32_t> ItemTypes = {
+const utility::string_umap<std::wstring, int32_t> ItemTypes = {
 	ITEM_TYPE(None, NONE_1),
 	ITEM_TYPE(None, NONE_2),
 	ITEM_TYPE(Shield, SHIELD),
@@ -118,7 +112,7 @@ std::unordered_map<std::wstring, int32_t> ItemTypes = {
 
 //custom strings that can be used for filtering stats
 #define STAT(STR, STR2) { L#STR, L#STR2 }
-std::unordered_map<std::wstring, std::wstring> CustomStats = {
+const utility::string_umap<std::wstring, std::wstring> CustomStats = {
 	STAT("Defense", Stat(31)),
 	STAT("Sockets", Stat(194)),
 	STAT("Enhanced Damage", Stat(17)),
@@ -541,25 +535,25 @@ std::unordered_map<std::wstring, std::wstring> CustomStats = {
 #undef STAT
 
 #define KV(STR, IDX) { L#STR, ##IDX## }
-std::unordered_map<std::wstring, int32_t> Rarities = {
+const utility::string_umap<std::wstring, int32_t> Rarities = {
 		KV(None, 0), KV(Inferior, 1), KV(Normal, 2),
 		KV(Superior, 3), KV(Magic, 4), KV(Set, 5), KV(Rare, 6),
 		KV(Unique, 7), KV(Crafted, 8), KV(Tempered, 9)
 };
 
-std::unordered_map<std::wstring, int32_t> Qualities = {
+const utility::string_umap<std::wstring, int32_t> Qualities = {
 	KV(None, -1), KV(Normal, 0), KV(Exceptional, 1), KV(Elite, 2)
 };
 #undef KV
 
-template<typename K, typename V>
-static std::unordered_map<V, K> reverse_map(const std::unordered_map<K, V>& m) {
-	std::unordered_map<V, K> r;
+template<typename Key, typename T, typename Hash, typename KeyEq, typename Allocator>
+static std::unordered_map<T, Key> reverse_map(const std::unordered_map<Key, T, Hash, KeyEq, Allocator>& m) {
+	std::unordered_map<T, Key> r;
 	for (const auto& kv : m)
 		r[kv.second] = kv.first;
 	return r;
 }
 
-std::unordered_map<int32_t, std::wstring> ItemTypesLookup = reverse_map(ItemTypes);
-std::unordered_map<int32_t, std::wstring> RaritiesLookup = reverse_map(Rarities);
-std::unordered_map<int32_t, std::wstring> QualitiesLookup = reverse_map(Qualities);
+const std::unordered_map<int32_t, std::wstring> ItemTypesLookup = reverse_map(ItemTypes);
+const std::unordered_map<int32_t, std::wstring> RaritiesLookup = reverse_map(Rarities);
+const std::unordered_map<int32_t, std::wstring> QualitiesLookup = reverse_map(Qualities);

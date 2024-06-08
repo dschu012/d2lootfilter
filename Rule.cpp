@@ -9,41 +9,37 @@ bool Rule::Evaluate(Unit* pItem) {
 	return true;
 }
 
-void Rule::EvaluateActionResult(ActionResult* pActionResult, Unit* pItem) {
-	pActionResult->bContinue = false;
+void Rule::EvaluateActionResult(ActionResult& actionResult, Unit* pItem) const {
+	actionResult.bContinue = false;
 	for (auto& action : m_Actions) {
-		action->SetResult(pActionResult, pItem);
+		action->SetResult(actionResult, pItem);
 	}
 }
 
-uint32_t Rule::GetLineNumber() {
+uint32_t Rule::GetLineNumber() const {
 	return m_LineNumber;
 }
 
-void Rule::SetLineNumber(uint32_t lineNumber) {
-	m_LineNumber = lineNumber;
-}
-
-std::vector<Condition*> Rule::GetConditions() {
+const std::vector<std::unique_ptr<Condition>>& Rule::GetConditions() {
 	return m_Conditions;
 }
 
-std::vector<Action*> Rule::GetActions() {
+const std::vector<std::unique_ptr<Action>>& Rule::GetActions() {
 	return m_Actions;
 }
 
-void Rule::AddAction(Action* pAction, int32_t idx) {
-	m_Actions.insert(m_Actions.begin() + idx, pAction);
+void Rule::AddAction(std::unique_ptr<Action> action) {
+	m_Actions.push_back(std::move(action));
 }
 
-void Rule::AddActions(std::vector<Action*> actions) {
-	m_Actions.insert(m_Actions.end(), actions.begin(), actions.end());
+void Rule::AddActions(std::vector<std::unique_ptr<Action>> actions) {
+	std::move(actions.begin(), actions.end(), std::back_inserter(m_Actions));
 }
 
-void Rule::AddCondition(Condition* pCondition) {
-	m_Conditions.push_back(pCondition);
+void Rule::AddCondition(std::unique_ptr<Condition> condition) {
+	m_Conditions.push_back(std::move(condition));
 }
 
-void Rule::AddConditions(std::vector<Condition*> conditions) {
-	m_Conditions.insert(m_Conditions.end(), conditions.begin(), conditions.end());
+void Rule::AddConditions(std::vector<std::unique_ptr<Condition>> conditions) {
+	std::move(conditions.begin(), conditions.end(), std::back_inserter(m_Conditions));
 }
