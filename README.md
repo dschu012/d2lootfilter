@@ -39,12 +39,18 @@ See what rules in your config caused the item to be shown. Set background colors
 ![image](https://user-images.githubusercontent.com/1458109/114068812-4cf5d000-986c-11eb-9795-fd7e1d6a8683.png)
 
 ### Installing
-
-Steps to install on PlugY:
-
 * Download the [latest dll](https://github.com/dschu012/d2lootfilter/releases/latest/download/d2lootfilter.dll) and [item.filter](https://github.com/dschu012/d2lootfilter/blob/master/doc/ENG/item.filter)
+* Follow instructions below, depending on your DLL mod loader
+
+#### For PlugY:
 * Copy both files to your PlugY directory.
 * Change `DllToLoad=` to `DllToLoad=d2lootfilter.dll` in PlugY.ini
+
+#### For BaseMod:
+<sub>Tested on BaseMod 1.13.9, Windows 10 and Diablo 2 LOD 1.14d</sub>
+
+* Copy both files to your Diablo 2 directory, where you installed `BaseMod.ini` .
+* In `BaseMod.ini`, in `ExtraDll2` section change `LoadDll2=` to `LoadDll2=d2lootfilter.dll` and `Enabled=0` to `Enabled=1`
 
 ### Basic Syntax
 
