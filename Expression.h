@@ -58,7 +58,7 @@ public:
 	virtual ~Expression() = default;
 	virtual int32_t Evaluate(Unit* pItem) const = 0;
 	virtual std::wstring ToString(Unit* pItem) const = 0;
-	virtual void SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) = 0;
+	virtual void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) = 0;
 };
 
 class Logical : public Expression {
@@ -70,7 +70,7 @@ public:
 	Logical(std::unique_ptr<Expression> left = nullptr, std::unique_ptr<Expression> right = nullptr, Token op = Token::NONE) : m_Left(std::move(left)), m_Right(std::move(right)), m_Operator(op) {};
 	int32_t Evaluate(Unit* pItem) const override;
 	std::wstring ToString(Unit* pItem) const override;
-	void SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 };
 
 class Binary : public Expression {
@@ -82,7 +82,7 @@ public:
 	Binary(std::unique_ptr<Expression> left = nullptr, std::unique_ptr<Expression> right = nullptr, Token op = Token::NONE) : m_Left(std::move(left)), m_Right(std::move(right)), m_Operator(op) {};
 	int32_t Evaluate(Unit* pItem) const override;
 	std::wstring ToString(Unit* pItem) const override;
-	void SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 };
 
 class In : public Expression {
@@ -95,7 +95,7 @@ public:
 	In(std::unique_ptr<Expression> left = nullptr, std::unique_ptr<Expression> min = nullptr, std::unique_ptr<Expression> max = nullptr, Token op = Token::NONE) : m_Left(std::move(left)), m_Min(std::move(min)), m_Max(std::move(max)), m_Operator(op) {};
 	int32_t Evaluate(Unit* pItem) const override;
 	std::wstring ToString(Unit* pItem) const override;
-	void SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 };
 
 class Unary : public Expression {
@@ -106,7 +106,7 @@ public:
 	Unary(std::unique_ptr<Expression> right = nullptr, Token op = Token::NONE) : m_Right(std::move(right)), m_Operator(op) {};
 	int32_t Evaluate(Unit* pItem) const override;
 	std::wstring ToString(Unit* pItem) const override;
-	void SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 };
 
 class Literal : public Expression {
@@ -116,7 +116,7 @@ public:
 	Literal(std::wstring_view value) : m_Value(std::stoi(std::wstring(value))) {};
 	int32_t Evaluate(Unit* pItem) const override;
 	std::wstring ToString(Unit* pItem) const override;
-	void SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 };
 
 class Boolean : public Expression {
@@ -126,7 +126,7 @@ public:
 	Boolean(int32_t value) : m_Value(value) {};
 	int32_t Evaluate(Unit* pItem) const override;
 	std::wstring ToString(Unit* pItem) const override;
-	void SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 };
 
 typedef int32_t(*GlobalVariableFunction)(Unit* pUnit);
@@ -141,7 +141,7 @@ public:
 	int32_t Evaluate(Unit* pItem) const override;
 	std::wstring ToString(Unit* pItem) const override;
 	void SetValue(int32_t v);
-	void SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 };
 
 class VarReference : public Expression {
@@ -152,7 +152,7 @@ public:
 	int32_t Evaluate(Unit* pItem) const override { return m_Variable.Evaluate(pItem); }
 	std::wstring ToString(Unit* pItem) const override { return m_Variable.ToString(pItem); }
 	void SetValue(int32_t v) { m_Variable.SetValue(v); }
-	void SetVariables(const utility::string_umap<std::wstring, int32_t>& variable) override { m_Variable.SetVariables(variable); }
+	void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variable) override { m_Variable.SetVariables(nLineNumber, variable); }
 };
 
 class Call : public Expression {
@@ -167,7 +167,7 @@ public:
 	Call(Token func, std::vector<std::unique_ptr<Expression>> args) : m_Func(func), m_Args(std::move(args)) {};
 	int32_t Evaluate(Unit* pItem) const override;
 	std::wstring ToString(Unit* pItem) const override;
-	void SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 };
 
 class ListExpression : public Expression {
@@ -177,7 +177,7 @@ public:
 	void Push(std::unique_ptr<Expression> expression) { m_List.push_back(std::move(expression)); }
 	int32_t Evaluate(Unit* pItem) const override;
 	std::wstring ToString(Unit* pItem) const override;
-	void SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 };
 
 class TokenizerToken {

@@ -93,9 +93,9 @@ std::wstring Logical::ToString(Unit* pItem) const {
     return std::format(L"{}{}{}", m_Left->ToString(pItem), OPS[static_cast<uint8_t>(m_Operator)], m_Right->ToString(pItem));
 }
 
-void Logical::SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) {
-    m_Left->SetVariables(variables);
-    m_Right->SetVariables(variables);
+void Logical::SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
+    m_Left->SetVariables(nLineNumber, variables);
+    m_Right->SetVariables(nLineNumber, variables);
 }
 
 int32_t Binary::Evaluate(Unit* pItem) const {
@@ -120,9 +120,9 @@ std::wstring Binary::ToString(Unit* pItem) const {
     return std::format(L"{}{}{}", m_Left->ToString(pItem), OPS[static_cast<uint8_t>(m_Operator)], m_Right->ToString(pItem));
 }
 
-void Binary::SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) {
-    m_Left->SetVariables(variables);
-    m_Right->SetVariables(variables);
+void Binary::SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
+    m_Left->SetVariables(nLineNumber, variables);
+    m_Right->SetVariables(nLineNumber, variables);
 }
 
 int32_t In::Evaluate(Unit* pItem) const {
@@ -137,10 +137,10 @@ std::wstring In::ToString(Unit* pItem) const {
     return std::format(L"{}{}{}-{}", m_Left->ToString(pItem), OPS[static_cast<uint8_t>(m_Operator)], m_Min->ToString(pItem), m_Max->ToString(pItem));
 }
 
-void In::SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) {
-    m_Left->SetVariables(variables);
-    m_Min->SetVariables(variables);
-    m_Max->SetVariables(variables);
+void In::SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
+    m_Left->SetVariables(nLineNumber, variables);
+    m_Min->SetVariables(nLineNumber, variables);
+    m_Max->SetVariables(nLineNumber, variables);
 }
 
 int32_t Unary::Evaluate(Unit* pItem) const {
@@ -160,8 +160,8 @@ std::wstring Unary::ToString(Unit* pItem) const {
     return std::format(L"{}{}", OPS[static_cast<uint8_t>(m_Operator)], m_Right->ToString(pItem));
 }
 
-void Unary::SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) {
-    m_Right->SetVariables(variables);
+void Unary::SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
+    m_Right->SetVariables(nLineNumber, variables);
 }
 
 int32_t Literal::Evaluate(Unit* pItem) const {
@@ -172,7 +172,7 @@ std::wstring Literal::ToString(Unit* pItem) const {
     return std::format(L"{}", m_Value);
 }
 
-void Literal::SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) {
+void Literal::SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 }
 
 int32_t Boolean::Evaluate(Unit* pItem) const {
@@ -183,7 +183,7 @@ std::wstring Boolean::ToString(Unit* pItem) const {
     return std::format(L"{}", m_Value);
 }
 
-void Boolean::SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) {
+void Boolean::SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 }
 
 Variable::Variable(std::wstring_view variable) {
@@ -217,9 +217,11 @@ void Variable::SetValue(int32_t v) {
     m_Value = v;
 }
 
-void Variable::SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) {
+void Variable::SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
     if (auto search = variables.find(m_Variable); search != variables.end()) {
         SetValue(search->second);
+    } else if(m_Variable.length() > 0) {
+        ERROR_LOG(std::format(L"Rule {}: Uses an undefined variable \"{}\"", nLineNumber, m_Variable));
     }
 }
 
@@ -345,9 +347,9 @@ std::wstring Call::ToString(Unit* pItem) const {
     return std::format(L"{}({})({})", OPS[static_cast<uint8_t>(m_Func)], ss.str(), Evaluate(pItem));
 }
 
-void Call::SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) {
+void Call::SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
     for (auto& expression : m_Args) {
-        expression->SetVariables(variables);
+        expression->SetVariables(nLineNumber, variables);
     }
 }
 
@@ -367,9 +369,9 @@ std::wstring ListExpression::ToString(Unit* pItem) const {
     return ss.str();
 }
 
-void ListExpression::SetVariables(const utility::string_umap<std::wstring, int32_t>& variables) {
+void ListExpression::SetVariables(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
     for (auto& expression : m_List) {
-        expression->SetVariables(variables);
+        expression->SetVariables(nLineNumber, variables);
     }
 }
 

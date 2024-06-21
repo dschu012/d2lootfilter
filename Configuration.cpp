@@ -179,7 +179,7 @@ void Configuration::InitalizeActionVariables() {
 		for (auto& action : rule.second.GetActions()) {
 			switch (action->GetType()) {
 			default:
-				action->Initialize(variables);
+				action->Initialize(rule.first, variables);
 				break;
 			}
 		}
@@ -188,7 +188,7 @@ void Configuration::InitalizeActionVariables() {
 		for (auto& action : style.second) {
 			switch (action->GetType()) {
 			default:
-				action->Initialize(variables);
+				action->Initialize(0, variables);
 				break;
 			}
 		}
@@ -240,16 +240,16 @@ void Configuration::InitializeTypesCodesAndRunes() {
 		for (auto& condition : rule.second.GetConditions()) {
 			switch (condition->GetType()) {
 			case ConditionType::TYPE:
-				condition->Initialize(names);
+				condition->Initialize(rule.first, names);
 				break;
 			case ConditionType::CODE:
-				condition->Initialize(codes);
+				condition->Initialize(rule.first, codes);
 				break;
 			case ConditionType::RUNE:
-				condition->Initialize(runes);
+				condition->Initialize(rule.first, runes);
 				break;
 			case ConditionType::PLAYERCLASS:
-				condition->Initialize(classNames);
+				condition->Initialize(rule.first, classNames);
 				break;
 			default:
 				break;
@@ -264,7 +264,7 @@ void Configuration::InitializeClass() {
 		for (auto& condition : rule.second.GetConditions()) {
 			switch (condition->GetType()) {
 			case ConditionType::CLASS:
-				condition->Initialize(ItemTypes);
+				condition->Initialize(rule.first, ItemTypes);
 				break;
 			default:
 				break;
@@ -278,10 +278,10 @@ void Configuration::InitializeRaritiesAndQualities() {
 		for (auto& condition : rule.second.GetConditions()) {
 			switch (condition->GetType()) {
 			case ConditionType::RARITY:
-				condition->Initialize(Rarities);
+				condition->Initialize(rule.first, Rarities);
 				break;
 			case ConditionType::QUALITY:
-				condition->Initialize(Qualities);
+				condition->Initialize(rule.first, Qualities);
 				break;
 			default:
 				break;
@@ -320,7 +320,7 @@ void Configuration::InitializeOther() {
 			case ConditionType::RANDOM:
 			case ConditionType::OWNED:
 			case ConditionType::HASWEIGHT:
-				condition->Initialize(variables);
+				condition->Initialize(rule.first, variables);
 				break;
 			default:
 				break;

@@ -219,12 +219,12 @@ void MinimapIconAction::SetResult(ActionResult& action, Unit* pItem) const {
 	action.nMinimapIconPaletteIndex = m_PaletteIndex;
 }
 
-void WeightAction::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void WeightAction::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	for (auto stat : CustomStats) {
 		replace(m_Value, stat.first, stat.second);
 	}
 	m_Expression = Parser::Parse(m_Value.c_str());
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 }
 
 void WeightAction::SetResult(ActionResult& action, Unit* pItem) const {

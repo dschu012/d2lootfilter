@@ -28,7 +28,7 @@ public:
 	virtual ~Condition() = default;
 	ConditionType GetType() const { return m_Type; }
 	virtual bool Evaluate(Unit* pItem) = 0;
-	virtual void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) = 0;
+	virtual void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) = 0;
 	virtual std::wstring ToString(Unit* pItem) const = 0;
 };
 
@@ -40,7 +40,7 @@ protected:
 public:
 	CodeCondition(std::wstring_view value = {}) : Condition(value, ConditionType::CODE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<CodeCondition>(value); }
@@ -53,7 +53,7 @@ protected:
 public:
 	PlayerClassCondition(std::wstring_view value = {}) : Condition(value, ConditionType::PLAYERCLASS) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<PlayerClassCondition>(value); }
@@ -66,7 +66,7 @@ protected:
 public:
 	TypeCondition(std::wstring_view value = {}) : Condition(value, ConditionType::TYPE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<TypeCondition>(value); }
@@ -78,7 +78,7 @@ protected:
 public:
 	ClassCondition(std::wstring_view value = {}) : Condition(value, ConditionType::CLASS) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ClassCondition>(value); }
@@ -91,7 +91,7 @@ protected:
 public:
 	RarityCondition(std::wstring_view value = {}) : Condition(value, ConditionType::RARITY) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<RarityCondition>(value); }
@@ -104,7 +104,7 @@ protected:
 public:
 	EtherealCondition(std::wstring_view value = {}) : Condition(value, ConditionType::ETHEREAL) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<EtherealCondition>(value); }
@@ -117,7 +117,7 @@ protected:
 public:
 	RunewordCondition(std::wstring_view value = {}) : Condition(value, ConditionType::RUNEWORD) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<RunewordCondition>(value); }
@@ -130,7 +130,7 @@ protected:
 public:
 	PrefixCondition(std::wstring_view value = {}) : Condition(value, ConditionType::PREFIX) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<PrefixCondition>(value); }
@@ -143,7 +143,7 @@ protected:
 public:
 	SuffixCondition(std::wstring_view value = {}) : Condition(value, ConditionType::SUFFIX) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<SuffixCondition>(value); }
@@ -156,7 +156,7 @@ protected:
 public:
 	ItemLevelCondition(std::wstring_view value = {}) : Condition(value, ConditionType::ITEM_LEVEL) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ItemLevelCondition>(value); }
@@ -169,7 +169,7 @@ protected:
 public:
 	QualityCondition(std::wstring_view value = {}) : Condition(value, ConditionType::QUALITY) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<QualityCondition>(value); }
@@ -182,7 +182,7 @@ protected:
 public:
 	AreaLevelCondition(std::wstring_view value = {}) : Condition(value, ConditionType::AREA_LEVEL) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<AreaLevelCondition>(value); }
@@ -195,7 +195,7 @@ protected:
 public:
 	CharacterLevelCondition(std::wstring_view value = {}) : Condition(value, ConditionType::CHARACTER_LEVEL) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<CharacterLevelCondition>(value); }
@@ -208,7 +208,7 @@ protected:
 public:
 	DifficultyCondition(std::wstring_view value = {}) : Condition(value, ConditionType::DIFFICULTY) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<DifficultyCondition>(value); }
@@ -221,7 +221,7 @@ protected:
 public:
 	RuneCondition(std::wstring_view value = {}) : Condition(value, ConditionType::RUNE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<RuneCondition>(value); }
@@ -234,7 +234,7 @@ protected:
 public:
 	IdCondition(std::wstring_view value = {}) : Condition(value, ConditionType::ID) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<IdCondition>(value); }
@@ -247,7 +247,7 @@ protected:
 public:
 	GoldCondition(std::wstring_view value = {}) : Condition(value, ConditionType::GOLD) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<GoldCondition>(value); }
@@ -259,7 +259,7 @@ protected:
 public:
 	StatsCondition(std::wstring_view value = {}) : Condition(value, ConditionType::STATS) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<StatsCondition>(value); }
@@ -272,7 +272,7 @@ protected:
 public:
 	DefenseCondition(std::wstring_view value = {}) : Condition(value, ConditionType::DEFENSE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<DefenseCondition>(value); }
@@ -285,7 +285,7 @@ protected:
 public:
 	ArmorCondition(std::wstring_view value = {}) : Condition(value, ConditionType::ARMOR) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ArmorCondition>(value); }
@@ -298,7 +298,7 @@ protected:
 public:
 	WeaponCondition(std::wstring_view value = {}) : Condition(value, ConditionType::WEAPON) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<WeaponCondition>(value); }
@@ -311,7 +311,7 @@ protected:
 public:
 	PriceCondition(std::wstring_view value = {}) : Condition(value, ConditionType::PRICE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<PriceCondition>(value); }
@@ -324,7 +324,7 @@ protected:
 public:
 	ModeCondition(std::wstring_view value = {}) : Condition(value, ConditionType::MODE) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<ModeCondition>(value); }
@@ -337,7 +337,7 @@ protected:
 public:
 	IdentifiedCondition(std::wstring_view value = {}) : Condition(value, ConditionType::IDENTIFIED) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<IdentifiedCondition>(value); }
@@ -350,7 +350,7 @@ protected:
 public:
 	SocketsCondition(std::wstring_view value = {}) : Condition(value, ConditionType::SOCKETS) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<SocketsCondition>(value); }
@@ -363,7 +363,7 @@ protected:
 public:
 	WidthCondition(std::wstring_view value = {}) : Condition(value, ConditionType::WIDTH) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<WidthCondition>(value); }
@@ -376,7 +376,7 @@ protected:
 public:
 	HeightCondition(std::wstring_view value = {}) : Condition(value, ConditionType::HEIGHT) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 	
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<HeightCondition>(value); }
@@ -389,7 +389,7 @@ protected:
 public:
 	RandomCondition(std::wstring_view value = {}) : Condition(value, ConditionType::RANDOM) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<RandomCondition>(value); }
@@ -402,7 +402,7 @@ protected:
 public:
 	OwnedCondition(std::wstring_view value = {}) : Condition(value, ConditionType::OWNED) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<OwnedCondition>(value); }
@@ -415,7 +415,7 @@ protected:
 public:
 	HasWeightCondition(std::wstring_view value = {}) : Condition(value, ConditionType::HASWEIGHT) {};
 	bool Evaluate(Unit* pItem) override;
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
 
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<HasWeightCondition>(value); }

@@ -54,7 +54,7 @@ public:
 	Action(std::wstring_view value = {}, ActionType type = ActionType::NONE) : m_Value(value), m_Type(type) {};
 	virtual ~Action() = default;
 	ActionType GetType() const { return m_Type; }
-	virtual void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {};
+	virtual void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {};
 	virtual void SetResult(ActionResult& action, Unit* pItem) const = 0;
 };
 
@@ -175,7 +175,7 @@ protected:
 	std::unique_ptr<Expression> m_Expression;
 public:
 	WeightAction(std::wstring_view value = L"") : Action(value, ActionType::WEIGHT) {};
-	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	void Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) override;
 	void SetResult(ActionResult& action, Unit* pItem) const override;
 
 	static std::unique_ptr<Action> MakeInstance(std::wstring_view value = {}) { return std::make_unique<WeightAction>(value); }

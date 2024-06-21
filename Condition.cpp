@@ -8,9 +8,9 @@ bool CodeCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void CodeCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void CodeCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool TypeCondition::Evaluate(Unit* pItem) {
@@ -18,9 +18,9 @@ bool TypeCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void TypeCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void TypeCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool PlayerClassCondition::Evaluate(Unit* pItem) {
@@ -29,18 +29,18 @@ bool PlayerClassCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void PlayerClassCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void PlayerClassCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool ClassCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void ClassCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void ClassCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::ParseCall(m_Value.c_str(), Token::CLASS);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool RarityCondition::Evaluate(Unit* pItem) {
@@ -48,9 +48,9 @@ bool RarityCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void RarityCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void RarityCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool EtherealCondition::Evaluate(Unit* pItem) {
@@ -58,9 +58,9 @@ bool EtherealCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void EtherealCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void EtherealCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool RunewordCondition::Evaluate(Unit* pItem) {
@@ -68,9 +68,9 @@ bool RunewordCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void RunewordCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void RunewordCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool PrefixCondition::Evaluate(Unit* pItem) {
@@ -87,9 +87,9 @@ bool PrefixCondition::Evaluate(Unit* pItem) {
 	return false;
 }
 
-void PrefixCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void PrefixCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool SuffixCondition::Evaluate(Unit* pItem) {
@@ -106,9 +106,9 @@ bool SuffixCondition::Evaluate(Unit* pItem) {
 	return false;
 }
 
-void SuffixCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void SuffixCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool ItemLevelCondition::Evaluate(Unit* pItem) {
@@ -116,9 +116,9 @@ bool ItemLevelCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void ItemLevelCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void ItemLevelCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool QualityCondition::Evaluate(Unit* pItem) {
@@ -126,18 +126,18 @@ bool QualityCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void QualityCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void QualityCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool AreaLevelCondition::Evaluate(Unit* pItem) {
 	return false;
 }
 
-void AreaLevelCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void AreaLevelCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool CharacterLevelCondition::Evaluate(Unit* pItem) {
@@ -145,9 +145,9 @@ bool CharacterLevelCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void CharacterLevelCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void CharacterLevelCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool DifficultyCondition::Evaluate(Unit* pItem) {
@@ -155,9 +155,9 @@ bool DifficultyCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void DifficultyCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void DifficultyCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool RuneCondition::Evaluate(Unit* pItem) {
@@ -169,9 +169,9 @@ bool RuneCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void RuneCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void RuneCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool IdCondition::Evaluate(Unit* pItem) {
@@ -179,9 +179,9 @@ bool IdCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void IdCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void IdCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool GoldCondition::Evaluate(Unit* pItem) {
@@ -192,21 +192,21 @@ bool GoldCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void GoldCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void GoldCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool StatsCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void StatsCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void StatsCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	for (const auto& stat : CustomStats) {
 		replace(m_Value, stat.first, stat.second);
 	}
 	m_Expression = Parser::Parse(m_Value.c_str());
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool DefenseCondition::Evaluate(Unit* pItem) {
@@ -214,9 +214,9 @@ bool DefenseCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void DefenseCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void DefenseCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool ArmorCondition::Evaluate(Unit* pItem) {
@@ -224,9 +224,9 @@ bool ArmorCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void ArmorCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void ArmorCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool WeaponCondition::Evaluate(Unit* pItem) {
@@ -234,9 +234,9 @@ bool WeaponCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void WeaponCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void WeaponCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool PriceCondition::Evaluate(Unit* pItem) {
@@ -249,18 +249,18 @@ bool PriceCondition::Evaluate(Unit* pItem) {
 	return false;
 }
 
-void PriceCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void PriceCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool ModeCondition::Evaluate(Unit* pItem) {
 	return false;
 }
 
-void ModeCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void ModeCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool IdentifiedCondition::Evaluate(Unit* pItem) {
@@ -268,9 +268,9 @@ bool IdentifiedCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void IdentifiedCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void IdentifiedCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool SocketsCondition::Evaluate(Unit* pItem) {
@@ -278,9 +278,9 @@ bool SocketsCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void SocketsCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void SocketsCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool WidthCondition::Evaluate(Unit* pItem) {
@@ -288,9 +288,9 @@ bool WidthCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void WidthCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void WidthCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool HeightCondition::Evaluate(Unit* pItem) {
@@ -298,9 +298,9 @@ bool HeightCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void HeightCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void HeightCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool RandomCondition::Evaluate(Unit* pItem) {
@@ -308,9 +308,9 @@ bool RandomCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void RandomCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void RandomCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool OwnedCondition::Evaluate(Unit* pItem) {
@@ -355,9 +355,9 @@ bool OwnedCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void OwnedCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void OwnedCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 };
 
 bool HasWeightCondition::Evaluate(Unit* pItem) {
@@ -365,7 +365,7 @@ bool HasWeightCondition::Evaluate(Unit* pItem) {
 	return m_Expression->Evaluate(pItem);
 }
 
-void HasWeightCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+void HasWeightCondition::Initialize(uint32_t nLineNumber, const utility::string_umap<std::wstring, int32_t>& variables) {
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
-	m_Expression->SetVariables(variables);
+	m_Expression->SetVariables(nLineNumber, variables);
 }
