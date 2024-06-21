@@ -119,9 +119,8 @@ The operators are as followed. If no operator is specified `=` is implied.
 | Sockets `<Operator> <Number>` | Number of sockets |
 | Width `<Operator> <Number>` | Width of item in inventory |
 | Height `<Operator> <Number>` | Height of item in inventory |
-| Stats `<Expression>` | Expression that evaluates to true or false to filter an item based on stats. More details can be found in [Stats]
-(#Stats) |
-| HasWeight `<Expression>` | Expression that evaluates to true or false to filter an item based "Weight" (see Actions) |
+| Stats `<Expression>` | Expression that evaluates to true or false to filter an item based on stats. More details can be found in [Stats](#Stats) |
+| HasWeight `<Expression>` | Expression that evaluates to true or false to filter an item based "Weight" (see [Actions](#Actions)) |
 
 
 ### Stats
@@ -213,3 +212,5 @@ Special thanks to everyone that has shared their work at [Phrozen-Keep](https://
 To name a few Necrolis, Lectem, Kingpin, whist, Revan, etc...
 
 Thanks to coffin_spirit on Discord for the 1.10f implementation.
+
++ Swine-Flu for his refactoring/performance enhancements.
