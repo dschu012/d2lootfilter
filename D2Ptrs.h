@@ -99,6 +99,10 @@ FUNCPTR(D2COMMON, AbsScreenToMap, void __stdcall, (long* ptMouseX, long* ptMouse
 //1.14d 004B3870 near here.
 F2(D2COMMON, ITEMS_GetTransactionCost, int, __stdcall, (Unit* pPlayer, Unit* pItem, uint8_t nDifficulty, BitBuffer* pQuestFlags, int nVendorId, int nTransactionType), -10775 , -10107, 0x22FDC0);
 F2(D2COMMON, ITEMS_CheckItemTypeId, BOOL, __stdcall, (Unit* pItem, ItemType nItemType), -10731, -10744, 0x229BB0);
+
+//TODO FIND IN 1.14
+F2(D2COMMON, STATLIST_GetStatListFromUnitStateOrFlag, StatListEx*, __stdcall, (const Unit* pUnit, int32_t nState, int32_t nFlag), -10483, -10930, 0);
+F2(D2COMMON, STATLIST_GetStatValue, int32_t, __stdcall, (const StatListEx* pStatList, Stat nStatId, uint16_t nLayer), -10466, -10680, 0);
 F2(D2COMMON, STATLIST_GetUnitStatUnsigned, uint32_t, __stdcall, (const Unit* pUnit, Stat nStatId, uint16_t nLayer), -10520, -10973, 0x225480);
 //todo check 1.14d
 F2(D2COMMON, DATATBLS_LoadAllTxts, void, __stdcall, (void* pMemPool, int a2, int a3), -10576, -10943, 0x219300);

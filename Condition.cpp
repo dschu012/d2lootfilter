@@ -1,5 +1,6 @@
 #include "Condition.h"
 #include "Utils.h"
+#include "Globals.h"
 #include <algorithm>
 
 bool CodeCondition::Evaluate(Unit* pItem) {
@@ -358,3 +359,13 @@ void OwnedCondition::Initialize(const utility::string_umap<std::wstring, int32_t
 	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
 	m_Expression->SetVariables(variables);
 };
+
+bool HasWeightCondition::Evaluate(Unit* pItem) {
+	m_Left.SetValue(ITEM_ACTIONS[pItem->dwUnitId].nWeight);
+	return m_Expression->Evaluate(pItem);
+}
+
+void HasWeightCondition::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+	m_Expression = Parser::Parse(m_Value.c_str(), &m_Left);
+	m_Expression->SetVariables(variables);
+}

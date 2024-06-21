@@ -262,7 +262,23 @@ int32_t Call::EvaluateChargedSkill(Unit* pItem, Stat stat, const std::vector<int
 int32_t Call::EvaluateStat(Unit* pItem, Stat stat, const std::vector<int32_t>& args) const {
     int32_t layer = 0;
     if (args.size() > 0) layer = args[0];
-    return D2COMMON_STATLIST_GetUnitStatUnsigned(pItem, stat, layer);
+    int32_t value = D2COMMON_STATLIST_GetUnitStatUnsigned(pItem, stat, layer);
+    if (stat == Stat::ITEM_MAXDAMAGE_PERCENT
+        || stat == Stat::ITEM_MINDAMAGE_PERCENT) {
+        auto pStatList = D2COMMON_STATLIST_GetStatListFromUnitStateOrFlag(pItem, NULL, 0x40);
+        return D2COMMON_STATLIST_GetStatValue(pStatList, stat, layer);
+    }
+    if (stat == Stat::HITPOINTS
+        || stat == Stat::MAXHP
+        || stat == Stat::MANA
+        || stat == Stat::MAXMANA
+        || stat == Stat::STAMINA
+        || stat == Stat::MAXSTAMINA
+        || stat == Stat::ITEM_HP_PERLEVEL
+        || stat == Stat::ITEM_MANA_PERLEVEL) {
+        value = value >> 8;
+    }
+    return value;
 }
 
 int32_t Call::Evaluate(Unit* pItem) const {

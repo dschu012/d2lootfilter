@@ -557,3 +557,5 @@ static std::unordered_map<T, Key> reverse_map(const std::unordered_map<Key, T, H
 const std::unordered_map<int32_t, std::wstring> ItemTypesLookup = reverse_map(ItemTypes);
 const std::unordered_map<int32_t, std::wstring> RaritiesLookup = reverse_map(Rarities);
 const std::unordered_map<int32_t, std::wstring> QualitiesLookup = reverse_map(Qualities);
+
+std::unordered_map<uint32_t, ActionResult> ITEM_ACTIONS;

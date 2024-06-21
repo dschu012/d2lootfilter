@@ -18,3 +18,5 @@ extern const utility::string_umap<std::wstring, int32_t> Qualities;
 extern const std::unordered_map<int32_t, std::wstring> QualitiesLookup;
 
 extern const utility::string_umap<std::wstring, std::wstring> CustomStats;
+
+extern std::unordered_map<uint32_t, ActionResult> ITEM_ACTIONS;

@@ -12,11 +12,12 @@ enum class ConditionType : uint8_t {
 	NONE, CODE, TYPE, PLAYERCLASS, CLASS, RARITY, ETHEREAL, RUNEWORD, PREFIX, SUFFIX,
 	ITEM_LEVEL, QUALITY, AREA_LEVEL, CHARACTER_LEVEL, DIFFICULTY,
 	RUNE, ID, GOLD, STATS, DEFENSE, ARMOR, WEAPON, PRICE, MODE,
-	IDENTIFIED, SOCKETS, WIDTH, HEIGHT, RANDOM, OWNED
+	IDENTIFIED, SOCKETS, WIDTH, HEIGHT, RANDOM, OWNED,
+	HASWEIGHT
 };
 
 static const wchar_t* CONDITIONS[] = { L"", L"Code", L"Type", L"PlayerClass", L"Class", L"Rarity", L"Ethereal", L"Runeword", L"Prefix", L"Suffix", L"ItemLevel", L"Quality", L"AreaLevel", L"CharacterLevel",
-	L"Difficulty", L"Rune", L"Id", L"Gold", L"Stats", L"Defense", L"Armor", L"Weapon", L"Price", L"Mode", L"Identified", L"Sockets", L"Width", L"Height", L"Random", L"Owned" };
+	L"Difficulty", L"Rune", L"Id", L"Gold", L"Stats", L"Defense", L"Armor", L"Weapon", L"Price", L"Mode", L"Identified", L"Sockets", L"Width", L"Height", L"Random", L"Owned", L"HasWeight" };
 
 class Condition {
 protected:
@@ -407,6 +408,19 @@ public:
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<OwnedCondition>(value); }
 };
 
+class HasWeightCondition : public Condition {
+protected:
+	Variable m_Left;
+	std::unique_ptr<Expression> m_Expression;
+public:
+	HasWeightCondition(std::wstring_view value = {}) : Condition(value, ConditionType::HASWEIGHT) {};
+	bool Evaluate(Unit* pItem) override;
+	void Initialize(const utility::string_umap<std::wstring, int32_t>& variables) override;
+	std::wstring ToString(Unit* pItem) const override { return std::format(L"{} {}", CONDITIONS[static_cast<uint8_t>(m_Type)], m_Expression->ToString(pItem)); };
+
+	static std::unique_ptr<Condition> MakeInstance(std::wstring_view value = {}) { return std::make_unique<HasWeightCondition>(value); }
+};
+
 class ConditionFactory {
 public:
 	static std::unique_ptr<Condition> MakeInstance(std::wstring_view condition, std::wstring_view value = {}) {
@@ -439,7 +453,8 @@ public:
 			{ L"Width",				WidthCondition::MakeInstance },
 			{ L"Height",			HeightCondition::MakeInstance },
 			{ L"Random",			RandomCondition::MakeInstance },
-			{ L"Owned",				OwnedCondition::MakeInstance }
+			{ L"Owned",				OwnedCondition::MakeInstance },
+			{ L"HasWeight",			HasWeightCondition::MakeInstance },
 		};
 
 		if (auto search = lookup.find(condition); search != lookup.end()) {

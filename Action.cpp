@@ -71,6 +71,10 @@ static std::wstring GetItemDesc(ActionResult& action, Unit* pItem) {
 	}
 }
 
+static std::wstring GetItemLevel(ActionResult& action, Unit* pItem) {
+	return std::to_wstring(pItem->pItemData->dwItemLevel);
+}
+
 static std::wstring GetPotionNumber(ActionResult& action, Unit* pItem) {
 	if(D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::HEALING_POTION)
 		|| D2COMMON_ITEMS_CheckItemTypeId(pItem, ItemType::MANA_POTION)) {
@@ -152,6 +156,7 @@ void SetNameAction::SetResult(ActionResult& action, Unit* pItem) const {
 		{ L"{Name}", &GetItemName },
 		{ L"{Sockets}", &GetItemSockets },
 		{ L"{Price}", &GetItemPrice },
+		{ L"{Item Level}", &GetItemLevel },
 		{ L"{Rune Number}", &GetRuneNumber },
 		{ L"{Potion Number}", &GetPotionNumber },
 		{ L"{Newline}", &Newline }
@@ -170,6 +175,7 @@ void SetDescriptionAction::SetResult(ActionResult& action, Unit* pItem) const {
 		{ L"{Description}", &GetItemDesc },
 		{ L"{Sockets}", &GetItemSockets },
 		{ L"{Price}", &GetItemPrice },
+		{ L"{Item Level}", &GetItemLevel },
 		{ L"{Rune Number}", &GetRuneNumber },
 		{ L"{Newline}", &Newline }
 	};
@@ -211,4 +217,16 @@ void PlayAlertAction::SetResult(ActionResult& action, Unit* pItem) const {
 void MinimapIconAction::SetResult(ActionResult& action, Unit* pItem) const {
 	action.bMinimapIcon = true;
 	action.nMinimapIconPaletteIndex = m_PaletteIndex;
+}
+
+void WeightAction::Initialize(const utility::string_umap<std::wstring, int32_t>& variables) {
+	for (auto stat : CustomStats) {
+		replace(m_Value, stat.first, stat.second);
+	}
+	m_Expression = Parser::Parse(m_Value.c_str());
+	m_Expression->SetVariables(variables);
+}
+
+void WeightAction::SetResult(ActionResult& action, Unit* pItem) const {
+	action.nWeight += m_Expression->Evaluate(pItem);
 }

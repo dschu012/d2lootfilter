@@ -11,7 +11,6 @@
 #include <queue>
 
 static std::queue<uint32_t> AUTOMAP_ITEMS;
-static std::unordered_map<uint32_t, ActionResult> ITEM_ACTIONS;
 
 const char* CMD_RELOAD = "/reload";
 const char* CMD_FILTERLEVEL = "/fl";
@@ -309,11 +308,16 @@ void __stdcall ItemFilter::DrawDebugInfo(Unit* pItem, uint32_t nXStart, uint32_t
 	std::vector<std::wstring> lines;
 	std::wostringstream os;
 	os << L"Matched Lines #: " << TEXT_GREEN;
-	for (auto& match : actions->vMatchedRules) {
-		if (&match != &actions->vMatchedRules.front()) {
-			os << L", ";
+	if (actions->vMatchedRules.size() > 0) {
+		for (auto& match : actions->vMatchedRules) {
+			if (&match != &actions->vMatchedRules.front()) {
+				os << L", ";
+			}
+			os << match;
 		}
-		os << match;
+	}
+	else {
+		os << TEXT_RED << L"None";
 	}
 	ItemsTxt* pItemTxt = GetItemsTxt(pItem);
 
@@ -346,6 +350,8 @@ void __stdcall ItemFilter::DrawDebugInfo(Unit* pItem, uint32_t nXStart, uint32_t
 	if (actions->bInvBackgroundPaletteIndexSet) {
 		lines.push_back(std::format(L"Inventory Color: {}{:#04x}", TEXT_WHITE, actions->nInvBackgroundPaletteIndex));
 	}
+	lines.push_back(std::format(L"Weight: {}{}", TEXT_WHITE, actions->nWeight));
+
 	auto width = 0;
 	for (auto& line : lines) {
 		uint32_t w, fileNo;
@@ -417,8 +423,8 @@ void __stdcall ItemFilter::DrawGroundItemRect(DWORD retAddress, BOOL isHovered, 
 
 void __stdcall ItemFilter::DrawInventoryItemRect(Unit* pItem, uint32_t nXStart, uint32_t nYStart, uint32_t nXEnd, uint32_t nYEnd, uint8_t nPaletteIndex, DrawMode eDrawMode) {
 	//0x08: red, 0xea: blue, 0x76: green.
-	if (nPaletteIndex == 0xEA
-			&& HasActions(pItem)) {
+	if ((nPaletteIndex == 0xEA || nPaletteIndex == 0x8A)
+		&& HasActions(pItem)) {
 		nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId].bInvBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId].nInvBackgroundPaletteIndex : nPaletteIndex;
 	}
 	//call original

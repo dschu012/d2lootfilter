@@ -30,6 +30,7 @@ private:
 	void InitializeClass();
 	void InitializeRaritiesAndQualities();
 	void InitializeOther();
+	void InitalizeActionVariables();
 public:
 	friend class ItemFilter;
 

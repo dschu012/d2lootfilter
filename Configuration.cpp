@@ -162,6 +162,7 @@ void Configuration::InitalizeConditionVariables() {
 	InitializeClass();
 	InitializeRaritiesAndQualities();
 	InitializeOther();
+	InitalizeActionVariables();
 
 	/*
 	for (auto &rule : GlobalRules) {
@@ -170,6 +171,28 @@ void Configuration::InitalizeConditionVariables() {
 		}
 	}
 	*/
+}
+
+void Configuration::InitalizeActionVariables() {
+	utility::string_umap<std::wstring, int32_t> variables;
+	for (auto& rule : GlobalRules) {
+		for (auto& action : rule.second.GetActions()) {
+			switch (action->GetType()) {
+			default:
+				action->Initialize(variables);
+				break;
+			}
+		}
+	}
+	for (auto& style : GlobalStyles) {
+		for (auto& action : style.second) {
+			switch (action->GetType()) {
+			default:
+				action->Initialize(variables);
+				break;
+			}
+		}
+	}
 }
 
 void Configuration::InitializeTypesCodesAndRunes() {
@@ -296,6 +319,7 @@ void Configuration::InitializeOther() {
 			case ConditionType::HEIGHT:
 			case ConditionType::RANDOM:
 			case ConditionType::OWNED:
+			case ConditionType::HASWEIGHT:
 				condition->Initialize(variables);
 				break;
 			default:

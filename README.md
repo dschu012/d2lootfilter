@@ -119,7 +119,9 @@ The operators are as followed. If no operator is specified `=` is implied.
 | Sockets `<Operator> <Number>` | Number of sockets |
 | Width `<Operator> <Number>` | Width of item in inventory |
 | Height `<Operator> <Number>` | Height of item in inventory |
-| Stats `<Expression>` | Expression that evaluates to true or false to filter an item based on stats. More details can be found in [Stats](#Stats) |
+| Stats `<Expression>` | Expression that evaluates to true or false to filter an item based on stats. More details can be found in [Stats]
+(#Stats) |
+| HasWeight `<Expression>` | Expression that evaluates to true or false to filter an item based "Weight" (see Actions) |
 
 
 ### Stats
@@ -154,6 +156,7 @@ e.x. `Max(Stat(39), Stat(43), Stat(41), Stat(45)) > 0` can be used to filter the
 | SetBorderColor `<Value>` | Sets the border color of the item when on the ground. Value is a pallette index color. |
 | ChatNotify `<Boolean>` | Notify when the item drops in chat. True or False |
 | MinimapIcon `<Value>` | Sets the color of the item on your minimap when on the ground. Value is a pallette index color. |
+| Weight `<Expression>` | Add's a "Weight" to an item. Let's you filter items based on combination of stats. (i.e. `Weight "Barbarian +%d to Warcries" * 100` would make a Warcry weapon w/ +3 warcry's have a weight of 300 while a +2 would have 200). All weights are added together and then can be filtered on w/ `HasWeight` |
 
 ### Styles
 
