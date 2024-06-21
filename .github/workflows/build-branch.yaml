@@ -14,7 +14,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
     - uses: actions/checkout@master
     - name: MSBuild
-      run: msbuild /t:d2lootfilter:Rebuild /p:Configuration=Release /p:CustomDefinitions=`"SHA=\`"($env:GITHUB_SHA.substring(0,7))\`"`" /property:Platform=x86 d2lootfilter.sln
+      run: msbuild /t:d2lootfilter:Rebuild /p:Configuration=Release /property:Platform=x86 d2lootfilter.sln
     - name: Release
       uses: marvinpinto/action-automatic-releases@v1.2.1
       with:
