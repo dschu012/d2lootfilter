@@ -97,7 +97,7 @@ FUNCPTR(D2COMMON, AbsScreenToMap, void __stdcall, (long* ptMouseX, long* ptMouse
 
 //Functions
 //1.14d 004B3870 near here.
-F2(D2COMMON, ITEMS_GetTransactionCost, int, __stdcall, (Unit* pPlayer, Unit* pItem, uint8_t nDifficulty, BitBuffer* pQuestFlags, int nVendorId, int nTransactionType), -10775 , -10107, 0x22FDC0);
+F2(D2COMMON, ITEMS_GetTransactionCost, int, __stdcall, (Unit* pPlayer, Unit* pItem, int nDifficulty, BitBuffer* pQuestFlags, int nVendorId, int nTransactionType), -10775 , -10107, 0x22FDC0);
 F2(D2COMMON, ITEMS_CheckItemTypeId, BOOL, __stdcall, (Unit* pItem, ItemType nItemType), -10731, -10744, 0x229BB0);
 
 //TODO FIND IN 1.14
