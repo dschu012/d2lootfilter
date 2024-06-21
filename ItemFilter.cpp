@@ -10,24 +10,8 @@
 #include "Globals.h"
 #include <queue>
 
-static D2CLIENT_ItemActionWorld_t fpItemActionWorld;
-static D2CLIENT_ItemActionOwned_t fpItemActionOwned;
-static D2CLIENT_GetItemName_t fpD2CLIENT_GetItemName;
-static D2CLIENT_GetItemName_114d_t fpD2CLIENT_GetItemName_114d;
-static D2CLIENT_UNITDRAW_DrawUnit_t fpUNITDRAW_DrawUnit;
-static D2CLIENT_AUTOMAP_Draw_t fpAUTOMAP_Draw;
-static D2COMMON_UNITS_FreeUnit_t fpUNITS_FreeUnit;
-static D2COMMON_DATATBLS_LoadAllTxts_t fpDATATBLS_LoadAllTxts;
-static D2CLIENT_DrawGameUI_t fpD2CLIENT_DrawGameUI;
-static D2WIN_WndProc_t fpWndProc;
-
-static BOOL(__stdcall* fpCallCommand)(char* sCmd);
-
 static std::queue<uint32_t> AUTOMAP_ITEMS;
-static std::unordered_map<uint32_t, ActionResult*> ITEM_ACTIONS;
-
-
-Configuration* ItemFilter::Config = NULL;
+static std::unordered_map<uint32_t, ActionResult> ITEM_ACTIONS;
 
 const char* CMD_RELOAD = "/reload";
 const char* CMD_FILTERLEVEL = "/fl";
@@ -39,9 +23,6 @@ const char* CMD_TEST = "/test";
 const char* CMD_CLIP = "/clip";
 
 ItemFilter::ItemFilter() {
-	
-	Config = new Configuration();
-
 	//check if plugy already installed a command hook
 	//if so we do a trampoline, if not we isntall our own stub.
 	bool IsPlugyCommandHook = (*(BYTE*)D2CLIENT_callCommand) == 0xE8;
@@ -49,20 +30,20 @@ ItemFilter::ItemFilter() {
 	//alot of 114d functions need diff stubs or they changed from __stdcall to __fastcall
 	if (GetGameVersion() == D2Version::V114d) {
 		//Item Action Own/World Packet Hooks
-		Hooking::TrampolineHook(D2CLIENT_ItemActionWorld, &ItemActionWorld, reinterpret_cast<void**>(&fpItemActionWorld), 9);
-		Hooking::TrampolineHook(D2CLIENT_ItemActionOwned, &ItemActionOwned, reinterpret_cast<void**>(&fpItemActionOwned), 9);
+		Hooking::TrampolineHook(D2CLIENT_ItemActionWorld, &ItemActionWorld, reinterpret_cast<void**>(&D2CLIENT_ItemActionWorld), 9);
+		Hooking::TrampolineHook(D2CLIENT_ItemActionOwned, &ItemActionOwned, reinterpret_cast<void**>(&D2CLIENT_ItemActionOwned), 9);
 
 		//Item Name Hook
-		Hooking::TrampolineHook(D2CLIENT_GetItemName_114d, &GetItemName_114d, reinterpret_cast<void**>(&fpD2CLIENT_GetItemName_114d), 8);
+		Hooking::TrampolineHook(D2CLIENT_GetItemName_114d, &GetItemName_114d, reinterpret_cast<void**>(&D2CLIENT_GetItemName_114d), 8);
 
 		//Item Desc Hook
 		Hooking::SetJmp(D2CLIENT_fpGetItemDescPatch, &GetItemDesc_STUB_114d, 6);
 		
 		//Automap Draw Hook
-		Hooking::TrampolineHook(D2CLIENT_AUTOMAP_Draw, &AUTOMAP_Draw, reinterpret_cast<void**>(&fpAUTOMAP_Draw), 9);
+		Hooking::TrampolineHook(D2CLIENT_AUTOMAP_Draw, &AUTOMAP_Draw, reinterpret_cast<void**>(&D2CLIENT_AUTOMAP_Draw), 9);
 
 		//Unit Draw Hook
-		Hooking::TrampolineHook(D2CLIENT_UNITDRAW_DrawUnit, &UNITDRAW_DrawUnit, reinterpret_cast<void**>(&fpUNITDRAW_DrawUnit), 6);
+		Hooking::TrampolineHook(D2CLIENT_UNITDRAW_DrawUnit, &UNITDRAW_DrawUnit, reinterpret_cast<void**>(&D2CLIENT_UNITDRAW_DrawUnit), 6);
 
 		//No draw hooks
 		Hooking::SetCall(D2CLIENT_checkUnitNoDrawPatch_1, &CheckUnitNoDraw1_STUB, 9);
@@ -79,27 +60,26 @@ ItemFilter::ItemFilter() {
 		Hooking::SetCall(D2CLIENT_callDrawInventoryItemRectPatch, &DrawInventoryItemRect_STUB_114d, 5);
 
 		//Cleanup Cached Item Data Hook
-		Hooking::TrampolineHook(D2COMMON_UNITS_FreeUnit, &UNITS_FreeUnit, reinterpret_cast<void**>(&fpUNITS_FreeUnit), 7);
+		Hooking::TrampolineHook(D2COMMON_UNITS_FreeUnit, &UNITS_FreeUnit, reinterpret_cast<void**>(&D2COMMON_UNITS_FreeUnit), 7);
 
 		//Load Datatables Hook
-		Hooking::TrampolineHook(D2COMMON_DATATBLS_LoadAllTxts, &DATATBLS_LoadAllTxts, reinterpret_cast<void**>(&fpDATATBLS_LoadAllTxts), 5);
-		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&fpD2CLIENT_DrawGameUI), 6);
+		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&D2CLIENT_DrawGameUI), 6);
 	} else if (GetGameVersion() == D2Version::V113c) {
 		//Item Action Own/World Packet Hooks
-		Hooking::TrampolineHook(D2CLIENT_ItemActionWorld, &ItemActionWorld, reinterpret_cast<void**>(&fpItemActionWorld), 6);
-		Hooking::TrampolineHook(D2CLIENT_ItemActionOwned, &ItemActionOwned, reinterpret_cast<void**>(&fpItemActionOwned), 6);
+		Hooking::TrampolineHook(D2CLIENT_ItemActionWorld, &ItemActionWorld, reinterpret_cast<void**>(&D2CLIENT_ItemActionWorld), 6);
+		Hooking::TrampolineHook(D2CLIENT_ItemActionOwned, &ItemActionOwned, reinterpret_cast<void**>(&D2CLIENT_ItemActionOwned), 6);
 
 		//Item Name Hook
-		Hooking::TrampolineHook(D2CLIENT_GetItemName, &GetItemName, reinterpret_cast<void**>(&fpD2CLIENT_GetItemName), 5);
+		Hooking::TrampolineHook(D2CLIENT_GetItemName, &GetItemName, reinterpret_cast<void**>(&D2CLIENT_GetItemName), 5);
 
 		//Item Desc Hook
 		Hooking::SetJmp(D2CLIENT_fpGetItemDescPatch, &GetItemDesc_STUB, 6);
 
 		//Automap Draw Hook
-		Hooking::TrampolineHook(D2CLIENT_AUTOMAP_Draw, &AUTOMAP_Draw, reinterpret_cast<void**>(&fpAUTOMAP_Draw), 6);
+		Hooking::TrampolineHook(D2CLIENT_AUTOMAP_Draw, &AUTOMAP_Draw, reinterpret_cast<void**>(&D2CLIENT_AUTOMAP_Draw), 6);
 
 		//Unit Draw Hook
-		Hooking::TrampolineHook(D2CLIENT_UNITDRAW_DrawUnit, &UNITDRAW_DrawUnit, reinterpret_cast<void**>(&fpUNITDRAW_DrawUnit), 5);
+		Hooking::TrampolineHook(D2CLIENT_UNITDRAW_DrawUnit, &UNITDRAW_DrawUnit, reinterpret_cast<void**>(&D2CLIENT_UNITDRAW_DrawUnit), 5);
 
 		//No draw hooks
 		Hooking::SetCall(D2CLIENT_checkUnitNoDrawPatch_1, &CheckUnitNoDraw1_STUB, 9);
@@ -116,27 +96,26 @@ ItemFilter::ItemFilter() {
 		Hooking::SetCall(D2CLIENT_callDrawInventoryItemRectPatch, &DrawInventoryItemRect_STUB, 5);
 
 		//Cleanup Cached Item Data Hook
-		Hooking::TrampolineHook(D2COMMON_UNITS_FreeUnit, &UNITS_FreeUnit, reinterpret_cast<void**>(&fpUNITS_FreeUnit), 5);
+		Hooking::TrampolineHook(D2COMMON_UNITS_FreeUnit, &UNITS_FreeUnit, reinterpret_cast<void**>(&D2COMMON_UNITS_FreeUnit), 5);
 
 		//Load Datatables Hook
-		Hooking::TrampolineHook(D2COMMON_DATATBLS_LoadAllTxts, &DATATBLS_LoadAllTxts, reinterpret_cast<void**>(&fpDATATBLS_LoadAllTxts), 6);
-		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&fpD2CLIENT_DrawGameUI), 5);
+		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&D2CLIENT_DrawGameUI), 5);
 	} else if (GetGameVersion() == D2Version::V110f) {
 		//Item Action Own/World Packet Hooks
-		Hooking::TrampolineHook(D2CLIENT_ItemActionWorld, &ItemActionWorld, reinterpret_cast<void**>(&fpItemActionWorld), 6);
-		Hooking::TrampolineHook(D2CLIENT_ItemActionOwned, &ItemActionOwned, reinterpret_cast<void**>(&fpItemActionOwned), 6);
+		Hooking::TrampolineHook(D2CLIENT_ItemActionWorld, &ItemActionWorld, reinterpret_cast<void**>(&D2CLIENT_ItemActionWorld), 6);
+		Hooking::TrampolineHook(D2CLIENT_ItemActionOwned, &ItemActionOwned, reinterpret_cast<void**>(&D2CLIENT_ItemActionOwned), 6);
 
 		//Item Name Hook
-		Hooking::TrampolineHook(D2CLIENT_GetItemName_114d, &GetItemName_114d, reinterpret_cast<void**>(&fpD2CLIENT_GetItemName_114d), 5);
+		Hooking::TrampolineHook(D2CLIENT_GetItemName_114d, &GetItemName_114d, reinterpret_cast<void**>(&D2CLIENT_GetItemName_114d), 5);
 
 		//Item Desc Hook
 		Hooking::SetJmp(D2CLIENT_fpGetItemDescPatch, &GetItemDesc_STUB, 6);
 
 		//Automap Draw Hook
-		Hooking::TrampolineHook(D2CLIENT_AUTOMAP_Draw, &AUTOMAP_Draw, reinterpret_cast<void**>(&fpAUTOMAP_Draw), 6);
+		Hooking::TrampolineHook(D2CLIENT_AUTOMAP_Draw, &AUTOMAP_Draw, reinterpret_cast<void**>(&D2CLIENT_AUTOMAP_Draw), 6);
 
 		//Unit Draw Hook
-		Hooking::TrampolineHook(D2CLIENT_UNITDRAW_DrawUnit, &UNITDRAW_DrawUnit, reinterpret_cast<void**>(&fpUNITDRAW_DrawUnit), 6);
+		Hooking::TrampolineHook(D2CLIENT_UNITDRAW_DrawUnit, &UNITDRAW_DrawUnit, reinterpret_cast<void**>(&D2CLIENT_UNITDRAW_DrawUnit), 6);
 
 		//No draw hooks
 		Hooking::SetCall(D2CLIENT_checkUnitNoDrawPatch_1, &CheckUnitNoDraw1_STUB, 9);
@@ -153,19 +132,26 @@ ItemFilter::ItemFilter() {
 		Hooking::SetCall(D2CLIENT_callDrawInventoryItemRectPatch, &DrawInventoryItemRect_STUB_110f, 5);
 
 		//Cleanup Cached Item Data Hook
-		Hooking::TrampolineHook(D2COMMON_UNITS_FreeUnit, &UNITS_FreeUnit, reinterpret_cast<void**>(&fpUNITS_FreeUnit), 5);
+		Hooking::TrampolineHook(D2COMMON_UNITS_FreeUnit, &UNITS_FreeUnit, reinterpret_cast<void**>(&D2COMMON_UNITS_FreeUnit), 5);
 
 		//Load Datatables Hook
-		Hooking::TrampolineHook(D2COMMON_DATATBLS_LoadAllTxts, &DATATBLS_LoadAllTxts, reinterpret_cast<void**>(&fpDATATBLS_LoadAllTxts), 6);
-		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&fpD2CLIENT_DrawGameUI), 8);
+		Hooking::TrampolineHook(D2CLIENT_DrawGameUI, &DrawGameUI, reinterpret_cast<void**>(&D2CLIENT_DrawGameUI), 8);
 	}
 	//User Input/WndProc Hook
-	Hooking::TrampolineHook(D2WIN_WndProc, &WndProc, reinterpret_cast<void**>(&fpWndProc), 5);
+	Hooking::TrampolineHook(D2WIN_WndProc, &WndProc, reinterpret_cast<void**>(&D2WIN_WndProc), 5);
+}
+
+void ItemFilter::Initialize() {
+	if (Instance != nullptr) {
+		return;
+	}
+	struct MakeUniqueEnabler : public ItemFilter {};
+	Instance = std::make_unique<MakeUniqueEnabler>();
 }
 
 void ItemFilter::ReloadFilter() {
-	INFO_LOG(std::format(L"Item Filter Loaded (PingLevel: {}, FilterLevel: {})", PingLevel, FilterLevel));
-	Config->Load();
+	LoadSettings();
+	INFO_LOG(std::format(L"Item Filter Loaded (PingLevel: {}, FilterLevel: {})", PingLevel(), FilterLevel()));
 	
 	ITEM_ACTIONS.clear();
 	for (uint8_t i = 0; i < 128; i++) {
@@ -179,15 +165,14 @@ void ItemFilter::ReloadFilter() {
 }
 
 void ItemFilter::RunRules(Unit* pItem) {
-	ITEM_ACTIONS[pItem->dwUnitId] = new ActionResult{};
-	ActionResult* result = ITEM_ACTIONS[pItem->dwUnitId];
+	auto& result = ITEM_ACTIONS[pItem->dwUnitId] = ActionResult{};
 
-	for (auto entry : GlobalRules) {
-		Rule* rule = entry.second;
+	for (auto& entry : GlobalRules) {
+		Rule* rule = &entry.second;
 		if (rule->Evaluate(pItem)) {
-			result->vMatchedRules.push_back(rule->GetLineNumber());
+			result.vMatchedRules.push_back(rule->GetLineNumber());
 			rule->EvaluateActionResult(result, pItem);
-			if (!result->bContinue) {
+			if (!result.bContinue) {
 				return;
 			}
 		}
@@ -213,17 +198,11 @@ POINT ItemFilter::ScreenToAutomap(int nX, int nY) {
 	return { x, y };
 }
 
-void ItemFilter::DATATBLS_LoadAllTxts(void* pMemPool, int a2, int a3) {
-	fpDATATBLS_LoadAllTxts(pMemPool, a2, a3);
-	IsTxtDataLoaded = true;
-
-}
-
 void __stdcall ItemFilter::DrawGameUI() {
-	if (!Config->IsLoaded()) {
+	if (!ItemFilter::IsLoaded()) {
 		ItemFilter::ReloadFilter();
 	}
-	fpD2CLIENT_DrawGameUI();
+	D2CLIENT_DrawGameUI();
 }
 
 void ItemFilter::HandlePacket(uint8_t* pBitStream, D2GSServerToClientPacketHandlerFn pHandler) {
@@ -250,29 +229,29 @@ void ItemFilter::HandlePacket(uint8_t* pBitStream, D2GSServerToClientPacketHandl
 
 //Hooked Methods
 void __fastcall ItemFilter::ItemActionWorld(uint8_t* pBitstream) {
-	ItemFilter::HandlePacket(pBitstream, fpItemActionWorld);
+	ItemFilter::HandlePacket(pBitstream, D2CLIENT_ItemActionWorld);
 }
 
 void __fastcall ItemFilter::ItemActionOwned(uint8_t* pBitstream) {
-	ItemFilter::HandlePacket(pBitstream, fpItemActionOwned);
+	ItemFilter::HandlePacket(pBitstream, D2CLIENT_ItemActionOwned);
 }
 
 BOOL __fastcall ItemFilter::GetItemName_114d(Unit* pItem, wchar_t* pBuffer, uint32_t dwSize) {
-	BOOL ret = fpD2CLIENT_GetItemName_114d(pItem, pBuffer, dwSize);
+	BOOL ret = D2CLIENT_GetItemName_114d(pItem, pBuffer, dwSize);
 	HandleItemName(pItem, pBuffer, dwSize);
 	return ret;
 }
 
 BOOL __stdcall ItemFilter::GetItemName(Unit* pItem, wchar_t* pBuffer, uint32_t dwSize) {
-	BOOL ret = fpD2CLIENT_GetItemName(pItem, pBuffer, dwSize);
+	BOOL ret = D2CLIENT_GetItemName(pItem, pBuffer, dwSize);
 	HandleItemName(pItem, pBuffer, dwSize);
 	return ret;
 }
 
 void __stdcall ItemFilter::HandleItemName(Unit* pItem, wchar_t* pBuffer, uint32_t dwSize) {
 	if (HasActions(pItem)
-		&& ITEM_ACTIONS[pItem->dwUnitId]->bItemNameSet) {
-		std::wstring copy = ITEM_ACTIONS[pItem->dwUnitId]->wsItemName;
+		&& ITEM_ACTIONS[pItem->dwUnitId].bItemNameSet) {
+		std::wstring copy = ITEM_ACTIONS[pItem->dwUnitId].wsItemName;
 		replace(copy, L"{Name}", pBuffer);
 		wcsncpy(pBuffer, copy.c_str(), 0x7d);
 	}
@@ -281,15 +260,15 @@ void __stdcall ItemFilter::HandleItemName(Unit* pItem, wchar_t* pBuffer, uint32_
 void __stdcall ItemFilter::GetItemDesc(wchar_t* pBuffer) {
 	Unit* pItem = *D2CLIENT_GetHoverItem;
 	if (HasActions(pItem)
-		&& ITEM_ACTIONS[pItem->dwUnitId]->bItemDescSet) {
-		std::wstring copy = ITEM_ACTIONS[pItem->dwUnitId]->wsItemDesc;
+		&& ITEM_ACTIONS[pItem->dwUnitId].bItemDescSet) {
+		std::wstring copy = ITEM_ACTIONS[pItem->dwUnitId].wsItemDesc;
 		replace(copy, L"{Description}", pBuffer);
 		wcsncpy(pBuffer, copy.c_str(), 0x800);
 	}
 }
 
 void __stdcall ItemFilter::AUTOMAP_Draw() {
-	fpAUTOMAP_Draw();
+	D2CLIENT_AUTOMAP_Draw();
 	while (!AUTOMAP_ITEMS.empty()) {
 		Unit* pItem = FindUnit(AUTOMAP_ITEMS.front(), UnitType::ITEM);
 		AUTOMAP_ITEMS.pop();
@@ -297,9 +276,9 @@ void __stdcall ItemFilter::AUTOMAP_Draw() {
 			continue;
 		}
 		if (HasActions(pItem)
-			&& ITEM_ACTIONS[pItem->dwUnitId]->bMinimapIcon) {
+			&& ITEM_ACTIONS[pItem->dwUnitId].bMinimapIcon) {
 			POINT p = ScreenToAutomap(pItem->pStaticPath->nXPos, pItem->pStaticPath->nYPos);
-			D2GFX_DrawSolidRectEx(p.x - 5, p.y - 5, p.x + 5, p.y + 5, ITEM_ACTIONS[pItem->dwUnitId]->nMinimapIconPaletteIndex, DrawMode::NORMAL);
+			D2GFX_DrawSolidRectEx(p.x - 5, p.y - 5, p.x + 5, p.y + 5, ITEM_ACTIONS[pItem->dwUnitId].nMinimapIconPaletteIndex, DrawMode::NORMAL);
 		}
 	}
 }
@@ -307,18 +286,18 @@ void __stdcall ItemFilter::AUTOMAP_Draw() {
 //nXpos and nYpos don't appear to be right...
 BOOL __fastcall ItemFilter::UNITDRAW_DrawUnit(Unit* pUnit, uint32_t dwColorTint, int nXpos, int nYpos, BOOL bFade, BOOL bDrawOverlays) {
 	if (HasActions(pUnit)
-		&& ITEM_ACTIONS[pUnit->dwUnitId]->bMinimapIcon) {
+		&& ITEM_ACTIONS[pUnit->dwUnitId].bMinimapIcon) {
 		//this seems janky, but is used to queue up items to be drawn on automap
 		AUTOMAP_ITEMS.push(pUnit->dwUnitId);
 	}
-	return fpUNITDRAW_DrawUnit(pUnit, dwColorTint, nXpos, nYpos, bFade, bDrawOverlays);
+	return D2CLIENT_UNITDRAW_DrawUnit(pUnit, dwColorTint, nXpos, nYpos, bFade, bDrawOverlays);
 }
 
 void __stdcall ItemFilter::UNITS_FreeUnit(Unit* pUnit) {
 	if (HasActions(pUnit)) {
 		ITEM_ACTIONS.erase(pUnit->dwUnitId);
 	}
-	fpUNITS_FreeUnit(pUnit);
+	D2COMMON_UNITS_FreeUnit(pUnit);
 }
 
 
@@ -326,7 +305,7 @@ void __stdcall ItemFilter::DrawDebugInfo(Unit* pItem, uint32_t nXStart, uint32_t
 	if (!HasActions(pItem)) {
 		return;
 	}
-	ActionResult* actions = ITEM_ACTIONS[pItem->dwUnitId];
+	ActionResult* actions = &ITEM_ACTIONS[pItem->dwUnitId];
 	std::vector<std::wstring> lines;
 	std::wostringstream os;
 	os << L"Matched Lines #: " << TEXT_GREEN;
@@ -336,17 +315,17 @@ void __stdcall ItemFilter::DrawDebugInfo(Unit* pItem, uint32_t nXStart, uint32_t
 		}
 		os << match;
 	}
-	ItemsTxt txt = GetItemsTxt(pItem);
+	ItemsTxt* pItemTxt = GetItemsTxt(pItem);
 
 	lines.push_back(std::format(L"ID: {}{}", TEXT_WHITE, pItem->dwUnitId));
 	lines.push_back(std::format(L"File Index: {}{}", TEXT_WHITE, pItem->pItemData->dwFileIndex));
-	lines.push_back(std::format(L"Type: {}{}", TEXT_WHITE, std::wstring(D2LANG_GetStringFromTblIndex(txt.wNameStr))));
+	lines.push_back(std::format(L"Type: {}{}", TEXT_WHITE, D2LANG_GetStringFromTblIndex(pItemTxt->wNameStr)));
 	std::wstring wCode = std::wstring(4, L' ');
-	mbstowcs(&wCode[0], txt.szCode, 4);
+	mbstowcs(&wCode[0], pItemTxt->szCode, 4);
 	lines.push_back(std::format(L"Code: {}{}", TEXT_WHITE, wCode));
-	lines.push_back(std::format(L"Quality: {}{}", TEXT_WHITE, QualitiesLookup[GetQualityLevel(pItem)]));
-	lines.push_back(std::format(L"Rarity: {}{}", TEXT_WHITE, RaritiesLookup[static_cast<int32_t>(pItem->pItemData->dwRarity)]));
-	lines.push_back(std::format(L"Class: {}{}", TEXT_WHITE, ItemTypesLookup[static_cast<int32_t>(txt.wType[0])]));
+	lines.push_back(std::format(L"Quality: {}{}", TEXT_WHITE, QualitiesLookup.at(GetQualityLevel(pItem))));
+	lines.push_back(std::format(L"Rarity: {}{}", TEXT_WHITE, RaritiesLookup.at(static_cast<int32_t>(pItem->pItemData->dwRarity))));
+	lines.push_back(std::format(L"Class: {}{}", TEXT_WHITE, ItemTypesLookup.at(static_cast<int32_t>(pItemTxt->wType[0]))));
 	lines.push_back(os.str());
 	lines.push_back(std::format(L"Shown: {}{}", TEXT_WHITE, actions->bHide ? L"False" : L"True"));
 	if (actions->bItemNameSet) {
@@ -414,22 +393,22 @@ void __stdcall ItemFilter::DrawGroundItemRect(DWORD retAddress, BOOL isHovered, 
 	if (pItem == nullptr) {
 		pItem = *D2CLIENT_GetHoverItem;
 	}
-	if ((isHovered || eDrawMode == DrawMode::NORMAL) && IsFilterDebug) {
+	if ((isHovered || eDrawMode == DrawMode::NORMAL) && IsFilterDebug()) {
 		DrawDebugInfo(pItem, nXStart, nYStart, nXEnd, nYEnd);
 	}
 	if (HasActions(pItem)
 		&& (pItem->eItemAnimMode == ItemAnimationMode::DROPPING
 			|| pItem->eItemAnimMode == ItemAnimationMode::GROUND)) {
-		nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId]->bBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId]->nBackgroundPaletteIndex : nPaletteIndex;
-		if (ITEM_ACTIONS[pItem->dwUnitId]->bBorderPaletteIndexSet) {
+		nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId].bBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId].nBackgroundPaletteIndex : nPaletteIndex;
+		if (ITEM_ACTIONS[pItem->dwUnitId].bBorderPaletteIndexSet) {
 			auto pad = 1;
 			RECT rect = { nXStart + pad, nYStart + pad, nXEnd - pad, nYEnd - pad };
-			D2GFX_DrawRect(&rect, ITEM_ACTIONS[pItem->dwUnitId]->nBorderPaletteIndex);
+			D2GFX_DrawRect(&rect, ITEM_ACTIONS[pItem->dwUnitId].nBorderPaletteIndex);
 		}
 		if (eDrawMode == DrawMode::TRANS_50) {
-			eDrawMode = ITEM_ACTIONS[pItem->dwUnitId]->eDrawModeAlt;
+			eDrawMode = ITEM_ACTIONS[pItem->dwUnitId].eDrawModeAlt;
 		} else {
-			eDrawMode = ITEM_ACTIONS[pItem->dwUnitId]->eDrawModeHover;
+			eDrawMode = ITEM_ACTIONS[pItem->dwUnitId].eDrawModeHover;
 		}
 	}
 	//call original
@@ -440,7 +419,7 @@ void __stdcall ItemFilter::DrawInventoryItemRect(Unit* pItem, uint32_t nXStart, 
 	//0x08: red, 0xea: blue, 0x76: green.
 	if (nPaletteIndex == 0xEA
 			&& HasActions(pItem)) {
-		nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId]->bInvBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId]->nInvBackgroundPaletteIndex : nPaletteIndex;
+		nPaletteIndex = ITEM_ACTIONS[pItem->dwUnitId].bInvBackgroundPaletteIndexSet ? ITEM_ACTIONS[pItem->dwUnitId].nInvBackgroundPaletteIndex : nPaletteIndex;
 	}
 	//call original
 	D2GFX_DrawSolidRectEx(nXStart, nYStart, nXEnd, nYEnd, nPaletteIndex, eDrawMode);
@@ -449,8 +428,8 @@ void __stdcall ItemFilter::DrawInventoryItemRect(Unit* pItem, uint32_t nXStart, 
 //returns result of nodraw flag shift
 BOOL __fastcall ItemFilter::IsUnitNoDraw(Unit* pUnit) {
 	if (HasActions(pUnit)) {
-		if (ITEM_ACTIONS[pUnit->dwUnitId]->bHide
-				&& !IsFilterDebug) {
+		if (ITEM_ACTIONS[pUnit->dwUnitId].bHide
+				&& !IsFilterDebug()) {
 			pUnit->dwFlagEx |= static_cast<std::underlying_type_t<UnitFlagEx>>(UnitFlagEx::NODRAW);
 		} else {
 			pUnit->dwFlagEx &= ~(static_cast<std::underlying_type_t<UnitFlagEx>>(UnitFlagEx::NODRAW));
@@ -466,30 +445,26 @@ BOOL __stdcall ItemFilter::CallCommand(char* sCmd) {
 	}
 
 	if (!strncmp(sCmd, CMD_FILTERLEVEL, strlen(CMD_FILTERLEVEL))) {
-		FilterLevel = atoi(&sCmd[strlen(CMD_FILTERLEVEL)]);
-		Config->SaveSettings();
-		ItemFilter::ReloadFilter();
+		ItemFilter::FilterLevel() = atoi(&sCmd[strlen(CMD_FILTERLEVEL)]);
+		ItemFilter::SaveSettings();
 		return FALSE;
 	}
 
 	if (!strncmp(sCmd, CMD_FILTERLEVEL2, strlen(CMD_FILTERLEVEL2))) {
-		FilterLevel = atoi(&sCmd[strlen(CMD_FILTERLEVEL2)]);
-		Config->SaveSettings();
-		ItemFilter::ReloadFilter();
+		ItemFilter::FilterLevel() = atoi(&sCmd[strlen(CMD_FILTERLEVEL2)]);
+		ItemFilter::SaveSettings();
 		return FALSE;
 	}
 
 	if (!strncmp(sCmd, CMD_PINGLEVEL, strlen(CMD_PINGLEVEL))) {
-		PingLevel = atoi(&sCmd[strlen(CMD_PINGLEVEL)]);
-		Config->SaveSettings();
-		ItemFilter::ReloadFilter();
+		ItemFilter::PingLevel() = atoi(&sCmd[strlen(CMD_PINGLEVEL)]);
+		ItemFilter::SaveSettings();
 		return FALSE;
 	}
 
 	if (!strncmp(sCmd, CMD_PINGLEVEL2, strlen(CMD_PINGLEVEL2))) {
-		PingLevel = atoi(&sCmd[strlen(CMD_PINGLEVEL2)]);
-		Config->SaveSettings();
-		ItemFilter::ReloadFilter();
+		ItemFilter::PingLevel() = atoi(&sCmd[strlen(CMD_PINGLEVEL2)]);
+		ItemFilter::SaveSettings();
 		return FALSE;
 	}
 
@@ -513,7 +488,7 @@ BOOL __stdcall ItemFilter::CallCommand(char* sCmd) {
 
 void ItemFilter::DoChatAlert(Unit* pUnit) {
 	if (HasActions(pUnit)
-		&& ITEM_ACTIONS[pUnit->dwUnitId]->bChatAlert
+		&& ITEM_ACTIONS[pUnit->dwUnitId].bChatAlert
 		&& (pUnit->eItemAnimMode == ItemAnimationMode::DROPPING
 			|| pUnit->eItemAnimMode == ItemAnimationMode::GROUND)) {
 		wchar_t buffer[0x100] = L"";
@@ -522,6 +497,7 @@ void ItemFilter::DoChatAlert(Unit* pUnit) {
 		} else {
 			D2CLIENT_GetItemName(pUnit, buffer, 0x100);
 		}
+		HandleItemName(pUnit, buffer, 0x100);
 		std::wstring result = std::wstring(buffer);
 		replace(result, L"\n", L" - ");
 		PrintGameString(result, TextColor::WHITE);
@@ -529,13 +505,13 @@ void ItemFilter::DoChatAlert(Unit* pUnit) {
 }
 
 void ItemFilter::ToggleDebug() {
-	IsFilterDebug = !IsFilterDebug;
-	INFO_LOG(std::format(L"Debug {}", IsFilterDebug ? L"On" : L"Off"));
+	DebugFlag = !DebugFlag;
+	INFO_LOG(std::format(L"Debug {}", IsFilterDebug() ? L"On" : L"Off"));
 }
 
 void ItemFilter::DebugRule(uint32_t nLineNumber) {
-	Rule* rule = GlobalRules[nLineNumber];
-	if (!rule) {
+	auto rule = GlobalRules.find(nLineNumber);
+	if (rule == GlobalRules.end()) {
 		ERROR_LOG(std::format(L"No rule found on line {}.", nLineNumber));
 		return;
 	}
@@ -544,7 +520,7 @@ void ItemFilter::DebugRule(uint32_t nLineNumber) {
 		ERROR_LOG(std::format(L"No item found under cursor."));
 		return;
 	}
-	for (Condition* condition : rule->GetConditions()) {
+	for (auto& condition : rule->second.GetConditions()) {
 		TextColor color = condition->Evaluate(pUnit) ? TextColor::GREEN : TextColor::RED;
 		PrintGameString(condition->ToString(pUnit), color);
 	}
@@ -564,18 +540,18 @@ void ItemFilter::Clip() {
 	}
 
 	// Allocate a global memory object for the text.
-	ItemsTxt txt = GetItemsTxt(pItem);
+	ItemsTxt* pItemTxt = GetItemsTxt(pItem);
 
 	std::wstring wCode = std::wstring(4, L' ');
-	mbstowcs(&wCode[0], txt.szCode, 4);
+	mbstowcs(&wCode[0], pItemTxt->szCode, 4);
 	wCode = trim(wCode);
 
 	std::wstring s = std::format(L"Show\n\tType {}\n\tCode {}\n\tQuality {}\n\tRarity {}\n\tClass {}\n\n",
-		std::wstring(D2LANG_GetStringFromTblIndex(txt.wNameStr)),
+		D2LANG_GetStringFromTblIndex(pItemTxt->wNameStr),
 		wCode,
-		QualitiesLookup[GetQualityLevel(pItem)],
-		RaritiesLookup[static_cast<int32_t>(pItem->pItemData->dwRarity)],
-		ItemTypesLookup[static_cast<int32_t>(txt.wType[0])]);
+		QualitiesLookup.at(GetQualityLevel(pItem)),
+		RaritiesLookup.at(static_cast<int32_t>(pItem->pItemData->dwRarity)),
+		ItemTypesLookup.at(static_cast<int32_t>(pItemTxt->wType[0])));
 	hglbCopy = GlobalAlloc(GMEM_MOVEABLE, (s.size() + 1) * sizeof(wchar_t));
 	if (hglbCopy == NULL)
 	{
@@ -608,17 +584,17 @@ LRESULT ItemFilter::WndProc(HWND hWnd, int msg, WPARAM wParam, LPARAM lParam) {
 			//R reload
 			if (wParam == 0x52
 				&& (GetKeyState(VK_LCONTROL) & 0x80) || (GetKeyState(VK_RCONTROL) & 0x80)) {
-				if (IsTxtDataLoaded) {
+				if (ItemFilter::IsTxtDataLoaded()) {
 					ItemFilter::ReloadFilter();
 				}
 			}
 			break;
 		}
 		default: {
-			return fpWndProc(hWnd, msg, wParam, lParam);
+			return D2WIN_WndProc(hWnd, msg, wParam, lParam);
 		}
 	}
-	return fpWndProc(hWnd, msg, wParam, lParam);
+	return D2WIN_WndProc(hWnd, msg, wParam, lParam);
 }
 
 void __declspec(naked) __stdcall ItemFilter::GetItemDesc_STUB() {

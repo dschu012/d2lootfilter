@@ -5,21 +5,16 @@
 #include <unordered_map>
 #include "Action.h"
 #include "D2Constants.h"
+#include "Utils.h"
 
 //Globals
-extern D2Version GameVersion;
-extern int32_t FilterLevel;
-extern int32_t PingLevel;
-extern bool IsFilterDebug;
-extern bool IsTxtDataLoaded;
+extern const utility::string_umap<std::wstring, int32_t> ItemTypes;
+extern const std::unordered_map<int32_t, std::wstring> ItemTypesLookup;
 
-extern std::unordered_map<std::wstring, int32_t> ItemTypes;
-extern std::unordered_map<int32_t, std::wstring> ItemTypesLookup;
+extern const utility::string_umap<std::wstring, int32_t> Rarities;
+extern const std::unordered_map<int32_t, std::wstring> RaritiesLookup;
 
-extern std::unordered_map<std::wstring, int32_t> Rarities;
-extern std::unordered_map<int32_t, std::wstring> RaritiesLookup;
+extern const utility::string_umap<std::wstring, int32_t> Qualities;
+extern const std::unordered_map<int32_t, std::wstring> QualitiesLookup;
 
-extern std::unordered_map<std::wstring, int32_t> Qualities;
-extern std::unordered_map<int32_t, std::wstring> QualitiesLookup;
-
-extern std::unordered_map<std::wstring, std::wstring> CustomStats;
+extern const utility::string_umap<std::wstring, std::wstring> CustomStats;

@@ -1,9 +1,5 @@
 #include <Windows.h>
-#include <io.h>
-#include <stdio.h>
 #include "ItemFilter.h"
-
-ItemFilter* filter;
 
 void Error(const wchar_t* wszMessage) {
     MessageBox(nullptr, wszMessage, L"Error", MB_OK | MB_ICONSTOP);
@@ -23,7 +19,7 @@ BOOL DllAttach() {
         Error(L"Could not determine the game version.");
     }
 
-    filter = new ItemFilter();
+    ItemFilter::Initialize();
     return TRUE;
 }
 

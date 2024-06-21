@@ -2,7 +2,8 @@
 
 #include <Windows.h>
 #include <cstdint>
-#include <sstream>
+#include <iosfwd>
+#include <type_traits>
 
 #define TEXT_WHITE L"\xff" "c0"
 #define TEXT_RED L"\xff" "c1"
