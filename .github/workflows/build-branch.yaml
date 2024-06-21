@@ -22,4 +22,6 @@ jobs:
         automatic_release_tag: "latest"
         prerelease: true
         title: "Latest Development Build"
-        files: Release/d2lootfilter.dll
+        files: |
+          Release/d2lootfilter.dll
+          doc/ENG/item.filter
